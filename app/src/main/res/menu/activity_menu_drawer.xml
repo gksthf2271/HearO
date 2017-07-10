@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_myinfo"
+
+            android:title="내 정보" />
+        <item
+            android:id="@+id/nav_version"
+
+            android:title="버전 정보" />
+        <item
+            android:id="@+id/nav_module"
+            android:title="모듈관리" />
+        <item
+            android:id="@+id/nav_alert"
+            android:title="알림 설정" />
+    </group>
+
+    <item android:title="Communicate">
+        <menu>
+            <item
+                android:id="@+id/nav_help"
+                android:title="도움말" />
+
+            <item
+                android:id="@+id/Logout"
+                android:title="로그아웃" />
+        </menu>
+    </item>
+
+</menu>
