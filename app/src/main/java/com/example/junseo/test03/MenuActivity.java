@@ -1,8 +1,12 @@
 package com.example.junseo.test03;
 
+import android.content.Context;
+import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import com.google.firebase.auth.FirebaseAuth;
 import android.content.Intent;
@@ -17,14 +21,31 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 import java.util.Random;
 
-public class MenuActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
+import static com.example.junseo.test03.R.drawable.pattern;
+
+public class MenuActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener{
     private FirebaseAuth firebaseAuth;
     private Button buttonLogout;
 
+    Vibrator mVibe; //진동
+    Button blinking_animation = null; // 화재 애니메이션
+    Button start = null; // 화재 애니메이션 시작
+    Button blinking_animation2 = null; // 노크 애니메이션
+    Button start2 = null; // 노크 애니메이션 시작
+    Button blinking_animation3=null; // 음성 애니메이션
+    Button start3 = null; // 음성 애니메이션 시작
+    Button blinking_animation4=null; // 초인종 애니메이션
+    Button start4 = null; // 초인종 애니메이션
+    TextView firetext = null; // 불났어요 출력
+    TextView doortext = null; // 노크 출력
+    TextView voicetext = null; // 음성 출력
+    TextView belltext = null; // 초인종 애니메이션
     LinearLayout back;
     int[] img = {R.drawable.back1, R.drawable.back2, R.drawable.back3, R.drawable.back4, R.drawable.back5, R.drawable.back6};
 
@@ -37,7 +58,33 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
         Random ram = new Random();
         int num = ram.nextInt(img.length);
         back.setBackgroundResource(img[num]);
+        blinking_animation = (Button) findViewById(R.id.blinking_animation);
+        start = (Button) findViewById(R.id.start);
+        firetext = (TextView) findViewById(R.id.firetext);
+        mVibe = (Vibrator)getSystemService(Context.VIBRATOR_SERVICE);
 
+        blinking_animation2 = (Button) findViewById(R.id.blinking_animation2);
+        start2 = (Button) findViewById(R.id.start2);
+        doortext = (TextView) findViewById(R.id.doortext);
+
+        blinking_animation3 = (Button) findViewById(R.id.blinking_animation3);
+        start3 = (Button) findViewById(R.id.start3);
+        voicetext = (TextView) findViewById(R.id.voice);
+
+        blinking_animation4 = (Button) findViewById(R.id.blinking_animation4);
+        start4 = (Button) findViewById(R.id.start4);
+        belltext = (TextView) findViewById(R.id.bell);
+
+
+
+        blinking_animation.setOnClickListener(this);
+        start.setOnClickListener(this);
+        blinking_animation2.setOnClickListener(this);
+        start2.setOnClickListener(this);
+        blinking_animation3.setOnClickListener(this);
+        start3.setOnClickListener(this);
+        blinking_animation4.setOnClickListener(this);
+        start4.setOnClickListener(this);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         final ToggleButton tb = (ToggleButton)findViewById(R.id.HearMainbutton);
@@ -68,7 +115,7 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
                 MenuActivity.this.startActivity(sttIntent);
             }
         });
-        // 솔직히 fab은 필요 없잖아요? 그쵸?
+
       //  FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
       /*  fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -113,7 +160,11 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
 
 
     }
+    public void Vibrator_pattern(){
 
+        long[] vibratePattern = {100, 100, 100};
+        mVibe.vibrate(vibratePattern, 0);
+    }
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -156,7 +207,7 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
         } else if (id == R.id.nav_help) {
             startActivity(new Intent(this,HelpActivity.class)); //도움말
         } else if (id == R.id.nav_module) {
-
+            startActivity(new Intent(this, ModuleActivity.class)); //모듈 연결/해제
         } else if (id == R.id.nav_alert) {
             startActivity(new Intent(this,AlarmActivity.class)); //알림 설정
         } else if (id == R.id.Logout) {
@@ -169,6 +220,85 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+    @Override
+    public void onClick(View view){
+        switch (view.getId()){
+            case R.id.start:
+                blinking_animation4.setVisibility(View.INVISIBLE);
+                blinking_animation3.setVisibility(View.INVISIBLE);
+                blinking_animation2.setVisibility(View.INVISIBLE);
+                doortext.setVisibility(View.GONE);
+                voicetext.setVisibility(View.GONE);
+                belltext.setVisibility(View.GONE);
+                Vibrator_pattern();
+                Animation startAnimation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.blinking_animation);
+                blinking_animation.startAnimation(startAnimation);
+                firetext.setVisibility(View.VISIBLE);
+                break;
+
+            case R.id.blinking_animation:
+                blinking_animation.clearAnimation();
+                firetext.setVisibility(View.GONE);
+                mVibe.cancel();
+                break;
+
+            case R.id.start2:
+                mVibe.cancel();
+                blinking_animation.clearAnimation();
+                blinking_animation3.setVisibility(View.INVISIBLE);
+                blinking_animation4.setVisibility(View.INVISIBLE);
+                firetext.setVisibility(View.GONE);
+                voicetext.setVisibility(View.GONE);
+                belltext.setVisibility(View.GONE);
+
+                blinking_animation2.setVisibility(View.VISIBLE);
+                doortext.setVisibility(View.VISIBLE);
+                break;
+
+            case R.id.blinking_animation2:
+                blinking_animation2.setVisibility(View.INVISIBLE);
+                doortext.setVisibility(View.GONE);
+                break;
+
+            case R.id.start3:
+                mVibe.cancel();
+                blinking_animation.clearAnimation();
+                firetext.setVisibility(View.GONE);
+                blinking_animation2.setVisibility(View.GONE);
+                doortext.setVisibility(View.GONE);
+                blinking_animation4.setVisibility(View.INVISIBLE);
+                belltext.setVisibility(View.GONE);
+
+                blinking_animation3.setVisibility(View.VISIBLE);
+                voicetext.setVisibility(View.VISIBLE);
+                break;
+
+            case R.id.blinking_animation3:
+                blinking_animation3.setVisibility(View.INVISIBLE);
+                voicetext.setVisibility(View.GONE);
+                break;
+
+            case R.id.start4:
+                mVibe.cancel();
+                blinking_animation.clearAnimation();
+                firetext.setVisibility(View.GONE);
+                blinking_animation2.setVisibility(View.GONE);
+                doortext.setVisibility(View.GONE);
+                blinking_animation3.setVisibility(View.INVISIBLE);
+                voicetext.setVisibility(View.GONE);
+
+                blinking_animation4.setVisibility(View.VISIBLE);
+                belltext.setVisibility(View.VISIBLE);
+                break;
+            case R.id.blinking_animation4:
+                blinking_animation4.setVisibility(View.INVISIBLE);
+                belltext.setVisibility(View.GONE);
+
+                break;
+
+        }
+
     }
 
 }

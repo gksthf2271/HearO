@@ -4,7 +4,7 @@
     android:layout_height="match_parent">
 
     <EditText
-        android:id="@+id/etNewName"
+        android:id="@+id/editstt"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="버튼을 누르고 말씀하세요."
