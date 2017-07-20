@@ -35,6 +35,7 @@ public class BluetoothService {
     }
 
     // Intent request code
+    
     private static final int REQUEST_CONNECT_DEVICE = 1;
     private static final int REQUEST_ENABLE_BT = 2;
 
