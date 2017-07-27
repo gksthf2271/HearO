@@ -95,7 +95,7 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         final ToggleButton tb = (ToggleButton)findViewById(R.id.HearMainbutton);
         final Button button1 = (Button)findViewById(R.id.button1);
-        //텍스트 입력 버튼
+        //텍스트 입력 버튼/
         button1.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
