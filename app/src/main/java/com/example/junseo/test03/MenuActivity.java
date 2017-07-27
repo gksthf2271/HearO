@@ -1,9 +1,15 @@
 package com.example.junseo.test03;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.res.Resources;
+import android.graphics.BitmapFactory;
 import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.NotificationCompat;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -159,8 +165,10 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
         FirebaseUser user = firebaseAuth.getCurrentUser();
 
 
+
     }
-    public void Vibrator_pattern(){
+
+        public void Vibrator_pattern(){
 
         long[] vibratePattern = {100, 100, 100};
         mVibe.vibrate(vibratePattern, 0);
@@ -194,6 +202,90 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
 
         return super.onOptionsItemSelected(item);
     }
+
+    public void NotificationFire() {
+
+
+        Resources res = getResources();
+
+
+        Intent notificationIntent = new Intent(this, MenuActivity.class);
+        notificationIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP
+                | Intent.FLAG_ACTIVITY_SINGLE_TOP);// 루트 액티비티 하나만 뜨게 플래그 잡아줌
+
+        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+
+        builder.setContentTitle("HearO")
+                .setContentText("불꽃남자")
+                .setTicker("화재")
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setLargeIcon(BitmapFactory.decodeResource(res, R.mipmap.ic_launcher))
+                .setContentIntent(contentIntent)
+                .setAutoCancel(true)
+                .setWhen(System.currentTimeMillis())
+                .setDefaults(Notification.DEFAULT_SOUND);
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            builder.setCategory(Notification.CATEGORY_MESSAGE)
+                    .setPriority(Notification.PRIORITY_HIGH)
+                    .setVisibility(Notification.VISIBILITY_PUBLIC);
+        }
+
+        NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        nm.notify(1234, builder.build());
+    }
+    public void NotificationDoor(){
+        Resources res = getResources();
+        Intent notificationIntent = new Intent(this, MenuActivity.class);
+        notificationIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP
+                | Intent.FLAG_ACTIVITY_SINGLE_TOP); // 루트 액티비티 하나만 뜨게 플래그 잡아줌
+        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+
+        builder.setContentTitle("HearO")
+                .setContentText("똑똑!")
+                .setTicker("노크")
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setLargeIcon(BitmapFactory.decodeResource(res, R.mipmap.ic_launcher))
+                .setContentIntent(contentIntent)
+                .setAutoCancel(true)
+                .setWhen(System.currentTimeMillis())
+                .setDefaults(Notification.DEFAULT_SOUND);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            builder.setCategory(Notification.CATEGORY_MESSAGE)
+                    .setPriority(Notification.PRIORITY_HIGH)
+                    .setVisibility(Notification.VISIBILITY_PUBLIC);
+        }
+        NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        nm.notify(1234, builder.build());
+    }
+    public void Notificationbell(){
+        Resources res = getResources();
+        Intent notificationIntent = new Intent(this, MenuActivity.class);
+        notificationIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP
+                | Intent.FLAG_ACTIVITY_SINGLE_TOP); // 루트 액티비티 하나만 뜨게 플래그 잡아줌
+        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+
+        builder.setContentTitle("HearO")
+                .setContentText("띠잉동!")
+                .setTicker("초인종")
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setLargeIcon(BitmapFactory.decodeResource(res, R.mipmap.ic_launcher))
+                .setContentIntent(contentIntent)
+                .setAutoCancel(true)
+                .setWhen(System.currentTimeMillis())
+                .setDefaults(Notification.DEFAULT_SOUND);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            builder.setCategory(Notification.CATEGORY_MESSAGE)
+                    .setPriority(Notification.PRIORITY_HIGH)
+                    .setVisibility(Notification.VISIBILITY_PUBLIC);
+        }
+        NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        nm.notify(1234, builder.build());
+    }
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -225,6 +317,7 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
     public void onClick(View view){
         switch (view.getId()){
             case R.id.start:
+                NotificationFire();
                 blinking_animation4.setVisibility(View.INVISIBLE);
                 blinking_animation3.setVisibility(View.INVISIBLE);
                 blinking_animation2.setVisibility(View.INVISIBLE);
@@ -244,6 +337,7 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
                 break;
 
             case R.id.start2:
+                NotificationDoor();
                 mVibe.cancel();
                 blinking_animation.clearAnimation();
                 blinking_animation3.setVisibility(View.INVISIBLE);
@@ -262,6 +356,7 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
                 break;
 
             case R.id.start3:
+
                 mVibe.cancel();
                 blinking_animation.clearAnimation();
                 firetext.setVisibility(View.GONE);
@@ -280,6 +375,7 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
                 break;
 
             case R.id.start4:
+                Notificationbell();
                 mVibe.cancel();
                 blinking_animation.clearAnimation();
                 firetext.setVisibility(View.GONE);
