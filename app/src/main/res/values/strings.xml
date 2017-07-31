@@ -14,8 +14,19 @@
     <string name="title_other_devices">연결할 수 있는 장치</string>
     <string name="button_scan">장치 찾기</string>
     <string name="inbutton_scan">뒤로 가기</string>
+
     <!-- Options Menu -->
     <string name="secure_connect">Connect a device - Secure</string>
     <string name="insecure_connect">Connect a device - Insecure</string>
     <string name="discoverable">Make discoverable</string>
+    <!-- 블루투스 //한솔 -->
+
+    <!-- 위에 내용이랑 중복 둘중하나 제거해야됨-->
+    <string name="ButtonConnect">Connect</string>
+    <string name="txtview_listening">Listening...</string>
+    <string name="txtview_standby">Standby...</string>
+    <string name="txtview_disconnected">Disconnected</string>
+    <string name="title_activity_bluetooth_pair">BluetoothPair</string>
+    <string name="bluetooth_acticity_title">Device List</string>
+    <string name="button_bluetooth_device_refresh">Refresh Devices</string>
 </resources>
