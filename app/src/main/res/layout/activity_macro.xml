@@ -1,37 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent"    android:paddingBottom="@dimen/activity_vertical_margin"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+    android:id="@+id/activity_macro"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     >
 
-    <Button
-        android:id="@+id/btnGoBack"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="뒤로가기" />
 
     <EditText
-        android:id="@+id/etNewName"
+        android:id="@+id/editTextName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="상용구를 입력하세요."
-        android:inputType="textPersonName" />
-
+        android:hint="등록하기" />
     <Button
-        android:id="@+id/btnSave"
-        android:layout_width="wrap_content"
+        android:id="@+id/buttonAddArtist"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="저장하기" />
+        android:layout_below="@id/editTextName"
+        android:text="추가" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/buttonAddArtist"
+        android:padding="@dimen/activity_horizontal_margin"
+        android:text="상용구"
+        android:textAlignment="center"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Large" />
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textView"
+        android:text="상용구 주머니 목록"
+        android:textAlignment="center" />
 
     <ListView
-        android:id="@+id/lvListview"
+        android:id="@+id/listViewArtists"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:divider="@color/colorPrimary"
-        android:dividerHeight="2dp"></ListView>
-</LinearLayout>
+        android:background="#7CFC00"
+        android:layout_below="@+id/textView1"></ListView>
+
+</RelativeLayout>
