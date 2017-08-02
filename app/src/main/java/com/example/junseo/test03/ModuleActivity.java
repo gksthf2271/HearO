@@ -73,13 +73,13 @@ public class ModuleActivity extends Activity implements OnClickListener {
     @Override
     public void onClick(View v) {
 
-            if (btService.getDeviceState()) {
-                // 블루투스가 지원 가능한 기기일 때
-                btService.enableBluetooth();
-            } else {
-                finish();
-            }
+        if (btService.getDeviceState()) {
+            // 블루투스가 지원 가능한 기기일 때
+            btService.enableBluetooth();
+        } else {
+            finish();
         }
+    }
 
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {

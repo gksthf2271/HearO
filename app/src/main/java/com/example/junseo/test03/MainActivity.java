@@ -120,13 +120,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     @Override
                     public void onComplete(
                             @NonNull Task<AuthResult> task) {
-                       // progressDialog.dismiss();
+                        // progressDialog.dismiss();
                         if (task.isSuccessful()) {
                             finish();
                             startActivity(new Intent(getApplicationContext(), MenuActivity.class));
                         } else {
                             Toast.makeText(getApplicationContext(), "로그인 실패!", Toast.LENGTH_LONG).show();
-                           // textviewMessage.setText("로그인 실패 유형\n - password가 맞지 않습니다.\n -서버에러");
+                            // textviewMessage.setText("로그인 실패 유형\n - password가 맞지 않습니다.\n -서버에러");
                         }
                     }
                 });

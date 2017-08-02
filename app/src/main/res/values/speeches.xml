@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- The signal speech that the recognition starts with. -->
+    <string name="speech_singal">이음</string>
+    <!-- The commands given in speech. -->
+    <string name="command_lighton">전등 켜</string>
+    <string name="command_lightoff">전등 꺼</string>
+    <!--  These are variations of the command speech
+        this is for increasing recognition accuracy. -->
+    <string name="command_lighton_variant">
+        전등 켜|점등 켜|정등 켜|
+    </string>
+    <string name="command_lightoff_variant">
+        전등 꺼|점등 꺼|정등 꺼
+    </string>
+</resources>
