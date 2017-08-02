@@ -25,8 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MacroActivity extends AppCompatActivity {
-  //  public static final String ARTIST_NAME = "com.example.junseo.test03.artistname";
-   // public static final String ARTIST_ID = "com.example.junseo.test03.artistid";
+
 
     EditText editTextName;
   //  Spinner spinnerGenre;
