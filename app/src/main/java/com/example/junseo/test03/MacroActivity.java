@@ -6,7 +6,6 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
-
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
