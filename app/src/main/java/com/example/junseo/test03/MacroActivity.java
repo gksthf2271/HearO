@@ -88,7 +88,7 @@ public class MacroActivity extends AppCompatActivity {
                 macro artist = artists.get(i);
                 showUpdateDeleteDialog(artist.getArtistId(), artist.getArtistName());
                 return true;
-            }
+            }//fff
         });
     }
     // 수정 혹은 삭제
