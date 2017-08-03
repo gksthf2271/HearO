@@ -27,7 +27,7 @@ public class MacroActivity extends AppCompatActivity {
   //  Spinner spinnerGenre;
     Button buttonAddArtist;
     ListView listViewArtists;
-
+    Button Cancel5;
     //a list to store all the artist from firebase database
     List<macro> artists;
 
@@ -38,7 +38,7 @@ public class MacroActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_macro);
-
+        Cancel5 = (Button) findViewById(R.id.Cancel5);
         //getting the reference of artists node
         databaseArtists = FirebaseDatabase.getInstance().getReference("artists");
 
@@ -60,6 +60,12 @@ public class MacroActivity extends AppCompatActivity {
                 //the method is defined below
                 //this method is actually performing the write operation
                 addArtist();
+            }
+        });
+        Cancel5.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
             }
         });
 

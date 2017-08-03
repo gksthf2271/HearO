@@ -1,7 +1,6 @@
 package com.example.junseo.test03;
 
 import android.app.Activity;
-import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;

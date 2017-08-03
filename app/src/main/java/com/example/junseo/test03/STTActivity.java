@@ -41,12 +41,13 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
     private final AppStateManager app_status_manager_ = new AppStateManager();
     // The value for magnifying to display on progress bar.
     private final int kSpeechMagnifyingValue = 100;
+    private Button Cancel3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stt);
-
+        Cancel3 = (Button) findViewById(R.id.Cancel3);
         checkbtn = (Button) findViewById(R.id.checkbtn);
         editstt = (EditText) findViewById(R.id.editstt);
         speakbtn = (Button) findViewById(R.id.speakbtn);
@@ -58,6 +59,12 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
 
         speech_recognizer_ = buildSpeechRecognizer();       // 여기까지 화면구성
         arduinoConnector_ = new ArduinoConnector(arduino_listener_);    //아두이노 리스너 객체 생성
+        Cancel3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
     }
 
     @Override

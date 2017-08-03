@@ -10,7 +10,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:background="@drawable/cupsignup"
-    tools:context="com.example.junseo.test03.MainActivity">
+    android:screenOrientation="portrait">
 
     <EditText
         android:layout_width="match_parent"

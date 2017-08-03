@@ -5,7 +5,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
-import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.Toast;
 
@@ -18,12 +17,20 @@ import android.widget.Toast;
 public class AlarmActivity extends AppCompatActivity {
 
 
-
+    private Button Cancel2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_alarm);
+
+        Cancel2 = (Button) findViewById(R.id.Cancel2);
+        Cancel2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
     Switch sw = (Switch) findViewById(R.id.sw);
 
