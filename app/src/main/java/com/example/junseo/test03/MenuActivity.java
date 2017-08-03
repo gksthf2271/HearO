@@ -3,6 +3,7 @@ package com.example.junseo.test03;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -25,8 +26,10 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import com.example.junseo.test03.arduino.BluetoothPairActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -38,6 +41,9 @@ import static java.lang.Boolean.TRUE;
 public class MenuActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener{
     private FirebaseAuth firebaseAuth;
     private Button buttonLogout;
+
+    private BluetoothAdapter bluetooth_;
+    private BluetoothPairActivity btService = null;
 
     Vibrator mVibe; //진동
     Button blinking_animation = null; // 화재 애니메이션
@@ -320,7 +326,7 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
         } else if (id == R.id.nav_help) {
             startActivity(new Intent(this,HelpActivity.class)); //도움말
         } else if (id == R.id.nav_module) {
-            startActivity(new Intent(this, ModuleActivity.class)); //모듈 연결/해제
+            startActivity(new Intent(this, BluetoothPairActivity.class)); //모듈 연결/해제
         } else if (id == R.id.nav_alert) {
             startActivity(new Intent(this,AlarmActivity.class)); //알림 설정
         } else if (id == R.id.Logout) {
@@ -417,5 +423,24 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
         }
 
     }
-
+    @Override
+    public void onStart(){
+        super.onStart();
+        //블루투스 MainActivity 초기에 실행하기
+        bluetooth_ = BluetoothAdapter.getDefaultAdapter();
+        if (!bluetooth_.isEnabled()) {
+            Toast.makeText(getApplicationContext(), "bluetooth is not enabled",
+                    Toast.LENGTH_LONG).show();
+            Intent enableintent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivityForResult(enableintent, 0);
+            if(!bluetooth_.enable()) {
+                Intent intent = new Intent(getApplicationContext(), BluetoothPairActivity.class);
+                startActivityForResult(intent, 1001);
+            }
+        }
+        else if(!bluetooth_.isDiscovering()){
+            Intent intent = new Intent(getApplicationContext(), BluetoothPairActivity.class);
+            startActivityForResult(intent, 1);
+        }
+    }
 }

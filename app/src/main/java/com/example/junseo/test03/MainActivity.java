@@ -1,6 +1,8 @@
 package com.example.junseo.test03;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
+import android.bluetooth.BluetoothAdapter;
 import android.graphics.drawable.ColorDrawable;
 import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBar;
@@ -14,6 +16,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.junseo.test03.arduino.BluetoothPairActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -31,12 +34,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Button btnLogin;
     private TextView forgotpasswordtv;
 
+
     TextView textviewMessage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
 
         setTheme(android.R.style.Theme_DeviceDefault_NoActionBar_Fullscreen);
         firebaseAuth = FirebaseAuth.getInstance();
@@ -88,7 +94,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 startActivityForResult(intent, 1000);
             }
         });
+
     }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -98,6 +106,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Toast.makeText(MainActivity.this, "회원가입을 완료했습니다!", Toast.LENGTH_SHORT).show();
             etEmail.setText(data.getStringExtra("email"));
         }
+
+
     }
     //액션 바 숨기기
     // private void hideActionBar() {

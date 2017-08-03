@@ -30,6 +30,7 @@
         <activity android:name=".MacroActivity"></activity>
         <activity android:name=".TTSActivity"></activity>
         <activity android:name=".STTActivity"></activity>
+        <activity android:name=".arduino.BluetoothPairActivity"></activity>
         <activity android:name=".ModuleActivity" android:theme="@android:style/Theme.DeviceDefault.Dialog"></activity>
         <activity android:name="com.example.junseo.test03.DeviceListActivity" android:theme="@android:style/Theme.DeviceDefault.Dialog"></activity>
     </application>

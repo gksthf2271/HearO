@@ -151,11 +151,13 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
         }
     }
 
-/*    // connection button listener.
+/*
+    // connection button listener.
     public void onPair(View v){
         Intent intent = new Intent(getApplicationContext(), BluetoothPairActivity.class);
         startActivityForResult(intent, 0);
-    }*/
+    }
+*/
 
     // Handles the speeches delivered by EnhancedSpeechRecognizer.
     private SpeechListener speech_listener_ = new SpeechListener() {
