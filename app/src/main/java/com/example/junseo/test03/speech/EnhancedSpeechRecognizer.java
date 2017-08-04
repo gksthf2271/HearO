@@ -14,6 +14,8 @@ import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
 import android.util.Log;
 
+import com.example.junseo.test03.STTActivity;
+
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
@@ -59,7 +61,7 @@ public class EnhancedSpeechRecognizer implements RecognitionListener {
         void onSoundChanged(float rmsdB);
     }
 
-    public EnhancedSpeechRecognizer(Activity parent_activity, Listener listener,
+    public EnhancedSpeechRecognizer(STTActivity parent_activity, Listener listener,
                                     SpeechListener speech_listener) {
         parent_activity_ = parent_activity;
         listener_ = listener;

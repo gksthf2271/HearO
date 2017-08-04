@@ -1,8 +1,13 @@
 package com.example.junseo.test03.arduino;
 
+import android.app.Activity;
+import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.os.Handler;
 import android.util.Log;
 
+import com.example.junseo.test03.BluetoothService;
+import com.example.junseo.test03.STTActivity;
 import com.example.junseo.test03.arduino.PacketParser.Decoder;
 import com.example.junseo.test03.arduino.PacketParser.Encoder;
 /**
@@ -12,8 +17,13 @@ import com.example.junseo.test03.arduino.PacketParser.Encoder;
  */
 public class ArduinoConnector {
     private final String LOG = ArduinoConnector.class.getName();
-    private BluetoothSerial bluetooth_;
+    private BluetoothService bluetooth_;
     private Listener listener_;
+
+    private BluetoothAdapter btAdapter;
+
+
+
 
     /**
      * Notifies the arduino connection status
@@ -29,10 +39,12 @@ public class ArduinoConnector {
     }
 
     public void connect(BluetoothDevice device) {
+
         if (bluetooth_ != null) {
             disconnect();
         }
-        bluetooth_ = new BluetoothSerial();
+        Log.d("한솔","Arduino connect");
+        bluetooth_ = new BluetoothService();
         bluetooth_.askConnect(device, bluetooth_listener_);
     }
 
@@ -54,7 +66,7 @@ public class ArduinoConnector {
         }
     }
 
-    protected  BluetoothSerial.Listener bluetooth_listener_ = new BluetoothSerial.Listener() {
+    protected  BluetoothService.Listener bluetooth_listener_ = new BluetoothService.Listener() {
         private PacketParser parser_ = new PacketParser();
 
         @Override

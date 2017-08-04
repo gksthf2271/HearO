@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.UUID;
 
 import android.app.Activity;
@@ -17,6 +18,8 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
+import com.example.junseo.test03.arduino.BluetoothSerial;
+
 public class BluetoothService {
     // Debugging
     private static final String TAG = "BluetoothService";
@@ -25,12 +28,24 @@ public class BluetoothService {
     private Activity mActivity;
     private Handler mHandler;
 
+    static final int kMsgConnectBluetooth = 1;
+    static final int kMsgReadBluetooth = 2;
+    static final int kMsgDisconnectedBluetooth = 3;
+    private BluetoothSocket socket_;
+    private OutputStream output_stream_ = null;
+
+
+
+
     // Constructors
     public BluetoothService(Activity ac, Handler h) {
         mActivity = ac;
         mHandler = h;
 
         // BluetoothAdapter 얻기
+        btAdapter = BluetoothAdapter.getDefaultAdapter();
+    }
+    public BluetoothService() {
         btAdapter = BluetoothAdapter.getDefaultAdapter();
     }
 
@@ -45,6 +60,10 @@ public class BluetoothService {
 
     private ConnectThread mConnectThread;
     private ConnectedThread mConnectedThread;
+    private ReadThread read_thread_;
+    private BluetoothDevice device_;
+    private ReadHandler read_handler_;
+    private Listener listener_;
 
     private int mState;
 
@@ -233,14 +252,44 @@ public class BluetoothService {
         setState(STATE_NONE);
     }
 
-    // 값을 쓰는 부분(보내는 부분)
-    public void write(byte[] out) { // Create temporary object
-        ConnectedThread r; // Synchronize a copy of the ConnectedThread
-        synchronized (this) {
-            if (mState != STATE_CONNECTED)
-                return;
-            r = mConnectedThread;
-        } // Perform the write unsynchronized r.write(out); }
+    /**
+     *  Write data. Synchronous
+     * @param bytes data to send.
+     */
+    public void Write(byte[] bytes) {
+        if (output_stream_ == null) {
+            return;
+        }
+        try {
+            output_stream_.write(bytes);
+            Log.d("KHS 패킷 -> ", String.valueOf(bytes));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void cancel() {
+        if (mConnectedThread != null) {
+            mConnectedThread.cancel();
+            mConnectedThread = null;
+        }
+
+        if (socket_ != null) {
+            try {
+                socket_.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        if (read_thread_ != null) {
+            try {
+                read_thread_.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            read_thread_ = null;
+        }
     }
 
     // ���� ����������
@@ -253,6 +302,9 @@ public class BluetoothService {
         setState(STATE_LISTEN);
 
     }
+
+
+
 
     private class ConnectThread extends Thread {
         private final BluetoothSocket mmSocket;
@@ -406,5 +458,79 @@ public class BluetoothService {
             }
         }
     }
+    public void askConnect(BluetoothDevice device, Listener listener) {
+        if (mConnectThread != null) {
+            mConnectThread.cancel();
+        }
+        device_ = device;
+        listener_ = listener;
+        read_handler_ = new ReadHandler();
+        mConnectThread = new ConnectThread(device);
+        mConnectThread.start();
+    }
 
+    public interface Listener {
+        void onConnect(BluetoothDevice device);
+        void onRead(BluetoothDevice device, byte[] data, int len);
+        void onDisconnect(BluetoothDevice device);
+    }
+
+    private class ReadThread extends Thread {
+        private final InputStream input_stream_;
+
+        public ReadThread() {
+            InputStream tmpIn = null;
+
+            // Get the input and output streams, using temp objects because
+            // member streams are final
+            try {
+                tmpIn = socket_.getInputStream();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            input_stream_ = tmpIn;
+        }
+
+        public void run() {
+            byte[] buffer = new byte[1024];  // buffer store for the stream
+            int bytes; // bytes returned from read()
+
+            // Keep listening to the InputStream until an exception occurs
+            while (true) {
+                try {
+                    // Read from the InputStream
+                    bytes = input_stream_.read(buffer);
+                    // TODO: To prevent memory allocation each time,
+                    // it may need a byte queue and synchronization.
+                    byte[] fragment = Arrays.copyOf(buffer, bytes);
+
+                    // Send the obtained bytes to the UI activity
+                    read_handler_.obtainMessage(kMsgReadBluetooth, bytes, -1, fragment)
+                            .sendToTarget();
+                } catch (IOException e) {
+                    break;
+                }
+            }
+            // Notify the end of connection.
+            read_handler_.obtainMessage(kMsgDisconnectedBluetooth, 0, 0, 0).sendToTarget();
+        }
+    }
+
+    protected class ReadHandler extends Handler {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case kMsgConnectBluetooth:
+                    listener_.onConnect(device_);
+                    break;
+                case kMsgReadBluetooth:
+                    listener_.onRead(device_, (byte[])msg.obj, msg.arg1);
+                    break;
+                case kMsgDisconnectedBluetooth:
+                    listener_.onDisconnect(device_);
+                    break;
+            }
+        }
+    }
 }
