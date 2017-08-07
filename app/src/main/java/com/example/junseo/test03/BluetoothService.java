@@ -12,15 +12,24 @@ import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.example.junseo.test03.arduino.BluetoothSerial;
 
 public class BluetoothService {
+
+    Context context;
+
+    public BluetoothService(Context context){
+        this.context= context;
+    }
+
     // Debugging
     private static final String TAG = "BluetoothService";
 
@@ -350,12 +359,15 @@ public class BluetoothService {
             // 연결을 시도하기 전에는 항상 기기 검색을 중지한다.
             // 기기 검색이 계속되면 연결속도가 느려지기 때문이다.
             btAdapter.cancelDiscovery();
+            String mText;
+
 
             // BluetoothSocket 연결 시도
             try {
-                // BluetoothSocket 연결 시도에 대한 return 값은 succes 또는 exception이다.
+                // BluetoothSocket 연결 시도에 대한 return 값은 success 또는 exception이다.
                 mmSocket.connect();
                 Log.d(TAG, "Connect Success");
+                Toast.makeText(context, "연결이 완료되었습니다.", Toast.LENGTH_LONG).show();
 
             } catch (IOException e) {
                 connectionFailed(); // 연결 실패시 불러오는 메소드

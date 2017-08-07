@@ -11,6 +11,7 @@ import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class ModuleActivity extends Activity implements OnClickListener {
 
@@ -76,8 +77,10 @@ public class ModuleActivity extends Activity implements OnClickListener {
         if (btService.getDeviceState()) {
             // 블루투스가 지원 가능한 기기일 때
             btService.enableBluetooth();
+            Toast.makeText(this, "블루투스 연결이 가능합니다.", Toast.LENGTH_LONG).show();
         } else {
             finish();
+            Toast.makeText(this, "블루투스 사용이 불가능합니다.", Toast.LENGTH_LONG).show();
         }
     }
 
