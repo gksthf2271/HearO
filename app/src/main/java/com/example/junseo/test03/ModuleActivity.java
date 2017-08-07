@@ -51,6 +51,8 @@ public class ModuleActivity extends Activity implements OnClickListener {
 
         if(btService == null) {
             btService = new BluetoothService(this, mHandler);
+
+            btService.Bluetooth(getApplicationContext());
         }
 
         /** Main Layout **/

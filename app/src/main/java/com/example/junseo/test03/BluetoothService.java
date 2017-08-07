@@ -26,7 +26,7 @@ public class BluetoothService {
 
     Context context;
 
-    public BluetoothService(Context context){
+    public void Bluetooth(Context context){
         this.context= context;
     }
 
