@@ -35,7 +35,7 @@
         android:id="@+id/speakbtn"
         android:layout_width="70dp"
         android:layout_height="70dp"
-
+        android:onClick="onPair"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:background="@drawable/click3" />

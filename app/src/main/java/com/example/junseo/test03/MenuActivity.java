@@ -43,7 +43,7 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
     private Button buttonLogout;
 
     private BluetoothAdapter bluetooth_;
-    private BluetoothService btService = null;
+    private BluetoothPairActivity btService = null;
 
     Vibrator mVibe; //진동
     Button blinking_animation = null; // 화재 애니메이션
@@ -326,7 +326,7 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
         } else if (id == R.id.nav_help) {
             startActivity(new Intent(this,HelpActivity.class)); //도움말
         } else if (id == R.id.nav_module) {
-            startActivity(new Intent(this, ModuleActivity.class)); //모듈 연결/해제
+            startActivity(new Intent(this, BluetoothPairActivity.class)); //모듈 연결/해제
         } else if (id == R.id.nav_alert) {
             startActivity(new Intent(this,AlarmActivity.class)); //알림 설정
         } else if (id == R.id.Logout) {

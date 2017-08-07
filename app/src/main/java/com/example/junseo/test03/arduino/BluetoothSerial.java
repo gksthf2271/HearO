@@ -68,10 +68,10 @@ public class BluetoothSerial {
         return read_thread_.isAlive();
     }
 
-        /**
-         *  Write data. Synchronous
-         * @param bytes data to send.
-         */
+    /**
+     *  Write data. Synchronous
+     * @param bytes data to send.
+     */
     public void Write(byte[] bytes) {
         if (output_stream_ == null) {
             return;

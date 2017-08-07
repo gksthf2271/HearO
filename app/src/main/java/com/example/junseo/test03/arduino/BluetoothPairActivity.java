@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import com.example.junseo.test03.MainActivity;
 import com.example.junseo.test03.R;
+import com.example.junseo.test03.STTActivity;
 
 import java.util.HashMap;
 import java.util.Set;
@@ -43,10 +44,8 @@ public class BluetoothPairActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bluetooth_pair);
-/*
 
         setBackgroundColor();
-*/
 
         listview_devices_ = (ListView) findViewById(R.id.listViewBluetoothDevices);
         device_refresh_ = (Button) findViewById(R.id.buttonBluetoothDeviceRefresh);
@@ -70,7 +69,7 @@ public class BluetoothPairActivity extends Activity {
                     return;
                 }
 
-                Intent result_intent = new Intent(getApplicationContext(), MainActivity.class);
+                Intent result_intent = new Intent(getApplicationContext(), STTActivity.class);
                 result_intent.putExtra("device",device_name_map_.get(name));
                 setResult(RESULT_OK, result_intent);
                 finish();
@@ -81,7 +80,6 @@ public class BluetoothPairActivity extends Activity {
         device_name_map_ = new HashMap<>();
     }
 
-/*
     // Set gradient background color.
     private void setBackgroundColor() {
         View layout = findViewById(R.id.pairActivity);
@@ -91,7 +89,6 @@ public class BluetoothPairActivity extends Activity {
         gd.setCornerRadius(0f);
         layout.setBackground(gd);
     }
-*/
 
     @Override
     public void onResume() {

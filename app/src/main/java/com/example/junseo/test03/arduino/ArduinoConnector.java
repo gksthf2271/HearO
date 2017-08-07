@@ -3,10 +3,10 @@ package com.example.junseo.test03.arduino;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.nfc.Tag;
 import android.os.Handler;
 import android.util.Log;
 
-import com.example.junseo.test03.BluetoothService;
 import com.example.junseo.test03.STTActivity;
 import com.example.junseo.test03.arduino.PacketParser.Decoder;
 import com.example.junseo.test03.arduino.PacketParser.Encoder;
@@ -15,14 +15,16 @@ import com.example.junseo.test03.arduino.PacketParser.Encoder;
  *
  * Responsible for managing packets and implementing the protocol.
  */
+
 public class ArduinoConnector {
     private final String LOG = ArduinoConnector.class.getName();
-    private BluetoothService bluetooth_;
+    private BluetoothSerial bluetooth_;
     private Listener listener_;
 
     private BluetoothAdapter btAdapter;
 
 
+    private static final String TAG = ArduinoConnector.class.getSimpleName();
 
 
     /**
@@ -43,8 +45,8 @@ public class ArduinoConnector {
         if (bluetooth_ != null) {
             disconnect();
         }
-        Log.d("한솔","Arduino connect");
-        bluetooth_ = new BluetoothService();
+        Log.d(TAG,"Arduino connect");
+        bluetooth_ = new BluetoothSerial();
         bluetooth_.askConnect(device, bluetooth_listener_);
     }
 
@@ -66,7 +68,7 @@ public class ArduinoConnector {
         }
     }
 
-    protected  BluetoothService.Listener bluetooth_listener_ = new BluetoothService.Listener() {
+    protected  BluetoothSerial.Listener bluetooth_listener_ = new BluetoothSerial.Listener() {
         private PacketParser parser_ = new PacketParser();
 
         @Override

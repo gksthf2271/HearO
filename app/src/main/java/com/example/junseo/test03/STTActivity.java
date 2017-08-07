@@ -16,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.junseo.test03.arduino.ArduinoConnector;
+import com.example.junseo.test03.arduino.BluetoothPairActivity;
 import com.example.junseo.test03.arduino.PacketParser;
 import com.example.junseo.test03.speech.CommandSpeechFilter;
 import com.example.junseo.test03.speech.EnhancedSpeechRecognizer;
@@ -33,7 +34,7 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
     EditText editstt = null;
     Button speakbtn = null;
 
-    private static final String TAG = MainActivity.class.getSimpleName();
+
     private TextView txt_app_status_;
     private ProgressBar progress_bar_;
     private EnhancedSpeechRecognizer speech_recognizer_;
@@ -42,6 +43,8 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
     // The value for magnifying to display on progress bar.
     private final int kSpeechMagnifyingValue = 100;
     private Button Cancel3;
+
+    private static final String TAG = STTActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,7 +80,8 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
                 break;
 
             case R.id.speakbtn:
-
+        /*        buildSpeechRecognizer();
+                Log.d(TAG,"음성인식 시작");*/
                 break;
         }
 
@@ -148,12 +152,13 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
         if (resultCode == RESULT_OK) {
             BluetoothDevice device = intent.getParcelableExtra("device");
             arduinoConnector_.connect(device);
+            Log.d(TAG,"블루투스 연결 성공");
         }
     }
 
     // connection button listener.
     public void onPair(View v){
-        Intent intent = new Intent(getApplicationContext(), ModuleActivity.class);
+        Intent intent = new Intent(getApplicationContext(), BluetoothPairActivity.class);
         startActivityForResult(intent, 0);
     }
 
@@ -170,6 +175,7 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
 
             try {
                 arduinoConnector_.send(cmd);
+                Log.d(TAG,"안드로이드 -> 아두이노 데이터전달");
             } catch (Exception e) {
                 e.printStackTrace();
                 throw e;
@@ -300,7 +306,8 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
          */
         private AppState getStatus() {
             if (connected_) {
-                return is_listening_ ? AppState.Listening : AppState.Standby;
+                //return is_listening_ ? AppState.Listening : AppState.Standby;
+                return AppState.Listening;
             } else {
                 return  AppState.Disconnected;
             }
