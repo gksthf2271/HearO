@@ -45,7 +45,7 @@ public class BluetoothService {
 
 
 
-
+    //
     // Constructors
     public BluetoothService(Activity ac, Handler h) {
         mActivity = ac;
