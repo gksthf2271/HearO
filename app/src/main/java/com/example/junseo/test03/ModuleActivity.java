@@ -49,9 +49,9 @@ public class ModuleActivity extends Activity implements OnClickListener {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_module);
 
+        //수정 0807
         if(btService == null) {
             btService = new BluetoothService(this, mHandler);
-
             btService.Bluetooth(getApplicationContext());
         }
 
