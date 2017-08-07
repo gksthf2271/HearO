@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.Toast;
 
@@ -12,12 +13,12 @@ import java.util.ArrayList;
 
 
 public class HelpActivity extends ActionBarActivity {
-
+    private Button buttonCancel6;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_help);
-
+        buttonCancel6 = (Button) findViewById(R.id.buttonCancel6);
         ExpandableListView elv = (ExpandableListView) findViewById(R.id.elv);
 
         final ArrayList<Position> position = getData();
@@ -32,6 +33,12 @@ public class HelpActivity extends ActionBarActivity {
             public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
                 Toast.makeText(getApplicationContext(), position.get(groupPosition).players.get(childPosition), Toast.LENGTH_LONG).show();
                 return false;
+            }
+        });
+        buttonCancel6.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
             }
         });
 

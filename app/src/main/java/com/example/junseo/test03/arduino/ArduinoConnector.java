@@ -1,13 +1,9 @@
 package com.example.junseo.test03.arduino;
 
-import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.os.Handler;
 import android.util.Log;
 
-import com.example.junseo.test03.BluetoothService;
-import com.example.junseo.test03.STTActivity;
 import com.example.junseo.test03.arduino.PacketParser.Decoder;
 import com.example.junseo.test03.arduino.PacketParser.Encoder;
 /**

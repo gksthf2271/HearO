@@ -9,12 +9,22 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
-    >
+    android:weightSum="1">
     <ExpandableListView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="373dp"
         android:groupIndicator="@null"
-        android:id="@+id/elv">
+        android:id="@+id/elv"
+        android:layout_weight="1.06">
     </ExpandableListView>
+
+    <Button
+        android:id="@+id/buttonCancel6"
+        android:layout_width="100dp"
+        android:layout_height="41dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_margin="15dp"
+        android:background="#1cb189"
+        android:text="뒤로" />
 
 </LinearLayout>

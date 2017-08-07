@@ -5,15 +5,7 @@
 
     <string name="action_settings">Settings</string>
 
-    <!--  DeviceListActivity -->
-    <string name="scanning">연결 가능한 장치 검색 중...</string>
-    <string name="select_device">연결할 장치를 선택하세요.</string>
-    <string name="none_paired">장치가 연결되어있지 않습니다.</string>
-    <string name="none_found">장치를 찾을 수 없습니다.</string>
-    <string name="title_paired_devices">연결된 장치</string>
-    <string name="title_other_devices">연결할 수 있는 장치</string>
-    <string name="button_scan">장치 찾기</string>
-    <string name="inbutton_scan">뒤로 가기</string>
+
 
     <!-- Options Menu -->
     <string name="secure_connect">Connect a device - Secure</string>
