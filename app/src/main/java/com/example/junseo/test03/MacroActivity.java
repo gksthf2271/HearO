@@ -85,6 +85,9 @@ public class MacroActivity extends AppCompatActivity {
 
                 //리스트 아이템 눌렀을 때 Intent
                 //startActivity(intent);
+
+
+
             }
         });
         //꾹 눌렀을 때 실행하기

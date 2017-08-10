@@ -107,7 +107,7 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
         button1.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
-                Intent ttsIntent = new Intent(MenuActivity.this, TTSActivity.class);
+                Intent ttsIntent = new Intent(MenuActivity.this, StartActivity.class);
                 MenuActivity.this.startActivity(ttsIntent);
             }
         });

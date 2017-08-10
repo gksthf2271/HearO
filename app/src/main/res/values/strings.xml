@@ -13,7 +13,7 @@
     <string name="discoverable">Make discoverable</string>
     <!-- 블루투스 //한솔 -->
 
-    <!-- 위에 내용이랑 중복 둘중하나 제거해야됨-->
+
     <string name="ButtonConnect">Connect</string>
     <string name="txtview_listening">Listening...</string>
     <string name="txtview_standby">Standby...</string>

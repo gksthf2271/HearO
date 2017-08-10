@@ -28,10 +28,11 @@
         <activity android:name=".VersionActivity"></activity>
         <activity android:name=".AlarmActivity"></activity>
         <activity android:name=".MacroActivity"></activity>
-        <activity android:name=".TTSActivity"></activity>
+
         <activity android:name=".STTActivity"></activity>
         <activity android:name=".arduino.BluetoothPairActivity"></activity>
-
+        <activity android:name=".ChatActivity"></activity>
+        <activity android:name=".StartActivity"></activity>
     </application>
 
 </manifest>
