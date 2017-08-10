@@ -29,7 +29,7 @@ public class ChatActivity extends AppCompatActivity {
     private ListView chat_view;
     private EditText chat_edit;
     private Button chat_send;
-
+    Button Cancel10;
     private FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
     private DatabaseReference databaseReference = firebaseDatabase.getReference();
 
@@ -42,7 +42,7 @@ public class ChatActivity extends AppCompatActivity {
         chat_view = (ListView) findViewById(R.id.chat_view);
         chat_edit = (EditText) findViewById(R.id.chat_edit);
         chat_send = (Button) findViewById(R.id.chat_sent);
-
+        Cancel10 = (Button) findViewById(R.id.Cancel10);
         // 로그인 화면에서 받아온 채팅방 이름, 유저 이름 저장
         Intent intent = getIntent();
 
@@ -63,6 +63,12 @@ public class ChatActivity extends AppCompatActivity {
                 databaseReference.child("chat").child(CHAT_NAME).push().setValue(chat); // 데이터 푸쉬
                 chat_edit.setText(""); //입력창 초기화
 
+            }
+        });
+        Cancel10.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
             }
         });
     }
