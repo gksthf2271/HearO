@@ -100,14 +100,29 @@ public class RegistActivity extends AppCompatActivity {
                     etEmail.requestFocus();
                     return;
                 }
-
+                if(!email.contains("@"))
+                {
+                    Toast.makeText(RegistActivity.this, "@가 없네요?", Toast.LENGTH_SHORT).show();
+                    etEmail.requestFocus();
+                    return;
+                }
+                if(!email.contains("."))
+                {
+                    Toast.makeText(RegistActivity.this, "이메일을 제대로 입력해주세요.", Toast.LENGTH_SHORT).show();
+                    etEmail.requestFocus();
+                    return;
+                }
                 // 비밀번호 입력 확인
                 if (password.length() == 0) {
                     Toast.makeText(RegistActivity.this, "비밀번호를 입력하세요!", Toast.LENGTH_SHORT).show();
                     etPassword.requestFocus();
                     return;
                 }
-
+                if (password.length()<6){
+                    Toast.makeText(RegistActivity.this, "비밀번호는 6자 이상!", Toast.LENGTH_SHORT).show();
+                    etPassword.requestFocus();
+                    return;
+                }
                 // 비밀번호 확인 입력 확인
                 if (password.length() == 0) {
                     Toast.makeText(RegistActivity.this, "비밀번호 확인을 입력하세요!", Toast.LENGTH_SHORT).show();
