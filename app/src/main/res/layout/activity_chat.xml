@@ -27,7 +27,8 @@
             <ListView
                 android:id="@+id/chat_view"
                 android:layout_width="match_parent"
-                android:layout_height="363dp"
+                android:layout_height="match_parent"
+                android:transcriptMode="alwaysScroll"
                 android:layout_gravity="bottom"/>
         </LinearLayout>
 

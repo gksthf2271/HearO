@@ -5,7 +5,9 @@ package com.example.junseo.test03;
  */
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.speech.tts.TextToSpeech;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -19,9 +21,13 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import java.util.HashMap;
+import java.util.Locale;
+import android.annotation.TargetApi;
+import android.widget.Toast;
 
 public class ChatActivity extends AppCompatActivity {
-
+    TextToSpeech tts;
 
     private String CHAT_NAME;
     private String USER_NAME;
@@ -38,6 +44,16 @@ public class ChatActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
 
+
+
+        tts=new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+                if(status != TextToSpeech.ERROR) {
+                    tts.setLanguage(Locale.KOREAN);
+                }
+            }
+        });
         // 위젯 ID 참조
         chat_view = (ListView) findViewById(R.id.chat_view);
         chat_edit = (EditText) findViewById(R.id.chat_edit);
@@ -56,12 +72,21 @@ public class ChatActivity extends AppCompatActivity {
         chat_send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                int position = chat_view.getFirstVisiblePosition();
                 if (chat_edit.getText().toString().equals(""))
                     return;
-
+                String text = chat_edit.getText().toString();
+                Toast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT).show();
+                //http://stackoverflow.com/a/29777304
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    ttsGreater21(text);
+                } else {
+                    ttsUnder20(text);
+                }
                 ChatDTO chat = new ChatDTO(USER_NAME, chat_edit.getText().toString()); //ChatDTO를 이용하여 데이터를 묶는다.
                 databaseReference.child("chat").child(CHAT_NAME).push().setValue(chat); // 데이터 푸쉬
                 chat_edit.setText(""); //입력창 초기화
+                chat_view.smoothScrollToPosition(position);
 
             }
         });
@@ -73,6 +98,27 @@ public class ChatActivity extends AppCompatActivity {
         });
     }
 
+    @SuppressWarnings("deprecation")
+    private void ttsUnder20(String text) {
+        HashMap<String, String> map = new HashMap<>();
+        map.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "MessageId");
+        tts.speak(text, TextToSpeech.QUEUE_FLUSH, map);
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    private void ttsGreater21(String text) {
+        String utteranceId=this.hashCode() + "";
+        tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, utteranceId);
+    }
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        if(tts !=null){
+            tts.stop();
+            tts.shutdown();
+        }
+    }
     private void addMessage(DataSnapshot dataSnapshot, ArrayAdapter<String> adapter) {
         ChatDTO chatDTO = dataSnapshot.getValue(ChatDTO.class);
         adapter.add(chatDTO.getUserName() + " : " + chatDTO.getMessage());
