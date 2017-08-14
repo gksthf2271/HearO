@@ -68,6 +68,7 @@ public class ArduinoConnector {
         }
     }
 
+
     protected  BluetoothSerial.Listener bluetooth_listener_ = new BluetoothSerial.Listener() {
         private PacketParser parser_ = new PacketParser();
 
@@ -92,11 +93,13 @@ public class ArduinoConnector {
                 Packet<String> packet = Decoder.decodeString(raw_packet);
                 if (packet.type == PacketParser.Type.Error) {
                     Log.w(LOG, packet.toString());
+                    Log.d("HSArduinoConnector ", packet.toString());
                     return;
                 }
 
                 listener_.onReaction(packet.type, packet.data);
             }
+
         }
 
         @Override

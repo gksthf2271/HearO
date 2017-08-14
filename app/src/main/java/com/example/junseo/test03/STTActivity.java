@@ -306,8 +306,8 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
          */
         private AppState getStatus() {
             if (connected_) {
-                //return is_listening_ ? AppState.Listening : AppState.Standby;
-                return AppState.Listening;
+                return is_listening_ ? AppState.Listening : AppState.Standby;
+                /*return AppState.Listening;*/
             } else {
                 return  AppState.Disconnected;
             }

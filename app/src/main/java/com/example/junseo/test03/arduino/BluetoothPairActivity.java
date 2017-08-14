@@ -40,6 +40,7 @@ public class BluetoothPairActivity extends Activity {
     private ArrayAdapter listview_adapter_;
     private HashMap<String, BluetoothDevice> device_name_map_;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,6 +56,7 @@ public class BluetoothPairActivity extends Activity {
                 UpdateDeviceListView();
             }
         });
+
         bluetooth_ = BluetoothAdapter.getDefaultAdapter();
 
         listview_adapter_ = new ArrayAdapter(this,android.R.layout.simple_list_item_1);

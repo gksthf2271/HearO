@@ -4,10 +4,14 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
-    android:onClick="onPair"
     tools:context="com.example.junseo.test03.arduino.BluetoothPairActivity"
     android:id="@+id/pairActivity">
-
+<RelativeLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:id="@+id/Rlay01"
+    android:layout_below="@+id/Rlay02"
+    >
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -17,7 +21,8 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+        />
 
     <ListView
         android:layout_width="wrap_content"
@@ -27,18 +32,36 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:choiceMode="singleChoice"
-        android:layout_above="@+id/buttonBluetoothDeviceRefresh" />
+        />
+</RelativeLayout>
 
-    <Button
-        android:textColor="#FFFFFF"
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/button_bluetooth_device_refresh"
-        android:id="@+id/buttonBluetoothDeviceRefresh"
-        android:background="@drawable/button"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_below="@+id/listViewBluetoothDevices"
+        android:id="@+id/Rlay02"
+        >
+
+
+        <Button
+            android:id="@+id/buttonBluetoothDeviceRefresh"
+            android:layout_width="150dp"
+            android:layout_height="60dp"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/button"
+            android:text="@string/button_bluetooth_device_refresh"
+            android:textColor="#FFFFFF" />
+
+        <Button
+            android:id="@+id/buttonBluetoothOtherDevice"
+            android:textColor="#FFFFFF"
+            android:layout_width="150dp"
+            android:layout_height="60dp"
+            android:text="@string/button_bluetooth_device_other"
+            android:background="@drawable/button"
+
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
+    </RelativeLayout>
 </RelativeLayout>
