@@ -20,6 +20,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.example.junseo.test03.MainActivity;
+import com.example.junseo.test03.MenuActivity;
 import com.example.junseo.test03.R;
 import com.example.junseo.test03.STTActivity;
 
@@ -194,4 +195,12 @@ public class BluetoothPairActivity extends Activity {
         }
         return str;
     }
+/*    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+            intent = new Intent(getApplicationContext(), MenuActivity.class);
+            intent.putExtra("resultCode",resultCode);
+            intent.putExtra("requestCode",requestCode);
+            startActivity(intent);
+        }*/
 }
+

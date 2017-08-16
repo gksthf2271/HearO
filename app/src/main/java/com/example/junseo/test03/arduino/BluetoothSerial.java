@@ -38,8 +38,8 @@ public class BluetoothSerial {
     private final BluetoothAdapter bluetooth_;
     private ConnectThread connect_thread_;
     ///08.09 수정
-    private AcceptThread accept_thread_;
-    private String name = "OHOHME";
+    //private AcceptThread accept_thread_;
+    //private String name = "OHOHME";
     ///
     private ReadThread read_thread_;
     private Listener listener_;
@@ -69,9 +69,9 @@ public class BluetoothSerial {
         if (connect_thread_ != null) {
             connect_thread_.cancel();
         }
-        if (accept_thread_ != null){
+/*        if (accept_thread_ != null){
             accept_thread_.cancel();
-        }
+        }*/
 
         device_ = device;
         listener_ = listener;
@@ -106,7 +106,7 @@ public class BluetoothSerial {
     //08.09 블루투스 수정
 
 
-    private class AcceptThread extends Thread {
+   /* private class AcceptThread extends Thread {
         public AcceptThread(BluetoothDevice device) {
             BluetoothServerSocket tmp = null;
             // The uuid that I want to connect to.
@@ -171,7 +171,7 @@ public class BluetoothSerial {
             accept_thread_ = null;
         }
 
-        /** Will cancel an in-progress connection, and close the socket */
+        *//** Will cancel an in-progress connection, and close the socket *//*
         public void cancel() {
             try {
                 socket_.close();
@@ -179,7 +179,7 @@ public class BluetoothSerial {
                 e.printStackTrace();
             }
         }
-    }
+    }*/
     ///////////////////////////////////////////////////
     /**
      *  Write data. Synchronous
@@ -263,6 +263,9 @@ public class BluetoothSerial {
             }
 
             Log.d(TAG, "Connected");
+
+
+            
 
             Message msg = read_handler_.obtainMessage(kMsgConnectBluetooth);
             read_handler_.sendMessage(msg);

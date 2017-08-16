@@ -33,6 +33,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ProgressDialog progressDialog;
     private Button btnLogin;
     private TextView forgotpasswordtv;
+    private BluetoothAdapter bluetooth_;
 
 
     TextView textviewMessage;
@@ -41,7 +42,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
 
 
         setTheme(android.R.style.Theme_DeviceDefault_NoActionBar_Fullscreen);
@@ -54,6 +54,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //액션바 설정하기// 타이틀 변경하기
         //getSupportActionBar().setTitle("HearO");
 
+        //블루투스
+        bluetooth_ = BluetoothAdapter.getDefaultAdapter();
+        if (!bluetooth_.isEnabled()) {
+            Toast.makeText(getApplicationContext(), "bluetooth is not enabled",
+                    Toast.LENGTH_LONG).show();
+            Intent enableintent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivityForResult(enableintent, 0);
+
+            Intent intent = new Intent(getApplicationContext(), BluetoothPairActivity.class);
+            startActivityForResult(intent, 0);
+        }
 
         progressDialog = new ProgressDialog(this);
         textviewMessage = (TextView) findViewById(R.id.textviewMessage);
@@ -147,6 +158,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             userLogin();
         }
     }
+
 }
 
 

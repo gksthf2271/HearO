@@ -41,16 +41,16 @@
         android:background="@drawable/click3" />
 
     <ProgressBar
-        style="?android:attr/progressBarStyleHorizontal"
+        android:id="@+id/progressBarSpeech"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/progressBarSpeech"
-        android:indeterminate="false"
-        android:progressDrawable="@drawable/progressbar"
-        android:minWidth="200dp"
         android:layout_above="@+id/speakbtn"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="29dp" />
+        android:layout_marginBottom="29dp"
+        android:indeterminate="false"
+        android:minWidth="200dp"
+        android:progressDrawable="@drawable/progressbar" />
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

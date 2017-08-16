@@ -116,6 +116,8 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
     protected void onResume() {
         Log.d(TAG, "onResume");
         super.onResume();
+        speech_recognizer_.destroy();
+        speech_recognizer_.start();
     }
 
     @Override
@@ -153,6 +155,10 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
             BluetoothDevice device = intent.getParcelableExtra("device");
             arduinoConnector_.connect(device);
             Log.d(TAG,"블루투스 연결 성공");
+/*            intent = new Intent(getApplicationContext(), MenuActivity.class);
+            intent.putExtra("resultCode",resultCode);
+            intent.putExtra("requestCode",requestCode);
+            startActivity(intent);*/
         }
     }
 
@@ -237,6 +243,7 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
                 // There is a limitation that Android doesn't offer continuous speech recognition.
                 // So only when is activity detected, speech recognition starts.
                 speech_recognizer_.start();
+
             }
         }
 
@@ -306,6 +313,7 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
          */
         private AppState getStatus() {
             if (connected_) {
+
                 return is_listening_ ? AppState.Listening : AppState.Standby;
                 /*return AppState.Listening;*/
             } else {
