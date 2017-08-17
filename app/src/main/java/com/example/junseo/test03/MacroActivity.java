@@ -3,14 +3,17 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -21,8 +24,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MacroActivity extends AppCompatActivity {
-
-
+    private FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+    private DatabaseReference databaseReference = firebaseDatabase.getReference();
     EditText editTextName;
   //  Spinner spinnerGenre;
     Button buttonAddArtist;
@@ -76,11 +79,14 @@ public class MacroActivity extends AppCompatActivity {
         listViewArtists.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                String vo = (String)adapterView.getAdapter().getItem(i);  //리스트뷰의 포지션 내용을 가져옴.
-                macrotext.setText(vo);
+                macro artist = artists.get(i);
+               // String vo = (String)adapterView.getAdapter().getItem(i);  //리스트뷰의 포지션 내용을 가져옴.
+               // macrotext.setText(vo);
+                showList(artist.getArtistName());
 
             }
         });
+
 
 
         //꾹 눌렀을 때 실행하기
@@ -92,6 +98,10 @@ public class MacroActivity extends AppCompatActivity {
                 return true;
             }//fff
         });
+    }
+
+    private void showList (final String artistName){
+        macrotext.setText(artistName);
     }
     // 수정 혹은 삭제
     private void showUpdateDeleteDialog(final String artistId, String artistName) {
