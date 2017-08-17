@@ -26,10 +26,11 @@ public class MacroActivity extends AppCompatActivity {
     EditText editTextName;
   //  Spinner spinnerGenre;
     Button buttonAddArtist;
-    ListView listViewArtists;
+    private ListView listViewArtists;
     Button Cancel5;
     //a list to store all the artist from firebase database
     List<macro> artists;
+    EditText macrotext;
 
     //our database reference object
     DatabaseReference databaseArtists;
@@ -39,6 +40,8 @@ public class MacroActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_macro);
         Cancel5 = (Button) findViewById(R.id.Cancel5);
+        macrotext = (EditText) findViewById(R.id.macrotext);
+        macrotext.setInputType(0); // 클릭시 키보드 등장 막기.
         //getting the reference of artists node
         databaseArtists = FirebaseDatabase.getInstance().getReference("artists");
 
@@ -73,23 +76,13 @@ public class MacroActivity extends AppCompatActivity {
         listViewArtists.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                //getting the selected artist
-                macro artist = artists.get(i);
-
-                //creating an intent
-             //   Intent intent = new Intent(getApplicationContext(), Activity.class);
-
-                //putting artist name and id to intent
-              //  intent.putExtra(ARTIST_ID, artist.getArtistId());
-              //  intent.putExtra(ARTIST_NAME, artist.getArtistName());
-
-                //리스트 아이템 눌렀을 때 Intent
-                //startActivity(intent);
-
-
+                String vo = (String)adapterView.getAdapter().getItem(i);  //리스트뷰의 포지션 내용을 가져옴.
+                macrotext.setText(vo);
 
             }
         });
+
+
         //꾹 눌렀을 때 실행하기
         listViewArtists.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override

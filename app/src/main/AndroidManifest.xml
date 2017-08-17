@@ -29,7 +29,7 @@
         <activity android:name=".HelpActivity"></activity>
         <activity android:name=".VersionActivity"></activity>
         <activity android:name=".AlarmActivity"></activity>
-        <activity android:name=".MacroActivity"></activity>
+        <activity android:name=".MacroActivity" android:windowSoftInputMode="stateAlwaysHidden"></activity>
 
         <activity android:name=".STTActivity"></activity>
         <activity android:name=".arduino.BluetoothPairActivity"></activity>

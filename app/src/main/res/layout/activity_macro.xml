@@ -46,7 +46,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#7CFC00"
-        android:layout_below="@+id/textView1"></ListView>
+        android:layout_below="@+id/textView1"
+        android:layout_above="@+id/linearLayout"></ListView>
     <Button
         android:id="@+id/Cancel5"
         android:layout_width="100dp"
@@ -60,4 +61,29 @@
         android:layout_alignBottom="@+id/textView"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="bottom"
+        android:id="@+id/linearLayout"
+
+        android:weightSum="1">
+        <EditText
+            android:id="@+id/macrotext"
+            android:layout_width="225dp"
+            android:layout_height="wrap_content"
+            android:hint="상용구"
+            android:layout_weight="0.99" />
+
+        <Button
+            android:id="@+id/button_macrosend"
+            android:layout_width="59dp"
+            android:layout_height="50dp"
+
+            android:text="전송" />
+
+    </LinearLayout>
+
 </RelativeLayout>
