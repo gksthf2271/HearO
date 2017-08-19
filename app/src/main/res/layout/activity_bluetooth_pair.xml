@@ -1,67 +1,105 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
+    android:orientation="vertical"
     tools:context="com.example.junseo.test03.arduino.BluetoothPairActivity"
     android:id="@+id/pairActivity">
-<RelativeLayout
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:id="@+id/Rlay01"
-    android:layout_below="@+id/Rlay02"
-    >
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/bluetooth_acticity_title"
-        android:id="@+id/textBluetoothActivityTitle"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        />
-
-    <ListView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/listViewBluetoothDevices"
-        android:layout_below="@+id/textBluetoothActivityTitle"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:choiceMode="singleChoice"
-        />
-</RelativeLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/listViewBluetoothDevices"
-        android:id="@+id/Rlay02"
+        android:id="@+id/Rlay01"
         >
 
 
         <Button
             android:id="@+id/buttonBluetoothDeviceRefresh"
-            android:layout_width="150dp"
+            android:layout_width="100dp"
             android:layout_height="60dp"
             android:layout_marginRight="10dp"
+            android:paddingRight="20dp"
+            android:paddingLeft="20dp"
+            android:paddingBottom="5dp"
             android:background="@drawable/button"
             android:text="@string/button_bluetooth_device_refresh"
             android:textColor="#FFFFFF" />
 
         <Button
-            android:id="@+id/buttonBluetoothOtherDevice"
+            android:id="@+id/buttonBluetoothStop"
             android:textColor="#FFFFFF"
-            android:layout_width="150dp"
+            android:layout_width="100dp"
             android:layout_height="60dp"
-            android:text="@string/button_bluetooth_device_other"
+            android:layout_marginRight="10dp"
+            android:paddingRight="20dp"
+            android:paddingLeft="20dp"
+            android:paddingBottom="5dp"
+            android:text="@string/button_bluetooth_device_stop"
             android:background="@drawable/button"
 
             android:layout_alignParentTop="true"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true" />
     </RelativeLayout>
-</RelativeLayout>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="120dp"
+        android:id="@+id/Rlay02"
+        android:layout_below="@+id/Rlay01"
+        android:orientation="vertical"
+        >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/bluetooth_acticity_title2"
+            android:id="@+id/textBluetoothActivityTitle2"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            />
+
+        <ListView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/listViewBluetoothDevices2"
+            android:layout_below="@+id/textBluetoothActivityTitle"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:choiceMode="singleChoice"
+            />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:id="@+id/Rlay03"
+        android:orientation="vertical"
+        android:layout_below="@+id/Rlay01"
+        >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/bluetooth_acticity_title"
+            android:id="@+id/textBluetoothActivityTitle"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            />
+
+        <ListView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/listViewBluetoothDevices"
+            android:layout_below="@+id/textBluetoothActivityTitle"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:choiceMode="singleChoice"
+            />
+        </LinearLayout>
+</LinearLayout>

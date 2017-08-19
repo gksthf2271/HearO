@@ -39,7 +39,7 @@ public class BluetoothSerial {
     private ConnectThread connect_thread_;
     ///08.09 수정
     //private AcceptThread accept_thread_;
-    //private String name = "OHOHME";
+    private String name = "OHOHME";
     ///
     private ReadThread read_thread_;
     private Listener listener_;
@@ -240,6 +240,7 @@ public class BluetoothSerial {
                 e.printStackTrace();
             }
             socket_ = tmp;
+
         }
 
         public void run() {
@@ -265,7 +266,7 @@ public class BluetoothSerial {
             Log.d(TAG, "Connected");
 
 
-            
+
 
             Message msg = read_handler_.obtainMessage(kMsgConnectBluetooth);
             read_handler_.sendMessage(msg);

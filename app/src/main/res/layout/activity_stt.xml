@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:screenOrientation = "nosensor"
-    android:layout_height="match_parent">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginBottom="25dip">
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
 
     <EditText
         android:id="@+id/editstt"
@@ -78,3 +83,26 @@
         android:layout_alignParentEnd="true"
         android:layout_marginTop="13dp" />
 </RelativeLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="26dip"
+        android:layout_gravity="bottom"
+        android:orientation="horizontal"
+        android:id="@+id/bl_monitoring"
+        style="@style/AppTheme.ConnectionInfoContainer" >
+
+        <ImageView
+            android:id="@+id/status_title"
+            android:layout_width="wrap_content"
+            android:layout_height="20dip"
+            android:layout_margin="3dip"
+            />
+        <TextView
+            android:id="@+id/status_text"
+            android:layout_width="match_parent"
+            android:layout_height="20dip"
+            android:layout_margin="3dip"
+            android:text="블루투스 미연결"
+            style="@style/AppTheme.ConnectionInfoText" />
+    </RelativeLayout>
+</LinearLayout>

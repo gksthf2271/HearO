@@ -32,7 +32,9 @@
         <activity android:name=".MacroActivity" android:windowSoftInputMode="stateAlwaysHidden"></activity>
 
         <activity android:name=".STTActivity"></activity>
-        <activity android:name=".arduino.BluetoothPairActivity"></activity>
+        <activity
+            android:name=".arduino.BluetoothPairActivity"
+            android:theme="@android:style/Theme.Dialog" />
         <activity android:name=".ChatActivity"></activity>
         <activity android:name=".StartActivity"></activity>
     </application>

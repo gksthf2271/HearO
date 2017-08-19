@@ -1,7 +1,12 @@
 package com.example.junseo.test03;
 
+import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothSocket;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -11,7 +16,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,7 +41,9 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
     EditText editstt = null;
     Button speakbtn = null;
 
+    private boolean flag = false;
 
+    private BluetoothAdapter bluetooth_;
     private TextView txt_app_status_;
     private ProgressBar progress_bar_;
     private EnhancedSpeechRecognizer speech_recognizer_;
@@ -43,6 +52,14 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
     // The value for magnifying to display on progress bar.
     private final int kSpeechMagnifyingValue = 100;
     private Button Cancel3;
+
+    //블루투스 상태
+    private TextView txtState;
+    private ImageView mImageBT;
+    private RelativeLayout BlMonitoring;
+
+
+    private BluetoothSocket socket_;
 
     private static final String TAG = STTActivity.class.getSimpleName();
 
@@ -55,10 +72,27 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
         editstt = (EditText) findViewById(R.id.editstt);
         speakbtn = (Button) findViewById(R.id.speakbtn);
 
+        //블루투스 setup view
+        txtState = (TextView)findViewById(R.id.status_text);
+        mImageBT = (ImageView) findViewById(R.id.status_title);
+        mImageBT.setImageDrawable(getResources().getDrawable(android.R.drawable.presence_invisible));
+        BlMonitoring = (RelativeLayout)findViewById(R.id.bl_monitoring);
+
+
+
         progress_bar_ = (ProgressBar)findViewById(R.id.progressBarSpeech);
         progress_bar_.setMax(normalizeSpeechValue(EnhancedSpeechRecognizer.kSpeechMaxValue));   //
         txt_app_status_ = (TextView) findViewById(R.id.textViewSpeachResult);
         updateStatusUIText(app_status_manager_.getStatus());
+
+
+
+
+        //블루투스 브로드캐스트 리시버
+        IntentFilter stateFilter = new IntentFilter();
+        stateFilter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED); //BluetoothAdapter.ACTION_STATE_CHANGED : 블루투스 상태변화 액션
+        registerReceiver(mBluetoothStateReceiver, stateFilter);
+
 
         speech_recognizer_ = buildSpeechRecognizer();       // 여기까지 화면구성
         arduinoConnector_ = new ArduinoConnector(arduino_listener_);    //아두이노 리스너 객체 생성
@@ -80,8 +114,10 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
                 break;
 
             case R.id.speakbtn:
-        /*        buildSpeechRecognizer();
-                Log.d(TAG,"음성인식 시작");*/
+                if(flag == true)
+                {
+                    speech_recognizer_.start();
+                }
                 break;
         }
 
@@ -108,6 +144,7 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        unregisterReceiver(mBluetoothStateReceiver);
         arduinoConnector_.destroy();
         speech_recognizer_.destroy();
     }
@@ -116,8 +153,8 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
     protected void onResume() {
         Log.d(TAG, "onResume");
         super.onResume();
-        speech_recognizer_.destroy();
-        speech_recognizer_.start();
+        //speech_recognizer_.destroy();
+        //speech_recognizer_.start();
     }
 
     @Override
@@ -166,6 +203,7 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
     public void onPair(View v){
         Intent intent = new Intent(getApplicationContext(), BluetoothPairActivity.class);
         startActivityForResult(intent, 0);
+        flag =true;
     }
 
     // Handles the speeches delivered by EnhancedSpeechRecognizer.
@@ -264,6 +302,7 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
                 break;
             case Standby:
                 txt_app_status_.setText(getResources().getString(R.string.txtview_standby));
+                //다이얼로그 띄우고 계속 음성인식을 하시겠습니까? yes면 stats = Listening 구현
                 break;
             case Listening:
                 txt_app_status_.setText(
@@ -321,5 +360,41 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
             }
         }
     }
+    //블루투스 상태변화 BroadcastReceiver
+    BroadcastReceiver mBluetoothStateReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            //BluetoothAdapter.EXTRA_STATE : 블루투스의 현재상태 변화
+            int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, -1);
+
+            //블루투스 활성화
+            if(state == BluetoothAdapter.STATE_ON){
+                txtState.setText("블루투스 활성화");
+                mImageBT.setImageDrawable(getResources().getDrawable(android.R.drawable.presence_online));
+            }
+            //블루투스 활성화 중
+            else if(state == BluetoothAdapter.STATE_TURNING_ON){
+                txtState.setText("블루투스 활성화 중...");
+                mImageBT.setImageDrawable(getResources().getDrawable(android.R.drawable.presence_away));
+            }
+            //블루투스 비활성화
+            else if(state == BluetoothAdapter.STATE_OFF){
+                txtState.setText("블루투스 비활성화");
+                mImageBT.setImageDrawable(getResources().getDrawable(android.R.drawable.presence_busy));
+            }
+            //블루투스 비활성화 중
+            else if(state == BluetoothAdapter.STATE_TURNING_OFF){
+                txtState.setText("블루투스 비활성화 중...");
+                mImageBT.setImageDrawable(getResources().getDrawable(android.R.drawable.presence_busy));
+            }
+            else
+                mImageBT.setImageDrawable(getResources().getDrawable(android.R.drawable.presence_invisible));
+
+        }
+    };
+
+
+
+
 
 }

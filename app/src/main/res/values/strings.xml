@@ -19,7 +19,9 @@
     <string name="txtview_standby">Standby...</string>
     <string name="txtview_disconnected">Disconnected</string>
     <string name="title_activity_bluetooth_pair">BluetoothPair</string>
-    <string name="bluetooth_acticity_title">Device List</string>
-    <string name="button_bluetooth_device_refresh">Refresh Devices</string>
-    <string name="button_bluetooth_device_other">Other Devices</string>
+    <string name="bluetooth_acticity_title">새로운 블루투스</string>
+    <string name="bluetooth_acticity_title2">등록된 블루투스</string>
+    <string name="button_bluetooth_device_refresh">새로고침</string>
+    <string name="button_bluetooth_device_search">검색</string>
+    <string name="button_bluetooth_device_stop">정지</string>
 </resources>
