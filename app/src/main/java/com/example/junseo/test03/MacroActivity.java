@@ -1,4 +1,7 @@
 package com.example.junseo.test03;
+import android.annotation.TargetApi;
+import android.os.Build;
+import android.speech.tts.TextToSpeech;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -7,11 +10,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -19,11 +24,17 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 public class MacroActivity extends AppCompatActivity {
 
 
+
+    Button button1;
+    private FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+    private DatabaseReference databaseReference = firebaseDatabase.getReference();
     EditText editTextName;
   //  Spinner spinnerGenre;
     Button buttonAddArtist;
@@ -31,7 +42,10 @@ public class MacroActivity extends AppCompatActivity {
     Button Cancel5;
     //a list to store all the artist from firebase database
     List<macro> artists;
+
+    TextToSpeech tts;
     EditText macrotext;
+    Button button_macro;
 
     //our database reference object
     DatabaseReference databaseArtists;
@@ -45,7 +59,15 @@ public class MacroActivity extends AppCompatActivity {
         macrotext.setInputType(0); // 클릭시 키보드 등장 막기.
         //getting the reference of artists node
         databaseArtists = FirebaseDatabase.getInstance().getReference("artists");
-
+        button_macro = (Button) findViewById(R.id.button_macrosend);
+        tts=new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+                if(status != TextToSpeech.ERROR) {
+                    tts.setLanguage(Locale.KOREAN);
+                }
+            }
+        });
         //getting views
         editTextName = (EditText) findViewById(R.id.editTextName);
 
@@ -55,7 +77,22 @@ public class MacroActivity extends AppCompatActivity {
         //list to store artists
         artists = new ArrayList<>();
 
+        button_macro.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String text = macrotext.getText().toString();
+                Toast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT).show();
 
+
+                //http://stackoverflow.com/a/29777304
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    ttsGreater21(text);
+                } else {
+                    ttsUnder20(text);
+                }
+
+            }
+        });
         //adding an onclicklistener to button
         buttonAddArtist.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -73,10 +110,9 @@ public class MacroActivity extends AppCompatActivity {
             }
         });
 
-
-
         //리스트 뷰 아이템 접근 (여기서 모듈 전송)
         listViewArtists.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
             private void showList (final String artistName){
                 macrotext.setText(artistName);
             }
@@ -98,6 +134,27 @@ public class MacroActivity extends AppCompatActivity {
                 return true;
             }//fff
         });
+    }
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        if(tts !=null){
+            tts.stop();
+            tts.shutdown();
+        }
+    }
+    @SuppressWarnings("deprecation")
+    private void ttsUnder20(String text) {
+        HashMap<String, String> map = new HashMap<>();
+        map.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "MessageId");
+        tts.speak(text, TextToSpeech.QUEUE_FLUSH, map);
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    private void ttsGreater21(String text) {
+        String utteranceId=this.hashCode() + "";
+        tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, utteranceId);
     }
     // 수정 혹은 삭제
     private void showUpdateDeleteDialog(final String artistId, String artistName) {
