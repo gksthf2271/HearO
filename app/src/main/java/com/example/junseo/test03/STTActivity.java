@@ -24,12 +24,14 @@ import android.widget.Toast;
 
 import com.example.junseo.test03.arduino.ArduinoConnector;
 import com.example.junseo.test03.arduino.BluetoothPairActivity;
+import com.example.junseo.test03.arduino.BluetoothSerial;
 import com.example.junseo.test03.arduino.PacketParser;
 import com.example.junseo.test03.speech.CommandSpeechFilter;
 import com.example.junseo.test03.speech.EnhancedSpeechRecognizer;
 import com.example.junseo.test03.speech.SignalSpeechFilter;
 import com.example.junseo.test03.speech.SpeechListener;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -43,8 +45,9 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
 
     private boolean flag = false;
 
+
     private BluetoothAdapter bluetooth_;
-    private TextView txt_app_status_;
+    private static TextView txt_app_status_;
     private ProgressBar progress_bar_;
     private EnhancedSpeechRecognizer speech_recognizer_;
     private ArduinoConnector arduinoConnector_;
@@ -53,13 +56,14 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
     private final int kSpeechMagnifyingValue = 100;
     private Button Cancel3;
 
+
+
     //블루투스 상태
     private TextView txtState;
     private ImageView mImageBT;
     private RelativeLayout BlMonitoring;
 
 
-    private BluetoothSocket socket_;
 
     private static final String TAG = STTActivity.class.getSimpleName();
 
@@ -114,10 +118,7 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
                 break;
 
             case R.id.speakbtn:
-                if(flag == true)
-                {
-                    speech_recognizer_.start();
-                }
+
                 break;
         }
 
@@ -153,8 +154,14 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
     protected void onResume() {
         Log.d(TAG, "onResume");
         super.onResume();
-        //speech_recognizer_.destroy();
-        //speech_recognizer_.start();
+
+
+
+        if(flag == true) {
+            speech_recognizer_.destroy();
+            speech_recognizer_.start();
+            flag = false;
+        }
     }
 
     @Override
@@ -192,10 +199,11 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
             BluetoothDevice device = intent.getParcelableExtra("device");
             arduinoConnector_.connect(device);
             Log.d(TAG,"블루투스 연결 성공");
-/*            intent = new Intent(getApplicationContext(), MenuActivity.class);
-            intent.putExtra("resultCode",resultCode);
-            intent.putExtra("requestCode",requestCode);
-            startActivity(intent);*/
+
+            Intent result_intent = new Intent(getApplicationContext(), MenuActivity.class);
+            result_intent.putExtra("device",device);
+            setResult(RESULT_OK, result_intent);
+
         }
     }
 
@@ -203,7 +211,6 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
     public void onPair(View v){
         Intent intent = new Intent(getApplicationContext(), BluetoothPairActivity.class);
         startActivityForResult(intent, 0);
-        flag =true;
     }
 
     // Handles the speeches delivered by EnhancedSpeechRecognizer.
@@ -270,7 +277,6 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
             app_status_manager_.updateConnectionStatus(true);
             updateStatusUIText(app_status_manager_.getStatus());
             Toast.makeText(getApplicationContext(), "Connected", Toast.LENGTH_SHORT).show();
-
             // Starting recognition right after connection made.
             speech_recognizer_.start();
         }
@@ -322,7 +328,7 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
      * Manage current app status.
      * Evaluate application status using input status.
      */
-    private class AppStateManager {
+    static class AppStateManager {
         private boolean connected_ = false;
         private boolean is_listening_ = false;
 
@@ -350,7 +356,7 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
          * Evaluate the current AppStatus.
          * @return Current AppStatus.
          */
-        private AppState getStatus() {
+        AppState getStatus() {
             if (connected_) {
 
                 return is_listening_ ? AppState.Listening : AppState.Standby;
@@ -365,25 +371,25 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
         @Override
         public void onReceive(Context context, Intent intent) {
             //BluetoothAdapter.EXTRA_STATE : 블루투스의 현재상태 변화
-            int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, -1);
+            int ble_state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, -1);
 
             //블루투스 활성화
-            if(state == BluetoothAdapter.STATE_ON){
+            if(ble_state == BluetoothAdapter.STATE_ON){
                 txtState.setText("블루투스 활성화");
                 mImageBT.setImageDrawable(getResources().getDrawable(android.R.drawable.presence_online));
             }
             //블루투스 활성화 중
-            else if(state == BluetoothAdapter.STATE_TURNING_ON){
+            else if(ble_state == BluetoothAdapter.STATE_TURNING_ON){
                 txtState.setText("블루투스 활성화 중...");
                 mImageBT.setImageDrawable(getResources().getDrawable(android.R.drawable.presence_away));
             }
             //블루투스 비활성화
-            else if(state == BluetoothAdapter.STATE_OFF){
+            else if(ble_state == BluetoothAdapter.STATE_OFF){
                 txtState.setText("블루투스 비활성화");
                 mImageBT.setImageDrawable(getResources().getDrawable(android.R.drawable.presence_busy));
             }
             //블루투스 비활성화 중
-            else if(state == BluetoothAdapter.STATE_TURNING_OFF){
+            else if(ble_state == BluetoothAdapter.STATE_TURNING_OFF){
                 txtState.setText("블루투스 비활성화 중...");
                 mImageBT.setImageDrawable(getResources().getDrawable(android.R.drawable.presence_busy));
             }

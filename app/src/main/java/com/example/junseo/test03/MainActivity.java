@@ -3,20 +3,25 @@ package com.example.junseo.test03;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.graphics.drawable.ColorDrawable;
+import android.nfc.Tag;
 import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.content.Intent;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.junseo.test03.arduino.ArduinoConnector;
 import com.example.junseo.test03.arduino.BluetoothPairActivity;
+import com.example.junseo.test03.arduino.PacketParser;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -34,8 +39,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Button btnLogin;
     private TextView forgotpasswordtv;
     private BluetoothAdapter bluetooth_;
+    private ArduinoConnector arduinoConnector_;
+    private ArduinoConnector.Listener arduino_listener_;
 
-
+    private static final String TAG = MainActivity.class.getSimpleName();
     TextView textviewMessage;
 
     @Override
@@ -65,6 +72,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Intent intent = new Intent(getApplicationContext(), BluetoothPairActivity.class);
             startActivityForResult(intent, 0);
         }
+
+        arduinoConnector_ = new ArduinoConnector(arduino_listener_);    //아두이노 리스너 객체 생성
 
         progressDialog = new ProgressDialog(this);
         textviewMessage = (TextView) findViewById(R.id.textviewMessage);
@@ -112,6 +121,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
+
+        if (resultCode == RESULT_OK) {
+            BluetoothDevice device = data.getParcelableExtra("device");
+            arduinoConnector_.connect(device);
+            Log.d(TAG,"블루투스 연결");
+        }
 
         if (requestCode == 1000 && resultCode == RESULT_OK) {
             Toast.makeText(MainActivity.this, "회원가입을 완료했습니다!", Toast.LENGTH_SHORT).show();

@@ -21,7 +21,6 @@ public class ArduinoConnector {
     private BluetoothSerial bluetooth_;
     private Listener listener_;
 
-    private BluetoothAdapter btAdapter;
 
 
     private static final String TAG = ArduinoConnector.class.getSimpleName();

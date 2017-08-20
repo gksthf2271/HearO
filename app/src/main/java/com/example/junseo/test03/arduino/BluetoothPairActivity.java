@@ -132,10 +132,12 @@ public class BluetoothPairActivity extends Activity {
                 result_intent.putExtra("device",device_name_map_.get(name));
                 setResult(RESULT_OK, result_intent);
                 finish();
+
+
             }
         });
 
-
+//        UpdateBondedDevices();
 
 
         listview_devices_.setAdapter(listview_adapter_);
@@ -210,7 +212,7 @@ public class BluetoothPairActivity extends Activity {
         }
 
         ClearDeviceList();
-//        UpdateBondedDevices();
+        //UpdateBondedDevices();
         DiscoverDevices();
     }
 

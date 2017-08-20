@@ -4,6 +4,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
@@ -44,10 +45,11 @@ public class BluetoothSerial {
     private ReadThread read_thread_;
     private Listener listener_;
     private BluetoothSocket socket_;
-    private BluetoothServerSocket Server_socket;
     private BluetoothDevice device_;
+
     private ReadHandler read_handler_;
     private OutputStream output_stream_ = null;
+
 
     public interface Listener {
         void onConnect(BluetoothDevice device);
@@ -81,18 +83,7 @@ public class BluetoothSerial {
 
         //accept_thread_.start();
         connect_thread_.start();
-/*
-        View view = null;
 
-        final Button button1 = (Button) view.findViewById(R.id.button1);
-        //텍스트 입력 버튼/
-        button1.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view){
-                connect_thread_.start();
-            }
-        });
-*/
 
     }
 
@@ -102,85 +93,7 @@ public class BluetoothSerial {
         }
         return read_thread_.isAlive();
     }
-///////////////////////////////////////////////////
-    //08.09 블루투스 수정
 
-
-   /* private class AcceptThread extends Thread {
-        public AcceptThread(BluetoothDevice device) {
-            BluetoothServerSocket tmp = null;
-            // The uuid that I want to connect to.
-            // This value of uuid is for Serial Communication.
-            // http://developer.android.com/reference/android/bluetooth/BluetoothDevice.html#createRfcommSocketToServiceRecord(java.util.UUID)
-            // https://www.bluetooth.org/en-us/specification/assigned-numbers/service-discovery
-            UUID uuid = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
-            // Get a BluetoothSocket to connect with the given BluetoothDevice
-            try {
-               tmp = bluetooth_.listenUsingRfcommWithServiceRecord(name,uuid);
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            Server_socket = tmp;
-        }
-
-        public void run() {
-            // Cancel discovery because it will slow down the connection
-            socket_ =null;
-
-            while(true){
-                try{
-                    socket_ = Server_socket.accept();
-                } catch (IOException e) {
-                        break;
-                }
-                break;
-            }
-            try {
-                // Connect the device through the socket. This will block
-                // until it succeeds or throws an exception
-                Log.d(TAG, "OHOHME Connect...");
-                socket_.connect();
-            } catch (IOException connectException) {
-                connectException.printStackTrace();
-                // Unable to connect; close the socket and get out
-                try {
-                    socket_.close();
-                } catch (IOException closeException) {
-                    closeException.printStackTrace();
-                }
-                return;
-            }
-
-            Log.d(TAG, "Connected");
-
-            Message msg = read_handler_.obtainMessage(kMsgConnectBluetooth);
-            read_handler_.sendMessage(msg);
-
-            // start reading thread.
-            read_thread_ = new ReadThread();
-            read_thread_.start();
-
-            try {
-                output_stream_ = socket_.getOutputStream();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            // release accept object
-            accept_thread_ = null;
-        }
-
-        *//** Will cancel an in-progress connection, and close the socket *//*
-        public void cancel() {
-            try {
-                socket_.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }*/
-    ///////////////////////////////////////////////////
     /**
      *  Write data. Synchronous
      * @param bytes data to send.
@@ -264,6 +177,8 @@ public class BluetoothSerial {
             }
 
             Log.d(TAG, "Connected");
+
+
 
 
 

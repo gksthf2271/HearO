@@ -4,6 +4,7 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -29,6 +30,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import com.example.junseo.test03.arduino.ArduinoConnector;
 import com.example.junseo.test03.arduino.BluetoothPairActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -44,6 +46,11 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
 
     private BluetoothAdapter bluetooth_;
     private BluetoothPairActivity btService = null;
+
+    private ArduinoConnector arduinoConnector_;
+    private ArduinoConnector.Listener arduino_listener_;
+
+    private static final String TAG = MenuActivity.class.getSimpleName();
 
     Vibrator mVibe; //진동
     Button blinking_animation = null; // 화재 애니메이션
@@ -440,6 +447,18 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
 
             Intent intent = new Intent(getApplicationContext(), BluetoothPairActivity.class);
             startActivityForResult(intent, 0);
+        }
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        arduinoConnector_ = new ArduinoConnector(arduino_listener_);    //아두이노 리스너 객체 생성
+
+        if (resultCode == RESULT_OK) {
+            BluetoothDevice device = data.getParcelableExtra("device");
+            arduinoConnector_.connect(device);
+            Log.d(TAG, "블루투스 연결");
         }
     }
 }
