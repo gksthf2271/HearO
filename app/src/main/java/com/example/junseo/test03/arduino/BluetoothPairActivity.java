@@ -43,6 +43,8 @@ import java.util.Set;
 public class BluetoothPairActivity extends Activity {
     private static final String TAG = BluetoothPairActivity.class.getSimpleName();
     private ListView listview_devices_;
+
+
     private ListView listview_paired_;
 
     private Button device_refresh_;
@@ -51,7 +53,8 @@ public class BluetoothPairActivity extends Activity {
     private BluetoothAdapter bluetooth_;
 
     private ArrayAdapter listview_adapter_;
-    private ArrayAdapter listview_adapter2_;
+    private ArrayAdapter<String> mPairedDevicesArrayAdapter;
+
     private HashMap<String, BluetoothDevice> device_name_map_;
 
     final static int BLUETOOTH_REQUEST_CODE = 100;
@@ -62,9 +65,7 @@ public class BluetoothPairActivity extends Activity {
 
 
     //list - Device 목록 저장
-    private List<Map<String,String>> dataPaired;
-
-
+    private List<Map<String, String>> dataPaired;
 
 
     @Override
@@ -76,16 +77,14 @@ public class BluetoothPairActivity extends Activity {
         //setBackgroundColor();
 
 
-
         //블루투스 장치 새로운 device , 페얼이된 paired device setup view
         listview_devices_ = (ListView) findViewById(R.id.listViewBluetoothDevices);
-        listview_paired_ = (ListView) findViewById(R.id.listViewBluetoothDevices2);
+        listview_paired_ = (ListView) findViewById(R.id.pairedlistview);
 
         //Adapter1
-        dataPaired = new ArrayList<>();
-        adapterPaired = new SimpleAdapter(this, dataPaired, android.R.layout.simple_list_item_2, new String[]{"name","address"}, new int[]{android.R.id.text1, android.R.id.text2});
+        //  dataPaired = new ArrayList<>();
+        //  adapterPaired = new SimpleAdapter(this, dataPaired, android.R.layout.simple_list_item_2, new String[]{"name","address"}, new int[]{android.R.id.text1, android.R.id.text2});
         listview_paired_.setAdapter(adapterPaired);
-
 
 
         device_refresh_ = (Button) findViewById(R.id.buttonBluetoothDeviceRefresh);
@@ -99,7 +98,6 @@ public class BluetoothPairActivity extends Activity {
         });
 
 
-
         device_stop_ = (Button) findViewById(R.id.buttonBluetoothStop);
         device_stop_.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -111,37 +109,60 @@ public class BluetoothPairActivity extends Activity {
         });
 
 
-
         bluetooth_ = BluetoothAdapter.getDefaultAdapter();
 
-        listview_adapter_ = new ArrayAdapter(this,android.R.layout.simple_list_item_1);
+        mPairedDevicesArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1);
+        listview_adapter_ = new ArrayAdapter(this, android.R.layout.simple_list_item_1);
 
+        //paired listview setup 08.20
+        ListView pairedListView = (ListView) findViewById(R.id.pairedlistview);
+        pairedListView.setAdapter(mPairedDevicesArrayAdapter);
 
-        listview_devices_.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        pairedListView.setOnItemClickListener(mDeviceClickListener);
+        listview_devices_.setOnItemClickListener(mDeviceClickListener);
+
+/*        listview_devices_.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String name = listview_devices_.getItemAtPosition(position).toString();
                 Log.d(TAG, "Connect name : " + name);
                 BluetoothDevice device = device_name_map_.get(name);
                 if (device == null) {
-                    Toast.makeText(getApplicationContext(),"Can't find the device!",
+                    Toast.makeText(getApplicationContext(), "Can't find the device!",
                             Toast.LENGTH_LONG).show();
                     return;
                 }
 
                 Intent result_intent = new Intent(getApplicationContext(), STTActivity.class);
-                result_intent.putExtra("device",device_name_map_.get(name));
+                result_intent.putExtra("device", device_name_map_.get(name));
                 setResult(RESULT_OK, result_intent);
                 finish();
 
 
             }
-        });
+        });*/
+
 
 //        UpdateBondedDevices();
 
+        // Get the local Bluetooth adapter
+        bluetooth_ = BluetoothAdapter.getDefaultAdapter();
+
+        // Get a set of currently paired devices
+        Set<BluetoothDevice> pairedDevices = bluetooth_.getBondedDevices();
+
+        // If there are paired devices, add each one to the ArrayAdapter
+        if (pairedDevices.size() > 0) {
+            findViewById(R.id.PairedTitle).setVisibility(View.VISIBLE);
+            for (BluetoothDevice device : pairedDevices) {
+                mPairedDevicesArrayAdapter.add(device.getName() + "\n" + device.getAddress());
+            }
+        } else {
+            String noDevices = getResources().getText(R.string.bluetooth_acticity_title2).toString();
+            mPairedDevicesArrayAdapter.add(noDevices);
+        }
+
 
         listview_devices_.setAdapter(listview_adapter_);
-        listview_paired_.setAdapter(listview_adapter2_);
 
         device_name_map_ = new HashMap<>();
 
@@ -152,7 +173,7 @@ public class BluetoothPairActivity extends Activity {
         View layout = findViewById(R.id.pairActivity);
         GradientDrawable gd = new GradientDrawable(
                 GradientDrawable.Orientation.TOP_BOTTOM,
-                new int[] {0xFFF0FAFF,0xFFA3E0FF});
+                new int[]{0xFFF0FAFF, 0xFFA3E0FF});
         gd.setCornerRadius(0f);
         layout.setBackground(gd);
     }
@@ -198,15 +219,16 @@ public class BluetoothPairActivity extends Activity {
         device_name_map_.clear();
     }
 
-    public void StopDeviceListView(){
-        if(!bluetooth_.isEnabled()){
+    public void StopDeviceListView() {
+        if (!bluetooth_.isEnabled()) {
             Toast.makeText(getApplicationContext(), "블루투스 검색 종료", Toast.LENGTH_SHORT).show();
         }
         finish();
     }
+
     public void UpdateDeviceListView() {
         if (!bluetooth_.isEnabled()) {
-            Toast.makeText(getApplicationContext(),"bluetooth is not enabled",
+            Toast.makeText(getApplicationContext(), "bluetooth is not enabled",
                     Toast.LENGTH_LONG).show();
             return;
         }
@@ -218,14 +240,12 @@ public class BluetoothPairActivity extends Activity {
 
     private void UpdateBondedDevices() {
         paired_devices_ = bluetooth_.getBondedDevices();
-        for(BluetoothDevice device : paired_devices_) {
+        for (BluetoothDevice device : paired_devices_) {
             Log.d(TAG, "bonded devices : " + device.getName());
-            //AddDevice(device);
-            listview_adapter2_.add(device);
+            AddDevice(device);
         }
 
     }
-
 
 
     // Create a BroadcastReceiver for ACTION_FOUND
@@ -238,19 +258,19 @@ public class BluetoothPairActivity extends Activity {
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 Log.d(TAG, "found devices : " + device.getName());
                 // Add the name and address to an array adapter to show in a ListView
-                AddDevice(device,null);
+                AddDevice(device);
             }
-                //블루투스 디바이스 페어링 상태 변화
-            if(BluetoothDevice.ACTION_BOND_STATE_CHANGED.equals(action)){
-                    BluetoothDevice paired = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                    if(paired.getBondState()==BluetoothDevice.BOND_BONDED){
-                        //데이터 저장
-                        Map map2 = new HashMap();
-                        map2.put("name", paired.getName()); //device.getName() : 블루투스 디바이스의 이름
-                        map2.put("address", paired.getAddress()); //device.getAddress() : 블루투스 디바이스의 MAC 주소
-                        dataPaired.add(map2);
-                        //리스트 목록갱신
-                        adapterPaired.notifyDataSetChanged();
+            //블루투스 디바이스 페어링 상태 변화
+            if (BluetoothDevice.ACTION_BOND_STATE_CHANGED.equals(action)) {
+                BluetoothDevice paired = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                if (paired.getBondState() == BluetoothDevice.BOND_BONDED) {
+                    //데이터 저장
+                    Map map2 = new HashMap();
+                    map2.put("name", paired.getName()); //device.getName() : 블루투스 디바이스의 이름
+                    map2.put("address", paired.getAddress()); //device.getAddress() : 블루투스 디바이스의 MAC 주소
+                    dataPaired.add(map2);
+                    //리스트 목록갱신
+                    adapterPaired.notifyDataSetChanged();
 
                      /*   //검색된 목록
                         if(selectDevice != -1){
@@ -260,14 +280,14 @@ public class BluetoothPairActivity extends Activity {
                             adapterDevice.notifyDataSetChanged();
                             selectDevice = -1;
                         }*/
-                    }
+                }
 
             }
         }
     };
 
 
-    private void AddDevice(BluetoothDevice device,BluetoothDevice device2) {
+    private void AddDevice(BluetoothDevice device) {
         String name = device.getName() + "\n" + device.getAddress();
         if (!device_name_map_.containsKey(name)) {
             listview_adapter_.add(name);
@@ -294,16 +314,17 @@ public class BluetoothPairActivity extends Activity {
         }
         return str;
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch(requestCode){
+        switch (requestCode) {
             case BLUETOOTH_REQUEST_CODE:
                 //블루투스 활성화 승인
-                if(resultCode == Activity.RESULT_OK){
-                    GetListPairedDevice();
+                if (resultCode == Activity.RESULT_OK) {
+                    //GetListPairedDevice();
                 }
                 //블루투스 활성화 거절
-                else{
+                else {
                     Toast.makeText(this, "블루투스를 활성화해야 합니다.", Toast.LENGTH_SHORT).show();
                     finish();
                     return;
@@ -313,12 +334,12 @@ public class BluetoothPairActivity extends Activity {
     }
 
 
-    public void GetListPairedDevice(){
+/*    public void GetListPairedDevice() {
         Set<BluetoothDevice> paired_devices_ = bluetooth_.getBondedDevices();
 
         dataPaired.clear();
-        if(paired_devices_.size() > 0){
-            for(BluetoothDevice device : paired_devices_){
+        if (paired_devices_.size() > 0) {
+            for (BluetoothDevice device : paired_devices_) {
                 //데이터 저장
                 Map map = new HashMap();
                 map.put("name", device.getName()); //device.getName() : 블루투스 디바이스의 이름
@@ -328,8 +349,31 @@ public class BluetoothPairActivity extends Activity {
         }
         //리스트 목록갱신
         adapterPaired.notifyDataSetChanged();
-    }
+    }*/
 
+    private AdapterView.OnItemClickListener mDeviceClickListener = new AdapterView.OnItemClickListener() {
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            bluetooth_.cancelDiscovery();
+
+
+            //String name = listview_devices_.getItemAtPosition(position).toString();
+            String name = ((TextView) view).getText().toString();
+            Log.d(TAG, "Connect name : " + name);
+            BluetoothDevice device = device_name_map_.get(name);
+            if (device == null) {
+                Toast.makeText(getApplicationContext(), "Can't find the device!",
+                        Toast.LENGTH_LONG).show();
+                return;
+            }
+
+            Intent result_intent = new Intent(getApplicationContext(), STTActivity.class);
+            result_intent.putExtra("device", device_name_map_.get(name));
+            setResult(RESULT_OK, result_intent);
+            finish();
+
+
+        }
+    };
 
 
 }

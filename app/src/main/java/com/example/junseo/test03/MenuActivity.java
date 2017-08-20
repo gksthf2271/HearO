@@ -449,16 +449,5 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
             startActivityForResult(intent, 0);
         }
     }
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
 
-        arduinoConnector_ = new ArduinoConnector(arduino_listener_);    //아두이노 리스너 객체 생성
-
-        if (resultCode == RESULT_OK) {
-            BluetoothDevice device = data.getParcelableExtra("device");
-            arduinoConnector_.connect(device);
-            Log.d(TAG, "블루투스 연결");
-        }
-    }
 }

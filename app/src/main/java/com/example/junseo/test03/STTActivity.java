@@ -1,10 +1,12 @@
 package com.example.junseo.test03;
 
+import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Resources;
@@ -63,6 +65,9 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
     private ImageView mImageBT;
     private RelativeLayout BlMonitoring;
 
+    //다이얼
+    AlertDialog.Builder ad;
+
 
 
     private static final String TAG = STTActivity.class.getSimpleName();
@@ -104,6 +109,32 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
             @Override
             public void onClick(View v) {
                 finish();
+            }
+        });
+
+        //standby 다이얼로그
+        ad = new AlertDialog.Builder(this);
+
+        ad.setTitle("알림");       // 제목 설정
+        ad.setMessage("음성인식이 중단되었습니다 다시 시작하시겠습니까?");   // 내용 설정
+
+        ad.setPositiveButton("다시시작",new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Log.v(TAG,"다시시작 클릭");
+                dialog.dismiss();     //닫기
+                speech_recognizer_.start();
+
+            }
+        });
+        ad.setNegativeButton("닫기",new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Log.v(TAG,"닫기 클릭");
+                dialog.dismiss();     //닫기
+                speech_recognizer_.stop();
+                finish();
+
             }
         });
     }
@@ -284,6 +315,9 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
         @Override
         public void onReaction(PacketParser.Type type, String data) {
             if (type == PacketParser.Type.ActivityDetected) {
+                app_status_manager_.updateConnectionStatus(true);
+                updateStatusUIText(app_status_manager_.getStatus());
+                Toast.makeText(getApplicationContext(), "Reaction", Toast.LENGTH_SHORT).show();
                 // There is a limitation that Android doesn't offer continuous speech recognition.
                 // So only when is activity detected, speech recognition starts.
                 speech_recognizer_.start();
@@ -308,6 +342,7 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
                 break;
             case Standby:
                 txt_app_status_.setText(getResources().getString(R.string.txtview_standby));
+                ad.show();
                 //다이얼로그 띄우고 계속 음성인식을 하시겠습니까? yes면 stats = Listening 구현
                 break;
             case Listening:
@@ -321,7 +356,7 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
     private enum AppState {
         Disconnected, // connected to Arduino.
         Standby,       // waiting until activity detected
-        Listening,    // listening speech recognition.
+        Listening    // listening speech recognition.
     }
 
     /**

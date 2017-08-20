@@ -96,8 +96,11 @@
             android:id="@+id/status_title"
             android:layout_width="wrap_content"
             android:layout_height="20dip"
-            android:layout_margin="3dip"
-            />
+            android:layout_marginRight="3dip"
+            android:layout_marginTop="3dip"
+            android:layout_marginBottom="3dip"
+            android:layout_alignLeft="@+id/status_text"
+            android:layout_alignStart="@+id/status_text" />
         <TextView
             android:id="@+id/status_text"
             android:layout_width="match_parent"
