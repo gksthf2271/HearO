@@ -120,6 +120,8 @@ public class ChatActivity extends AppCompatActivity {
                 Log.e("LOG","removemessage");
 
                 finish();
+                Intent intent = new Intent(ChatActivity.this, StartActivity.class);
+                startActivity(intent);
             }
         });
     }

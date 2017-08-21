@@ -69,6 +69,7 @@ public class StartActivity extends AppCompatActivity {
                 intent.putExtra("chatName", user_chat.getText().toString());
                 intent.putExtra("userName", user_edit.getText().toString());
                 startActivity(intent);
+                finish();
             }
         });
         String myToken = FirebaseInstanceId.getInstance().getToken();
