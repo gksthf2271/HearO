@@ -25,6 +25,9 @@ import java.util.List;
 
 public class StartActivity extends AppCompatActivity {
     Button Cancel4;
+    private static final String TAG = "StartActivity";
+    private String user_id = "ID";
+
     private EditText user_chat, user_edit;
     private Button user_next;
     private ListView chat_list;
@@ -49,8 +52,13 @@ public class StartActivity extends AppCompatActivity {
                 finish();
             }
         });
-//유저가 있다면, null이 아니면 계속 진행
 
+
+        //유저가 있다면, null이 아니면 계속 진행
+        FirebaseUser user = firebaseAuth.getCurrentUser();
+
+        //textViewUserEmail의 내용을 변경해 준다.
+        user_edit.setText(user.getEmail());
         user_next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -63,6 +71,8 @@ public class StartActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        String myToken = FirebaseInstanceId.getInstance().getToken();
+        Log.e(TAG, "My Token is :" + myToken);
         chat_list.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -84,9 +94,13 @@ public class StartActivity extends AppCompatActivity {
         final ArrayAdapter<String> adapter
                 = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, android.R.id.text1);
         chat_list.setAdapter(adapter);
-
+        firebaseAuth = FirebaseAuth.getInstance();
+        FirebaseUser user = firebaseAuth.getCurrentUser();
+        final String email = user.getEmail();
+        int i = email.indexOf("@");
+        String id = email.substring(0,i);
         // 데이터 받아오기 및 어댑터 데이터 추가 및 삭제 등..리스너 관리
-        databaseReference.child("chat").addChildEventListener(new ChildEventListener() {
+        databaseReference.child("USER").child(id).child("chat").addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 Log.e("LOG", "dataSnapshot.getKey() : " + dataSnapshot.getKey());
