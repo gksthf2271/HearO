@@ -181,6 +181,8 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
 
 
 
+
+
     }
 
     public void Vibrator_pattern(){
@@ -429,14 +431,14 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
 
         }
 
-    }
+    }/*
     @Override
     public void onStart(){
         super.onStart();
         //블루투스 MainActivity 초기에 실행하기
-/*        Intent intent = getIntent();
+*//*        Intent intent = getIntent();
         int resultCode = intent.getExtras().getInt("resultCode");
-        int requestCode = intent.getExtras().getInt("requestCode");*/
+        int requestCode = intent.getExtras().getInt("requestCode");*//*
 
         bluetooth_ = BluetoothAdapter.getDefaultAdapter();
         if (!bluetooth_.isEnabled()) {
@@ -444,10 +446,10 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
                     Toast.LENGTH_LONG).show();
             Intent enableintent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableintent, 0);
-
+*//*
             Intent intent = new Intent(getApplicationContext(), BluetoothPairActivity.class);
-            startActivityForResult(intent, 0);
+            startActivityForResult(intent, 0);*//*
         }
-    }
+    }*/
 
 }

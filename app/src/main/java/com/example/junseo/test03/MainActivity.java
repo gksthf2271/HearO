@@ -175,6 +175,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+
+    @Override
+    public void onStart(){
+        super.onStart();
+        //블루투스 MainActivity 초기에 실행하기
+/*        Intent intent = getIntent();
+        int resultCode = intent.getExtras().getInt("resultCode");
+        int requestCode = intent.getExtras().getInt("requestCode");*/
+
+        bluetooth_ = BluetoothAdapter.getDefaultAdapter();
+        if (!bluetooth_.isEnabled()) {
+            Toast.makeText(getApplicationContext(), "bluetooth is not enabled",
+                    Toast.LENGTH_LONG).show();
+            Intent enableintent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivityForResult(enableintent, 0);
+/*
+            Intent intent = new Intent(getApplicationContext(), BluetoothPairActivity.class);
+            startActivityForResult(intent, 0);*/
+        }
+    }
+
 }
 
 

@@ -189,7 +189,7 @@ public class BluetoothPairActivity extends Activity {
     @Override
     protected void onPause() {
         super.onPause();
-        unregisterReceiver(receiver_);
+        //unregisterReceiver(receiver_);
     }
 
     @Override
