@@ -342,7 +342,7 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
                 break;
             case Standby:
                 txt_app_status_.setText(getResources().getString(R.string.txtview_standby));
-                ad.show();
+                //ad.show();
                 //다이얼로그 띄우고 계속 음성인식을 하시겠습니까? yes면 stats = Listening 구현
                 break;
             case Listening:

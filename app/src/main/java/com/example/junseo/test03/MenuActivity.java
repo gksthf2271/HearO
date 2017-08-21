@@ -32,6 +32,7 @@ import android.widget.ToggleButton;
 
 import com.example.junseo.test03.arduino.ArduinoConnector;
 import com.example.junseo.test03.arduino.BluetoothPairActivity;
+import com.example.junseo.test03.arduino.BluetoothSerial;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -49,6 +50,9 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
 
     private ArduinoConnector arduinoConnector_;
     private ArduinoConnector.Listener arduino_listener_;
+
+    protected  BluetoothSerial.Listener bluetooth_listener_;
+
 
     private static final String TAG = MenuActivity.class.getSimpleName();
 

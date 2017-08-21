@@ -96,6 +96,9 @@ public class ArduinoConnector {
                     return;
                 }
 
+                Log.d(TAG,"아두이노에서 받아온 raw_packet : "+raw_packet);
+                Log.d(TAG,"아두이노에서 받아온 packet : "+packet);
+
                 listener_.onReaction(packet.type, packet.data);
             }
 

@@ -69,8 +69,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Intent enableintent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableintent, 0);
 
-            Intent intent = new Intent(getApplicationContext(), BluetoothPairActivity.class);
-            startActivityForResult(intent, 0);
         }
 
         arduinoConnector_ = new ArduinoConnector(arduino_listener_);    //아두이노 리스너 객체 생성
@@ -123,11 +121,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onActivityResult(requestCode, resultCode, data);
 
 
-        if (resultCode == RESULT_OK) {
+/*        if (resultCode == RESULT_OK) {
             BluetoothDevice device = data.getParcelableExtra("device");
             arduinoConnector_.connect(device);
             Log.d(TAG,"블루투스 연결");
-        }
+        }*/
 
         if (requestCode == 1000 && resultCode == RESULT_OK) {
             Toast.makeText(MainActivity.this, "회원가입을 완료했습니다!", Toast.LENGTH_SHORT).show();

@@ -211,7 +211,7 @@ public class BluetoothSerial {
     }
 
     private class ReadThread extends Thread {
-        private final InputStream input_stream_;
+        private InputStream input_stream_;
 
         public ReadThread() {
             InputStream tmpIn = null;
@@ -231,6 +231,7 @@ public class BluetoothSerial {
         public void run() {
             byte[] buffer = new byte[1024];  // buffer store for the stream
             int bytes; // bytes returned from read()
+            int readBufferPosition = 0;
 
             // Keep listening to the InputStream until an exception occurs
             while (true) {
@@ -244,6 +245,28 @@ public class BluetoothSerial {
                     // Send the obtained bytes to the UI activity
                     read_handler_.obtainMessage(kMsgReadBluetooth, bytes, -1, fragment)
                             .sendToTarget();
+
+                    if(bytes >0){
+                        byte[] packetBytes = new byte[bytes];
+                        input_stream_.read(packetBytes);
+
+                        for(int i=0; i<bytes; i++){
+                            byte b = packetBytes[i];
+                            if(b=='\n')
+                            {
+                                byte[] encodedBytes = new byte[readBufferPosition];
+                                System.arraycopy(buffer, 0, encodedBytes, 0, encodedBytes.length);
+                                String recvMessage = new String(encodedBytes, "UTF-8");
+                                readBufferPosition = 0;
+                                Log.d(TAG, "recv message: " + recvMessage);
+
+                            }
+                            else
+                            {
+                                buffer[readBufferPosition++] = b;
+                            }
+                        }
+                    }
                 } catch (IOException e) {
                     break;
                 }
