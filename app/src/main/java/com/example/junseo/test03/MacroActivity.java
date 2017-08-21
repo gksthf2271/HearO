@@ -16,6 +16,8 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -33,8 +35,8 @@ public class MacroActivity extends AppCompatActivity {
 
 
     Button button1;
-    private FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-    private DatabaseReference databaseReference = firebaseDatabase.getReference();
+    private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference(); // 기본 루트 레퍼런스
+    private FirebaseAuth firebaseAuth;
     EditText editTextName;
   //  Spinner spinnerGenre;
     Button buttonAddArtist;
@@ -48,7 +50,7 @@ public class MacroActivity extends AppCompatActivity {
     Button button_macro;
 
     //our database reference object
-    DatabaseReference databaseArtists;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +60,7 @@ public class MacroActivity extends AppCompatActivity {
         macrotext = (EditText) findViewById(R.id.macrotext);
         macrotext.setInputType(0); // 클릭시 키보드 등장 막기.
         //getting the reference of artists node
-        databaseArtists = FirebaseDatabase.getInstance().getReference("artists");
+
         button_macro = (Button) findViewById(R.id.button_macrosend);
         tts=new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
             @Override
@@ -68,6 +70,12 @@ public class MacroActivity extends AppCompatActivity {
                 }
             }
         });
+
+        firebaseAuth = FirebaseAuth.getInstance();
+        FirebaseUser user = firebaseAuth.getCurrentUser();
+        final String email = user.getEmail();
+        int i = email.indexOf("@");
+        String id1 = email.substring(0,i);
         //getting views
         editTextName = (EditText) findViewById(R.id.editTextName);
 
@@ -199,7 +207,12 @@ public class MacroActivity extends AppCompatActivity {
 
     private boolean updateArtist(String id, String name) {
         //getting the specified artist reference
-        DatabaseReference dR = FirebaseDatabase.getInstance().getReference("artists").child(id);
+        firebaseAuth = FirebaseAuth.getInstance();
+        FirebaseUser user = firebaseAuth.getCurrentUser();
+        final String email = user.getEmail();
+        int i = email.indexOf("@");
+        String id1 = email.substring(0,i);
+        DatabaseReference dR = databaseReference.child("USER").child(id1).child("MACRO").child(id);
 
         //updating artist
         macro artist = new macro(id, name);
@@ -210,7 +223,12 @@ public class MacroActivity extends AppCompatActivity {
 
     private boolean deleteArtist(String id) {
         //getting the specified artist reference
-        DatabaseReference dR = FirebaseDatabase.getInstance().getReference("artists").child(id);
+        firebaseAuth = FirebaseAuth.getInstance();
+        FirebaseUser user = firebaseAuth.getCurrentUser();
+        final String email = user.getEmail();
+        int i = email.indexOf("@");
+        String id1 = email.substring(0,i);
+        DatabaseReference dR = databaseReference.child("USER").child(id1).child("MACRO").child(id);
 
         //removing artist
         dR.removeValue();
@@ -229,12 +247,19 @@ public class MacroActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         //attaching value event listener
-        databaseArtists.addValueEventListener(new ValueEventListener() {
+
+        firebaseAuth = FirebaseAuth.getInstance();
+        FirebaseUser user = firebaseAuth.getCurrentUser();
+        final String email = user.getEmail();
+        int i = email.indexOf("@");
+        String id1 = email.substring(0,i);
+        String id = databaseReference.push().getKey();
+        databaseReference.child("USER").child(id1).child("MACRO").child(id).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
                 //clearing the previous artist list
-                artists.clear();
+                //artists.clear();
 
                 //iterating through all the nodes
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
@@ -269,16 +294,20 @@ public class MacroActivity extends AppCompatActivity {
 
         //checking if the value is provided
         if (!TextUtils.isEmpty(name)) {
-
+            firebaseAuth = FirebaseAuth.getInstance();
+            FirebaseUser user = firebaseAuth.getCurrentUser();
+            final String email = user.getEmail();
+            int i = email.indexOf("@");
+            String id1 = email.substring(0,i);
             //getting a unique id using push().getKey() method
             //it will create a unique id and we will use it as the Primary Key for our Artist
-            String id = databaseArtists.push().getKey();
+            String id = databaseReference.push().getKey();
 
             //creating an Artist Object
             macro artist = new macro(id, name);
 
             //Saving the Artist
-            databaseArtists.child(id).setValue(artist);
+            databaseReference.child("USER").child(id1).child("MACRO").child(id).setValue(artist);
 
             //setting edittext to blank again
             editTextName.setText("");
