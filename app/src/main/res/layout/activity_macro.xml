@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-
+    android:background="@drawable/hback"
     android:id="@+id/activity_macro"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -45,7 +45,6 @@
         android:id="@+id/listViewArtists"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#7CFC00"
         android:layout_below="@+id/textView1"
         android:layout_above="@+id/linearLayout"></ListView>
     <Button

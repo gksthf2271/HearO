@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/hback"
     tools:context="com.example.junseo.test03.ChatActivity">
 
 
@@ -17,6 +18,7 @@
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:text="뒤로"
+            android:background="#1cb189"
             android:layout_gravity="right"/>
 
         <LinearLayout

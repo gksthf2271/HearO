@@ -30,11 +30,10 @@ public class MacroList extends ArrayAdapter<macro> {
         View listViewItem = inflater.inflate(R.layout.layout_artist_list, null, true);
 
         TextView textViewName = (TextView) listViewItem.findViewById(R.id.textViewName);
-        TextView textViewGenre = (TextView) listViewItem.findViewById(R.id.textViewGenre);
 
         macro artist = artists.get(position);
         textViewName.setText(artist.getArtistName());
-       // textViewGenre.setText(artist.getArtistGenre());
+
 
         return listViewItem;
     }

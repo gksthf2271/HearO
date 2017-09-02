@@ -162,11 +162,15 @@ public class ChatActivity extends AppCompatActivity {
         final ArrayAdapter<String> adapter
                 = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, android.R.id.text1);
         chat_view.setAdapter(adapter);
+
         firebaseAuth = FirebaseAuth.getInstance();
         FirebaseUser user = firebaseAuth.getCurrentUser();
+
+        // @앞 까지만 불러오기
         final String email = user.getEmail();
         int i = email.indexOf("@");
         String id = email.substring(0,i);
+
         // 데이터 받아오기 및 어댑터 데이터 추가 및 삭제 등..리스너 관리
         databaseReference.child("USER").child(id).child("chat").child(chatName).addChildEventListener(new ChildEventListener() {
             @Override
