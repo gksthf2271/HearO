@@ -115,7 +115,7 @@ public class ChatActivity extends AppCompatActivity {
                 chatdatabaseReference.child(CHAT_NAME).removeValue();
                 DatabaseReference chatpushedPostRefkey = chatdatabaseReference.push();
                 String chatkey = chatpushedPostRefkey.getKey();
-                ChatDTO chat = new ChatDTO("HearO","보낼 메시지를 입력해주세요.");
+                ChatDTO chat = new ChatDTO("","전송할 내용을 입력하세요");
                 chatdatabaseReference.child(CHAT_NAME).child(chatkey).setValue(chat);
                 Log.e("LOG","removemessage");
 
@@ -149,7 +149,7 @@ public class ChatActivity extends AppCompatActivity {
     }
     private void addMessage(DataSnapshot dataSnapshot, ArrayAdapter<String> adapter) {
         ChatDTO chatDTO = dataSnapshot.getValue(ChatDTO.class);
-        adapter.add(chatDTO.getUserName() + " : " + chatDTO.getMessage());
+        adapter.add(chatDTO.getMessage());
     }
 
     private void removeMessage(DataSnapshot dataSnapshot, ArrayAdapter<String> adapter) {

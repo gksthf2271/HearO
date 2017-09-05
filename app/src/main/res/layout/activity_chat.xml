@@ -4,14 +4,25 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/hback"
+
     tools:context="com.example.junseo.test03.ChatActivity">
 
 
+    <RelativeLayout
+        android:background="@drawable/hback"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+
+    </RelativeLayout>
     <LinearLayout
+        android:id="@+id/rela1"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
 
         <Button
             android:id="@+id/Cancel10"
@@ -20,37 +31,58 @@
             android:text="뒤로"
             android:background="#1cb189"
             android:layout_gravity="right"/>
-
-        <LinearLayout
-            android:layout_weight="1"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <ListView
-                android:id="@+id/chat_view"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:transcriptMode="alwaysScroll"
-                android:layout_gravity="bottom"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <Button
-                android:id="@+id/chat_sent"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="보내기" />
-
-            <EditText
-                android:id="@+id/chat_edit"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-        </LinearLayout>
-
     </LinearLayout>
 
+    <RelativeLayout
+            android:id="@+id/rela2"
+            android:layout_gravity="center_vertical|center_horizontal"
+
+             android:layout_marginTop="70dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true">
+            <TextView
+                android:id="@+id/te4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textSize="20dp"
+                android:layout_marginBottom="20dp"
+                android:gravity="center"
+                android:text="전송된 내용"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true" />
+            <ListView
+                android:background="@drawable/frame3"
+                android:id="@+id/chat_view"
+                android:layout_width="match_parent"
+                android:layout_height="54dp"
+                android:layout_gravity="bottom"
+                android:layout_below="@+id/te4"
+                android:transcriptMode="alwaysScroll" />
+    </RelativeLayout>
+
+
+
+    <LinearLayout
+        android:id="@+id/rela3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="bottom"
+        android:orientation="vertical"
+        android:layout_alignParentBottom="true"
+>
+
+        <Button
+            android:id="@+id/chat_sent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="보내기" />
+
+        <EditText
+            android:id="@+id/chat_edit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
 </RelativeLayout>

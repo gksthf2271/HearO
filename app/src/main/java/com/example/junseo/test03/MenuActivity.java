@@ -72,7 +72,7 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
     LinearLayout back;
     boolean flag = FALSE;   //진동 울리면 TRUE 평소에 FALSE
 
-    int[] img = {R.drawable.hback}; // 여기서  , , , 식으로 추가를 하면 랜덤으로 뽑아옴
+    int[] img = {R.drawable.hback1}; // 여기서  , , , 식으로 추가를 하면 랜덤으로 뽑아옴
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
