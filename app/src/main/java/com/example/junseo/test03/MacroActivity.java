@@ -56,8 +56,6 @@ public class MacroActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_macro);
         Cancel5 = (Button) findViewById(R.id.Cancel5);
-      //  macrotext = (EditText) findViewById(R.id.macrotext);
-      //  macrotext.setInputType(0); // 클릭시 키보드 등장 막기.
         //getting the reference of artists node
         databaseArtists = FirebaseDatabase.getInstance().getReference("artists");
 
@@ -77,23 +75,7 @@ public class MacroActivity extends AppCompatActivity {
 
         //list to store artists
         artists = new ArrayList<>();
-/*
-        button_macro.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String text = macrotext.getText().toString();
-                Toast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT).show();
 
-
-                //http://stackoverflow.com/a/29777304
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    ttsGreater21(text);
-                } else {
-                    ttsUnder20(text);
-                }
-
-            }
-        });*/
         //adding an onclicklistener to button
         buttonAddArtist.setOnClickListener(new View.OnClickListener() {
             @Override

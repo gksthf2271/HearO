@@ -23,7 +23,7 @@ public class MacroList extends ArrayAdapter<macro> {
         this.artists = artists;
     }
 
-
+// 리스트 뷰 아이템 가져오는 부분
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = context.getLayoutInflater();
