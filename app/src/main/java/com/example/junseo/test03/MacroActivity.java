@@ -1,23 +1,23 @@
 package com.example.junseo.test03;
+
 import android.annotation.TargetApi;
 import android.os.Build;
+import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -34,30 +34,31 @@ public class MacroActivity extends AppCompatActivity {
 
 
     Button button1;
-    private FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-    private DatabaseReference databaseReference = firebaseDatabase.getReference();
+    private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference(); // 기본 루트 레퍼런스
+    private DatabaseReference huser = databaseReference.child("huser");
+    private FirebaseAuth firebaseAuth;
     EditText editTextName;
-  //  Spinner spinnerGenre;
-    Button buttonAddArtist;
-    private ListView listViewArtists;
+    //  Spinner spinnerGenre;
+    Button buttonAddmacro;
+    private ListView listViewmacros;
     Button Cancel5;
-    //a list to store all the artist from firebase database
-    List<macro> artists;
+    //a list to store all the macro from firebase database
+    List<macro> macros;
     TextView textview;
     TextToSpeech tts;
     EditText macrotext;
     Button button_macro;
 
     //our database reference object
-    DatabaseReference databaseArtists;
+    DatabaseReference databasemacros;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_macro);
         Cancel5 = (Button) findViewById(R.id.Cancel5);
-        //getting the reference of artists node
-        databaseArtists = FirebaseDatabase.getInstance().getReference("artists");
+        //getting the reference of macros node
+        //databasemacros = FirebaseDatabase.getInstance().getReference("macros");
 
         tts=new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
             @Override
@@ -68,22 +69,30 @@ public class MacroActivity extends AppCompatActivity {
             }
         });
         //getting views
+
+        firebaseAuth = FirebaseAuth.getInstance();
+        FirebaseUser user = firebaseAuth.getCurrentUser();
+        final String email = user.getEmail();
+        int i = email.indexOf("@");
+        String id1 = email.substring(0,i);
+
+
         editTextName = (EditText) findViewById(R.id.editTextName);
         textview= (TextView) findViewById(R.id.textView2);
-        listViewArtists = (ListView) findViewById(R.id.listViewArtists);
-        buttonAddArtist = (Button) findViewById(R.id.buttonAddArtist);
+        listViewmacros = (ListView) findViewById(R.id.listViewmacro);
+        buttonAddmacro = (Button) findViewById(R.id.buttonAddmacro);
 
-        //list to store artists
-        artists = new ArrayList<>();
+        //list to store macros
+        macros = new ArrayList<>();
 
         //adding an onclicklistener to button
-        buttonAddArtist.setOnClickListener(new View.OnClickListener() {
+        buttonAddmacro.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //calling the method addArtist()
+                //calling the method addmacro()
                 //the method is defined below
                 //this method is actually performing the write operation
-                addArtist();
+                addmacro();
             }
         });
         Cancel5.setOnClickListener(new View.OnClickListener() {
@@ -94,16 +103,16 @@ public class MacroActivity extends AppCompatActivity {
         });
 
         //리스트 뷰 아이템 접근 (여기서 모듈 전송)
-        listViewArtists.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        listViewmacros.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
-            private void showList (final String artistName){
-                textview.setText(artistName);
+            private void showList (final String macroName){
+                textview.setText(macroName);
             }
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                macro artist = artists.get(i);
+                macro macro = macros.get(i);
 
-                showList(artist.getArtistName());
+                showList(macro.getmacroName());
                 String text = textview.getText().toString();
                 Toast.makeText(getApplicationContext(), "전송되었습니다", Toast.LENGTH_SHORT).show();
 
@@ -116,16 +125,16 @@ public class MacroActivity extends AppCompatActivity {
                 }
 
             }
-    });
+        });
 
 
 
         //꾹 눌렀을 때 실행하기
-        listViewArtists.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+        listViewmacros.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-                macro artist = artists.get(i);
-                showUpdateDeleteDialog(artist.getArtistId(), artist.getArtistName());
+                macro macro = macros.get(i);
+                showUpdateDeleteDialog(macro.getmacroId(), macro.getmacroName());
                 return true;
             }//fff
         });
@@ -152,7 +161,7 @@ public class MacroActivity extends AppCompatActivity {
         tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, utteranceId);
     }
     // 수정 혹은 삭제
-    private void showUpdateDeleteDialog(final String artistId, String artistName) {
+    private void showUpdateDeleteDialog(final String macroId, String macroName) {
 
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
         LayoutInflater inflater = getLayoutInflater();
@@ -161,10 +170,10 @@ public class MacroActivity extends AppCompatActivity {
 
         final EditText editTextName = (EditText) dialogView.findViewById(R.id.editTextName);
 
-        final Button buttonUpdate = (Button) dialogView.findViewById(R.id.buttonUpdateArtist);
-        final Button buttonDelete = (Button) dialogView.findViewById(R.id.buttonDeleteArtist);
+        final Button buttonUpdate = (Button) dialogView.findViewById(R.id.buttonUpdatemacro);
+        final Button buttonDelete = (Button) dialogView.findViewById(R.id.buttonDeletemacro);
 
-        dialogBuilder.setTitle(artistName);
+        dialogBuilder.setTitle(macroName);
         final AlertDialog b = dialogBuilder.create();
         b.show();
 
@@ -173,9 +182,9 @@ public class MacroActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 String name = editTextName.getText().toString().trim();
-              //  String genre = spinnerGenre.getSelectedItem().toString();
+                //  String genre = spinnerGenre.getSelectedItem().toString();
                 if (!TextUtils.isEmpty(name)) {
-                    updateArtist(artistId, name);
+                    updatemacro(macroId, name);
                     b.dismiss();
                 }
             }
@@ -186,35 +195,45 @@ public class MacroActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                deleteArtist(artistId);
+                deletemacro(macroId);
                 b.dismiss();
             }
         });
     }
 
-    private boolean updateArtist(String id, String name) {
-        //getting the specified artist reference
-        DatabaseReference dR = FirebaseDatabase.getInstance().getReference("artists").child(id);
+    private boolean updatemacro(String id, String name) {
+        //getting the specified macro reference
+        firebaseAuth = FirebaseAuth.getInstance();
+        FirebaseUser user = firebaseAuth.getCurrentUser();
+        final String email = user.getEmail();
+        int i = email.indexOf("@");
+        String id1 = email.substring(0,i);
+        DatabaseReference dR = databaseReference.child("huser").child(id1).child("macro").child(id);
 
-        //updating artist
-        macro artist = new macro(id, name);
-        dR.setValue(artist);
+        //updating macro
+        macro macro = new macro(id, name);
+        dR.setValue(macro);
         Toast.makeText(getApplicationContext(), "상용구가 수정되었습니다.", Toast.LENGTH_LONG).show();
         return true;
     }
 
-    private boolean deleteArtist(String id) {
-        //getting the specified artist reference
-        DatabaseReference dR = FirebaseDatabase.getInstance().getReference("artists").child(id);
+    private boolean deletemacro(String id) {
+        //getting the specified macro reference
+        firebaseAuth = FirebaseAuth.getInstance();
+        FirebaseUser user = firebaseAuth.getCurrentUser();
+        final String email = user.getEmail();
+        int i = email.indexOf("@");
+        String id1 = email.substring(0,i);
+        DatabaseReference dR = databaseReference.child("huser").child(id1).child("macro").child(id);
 
-        //removing artist
+        //removing macro
         dR.removeValue();
 
-        //getting the tracks reference for the specified artist
-        DatabaseReference drTracks = FirebaseDatabase.getInstance().getReference("tracks").child(id);
+        //getting the tracks reference for the specified macro
+
 
         //removing all tracks
-        drTracks.removeValue();
+
         Toast.makeText(getApplicationContext(), "상용구가 삭제되었습니다.", Toast.LENGTH_LONG).show();
 
         return true;
@@ -223,26 +242,33 @@ public class MacroActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+
         //attaching value event listener
-        databaseArtists.addValueEventListener(new ValueEventListener() {
+        //getting the specified macro reference
+        firebaseAuth = FirebaseAuth.getInstance();
+        FirebaseUser user = firebaseAuth.getCurrentUser();
+        final String email = user.getEmail();
+        int i = email.indexOf("@");
+        String id1 = email.substring(0,i);
+        huser.child(id1).child("macro").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
-                //clearing the previous artist list
-                artists.clear();
+                //clearing the previous macro list
+                macros.clear();
 
                 //iterating through all the nodes
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                    //getting artist
-                    macro artist = postSnapshot.getValue(macro.class);
-                    //adding artist to the list
-                    artists.add(artist);
+                    //getting macro
+                    macro macro = postSnapshot.getValue(macro.class);
+                    //adding macro to the list
+                    macros.add(macro);
                 }
 
                 //creating adapter
-                MacroList artistAdapter = new MacroList(MacroActivity.this, artists);
+                MacroList macroAdapter = new MacroList(MacroActivity.this, macros);
                 //attaching adapter to the listview
-                listViewArtists.setAdapter(artistAdapter);
+                listViewmacros.setAdapter(macroAdapter);
             }
 
             @Override
@@ -254,26 +280,30 @@ public class MacroActivity extends AppCompatActivity {
 
 
     /*
-    * This method is saving a new artist to the
+    * This method is saving a new macro to the
     * Firebase Realtime Database
     * */
-    private void addArtist() {
+    private void addmacro() {
+        //getting the values to save
         //getting the values to save
         String name = editTextName.getText().toString().trim();
-      //  String genre = spinnerGenre.getSelectedItem().toString();
 
         //checking if the value is provided
         if (!TextUtils.isEmpty(name)) {
-
+            firebaseAuth = FirebaseAuth.getInstance();
+            FirebaseUser user = firebaseAuth.getCurrentUser();
+            final String email = user.getEmail();
+            int i = email.indexOf("@");
+            String id1 = email.substring(0,i);
             //getting a unique id using push().getKey() method
-            //it will create a unique id and we will use it as the Primary Key for our Artist
-            String id = databaseArtists.push().getKey();
+            //it will create a unique id and we will use it as the Primary Key for our macro
+            String id = databaseReference.push().getKey();
 
-            //creating an Artist Object
-            macro artist = new macro(id, name);
+            //creating an macro Object
+            macro macro = new macro(id, name);
 
-            //Saving the Artist
-            databaseArtists.child(id).setValue(artist);
+            //Saving the macro
+            databaseReference.child("huser").child(id1).child("macro").child(id).setValue(macro);
 
             //setting edittext to blank again
             editTextName.setText("");
@@ -286,4 +316,3 @@ public class MacroActivity extends AppCompatActivity {
         }
     }
 }
-

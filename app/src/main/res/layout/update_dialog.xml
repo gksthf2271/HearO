@@ -18,14 +18,14 @@
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/buttonUpdateArtist"
+            android:id="@+id/buttonUpdatemacro"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="수정" />
 
         <Button
-            android:id="@+id/buttonDeleteArtist"
+            android:id="@+id/buttonDeletemacro"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"

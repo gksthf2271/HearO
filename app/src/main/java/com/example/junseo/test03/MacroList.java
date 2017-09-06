@@ -15,24 +15,24 @@ import java.util.List;
 
 public class MacroList extends ArrayAdapter<macro> {
     private Activity context;
-    List<macro> artists;
+    List<macro> macros;
 
-    public MacroList(Activity context, List<macro> artists) {
-        super(context, R.layout.layout_artist_list, artists);
+    public MacroList(Activity context, List<macro> macros) {
+        super(context, R.layout.layout_macro_list, macros);
         this.context = context;
-        this.artists = artists;
+        this.macros = macros;
     }
 
-// 리스트 뷰 아이템 가져오는 부분
+    // 리스트 뷰 아이템 가져오는 부분
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = context.getLayoutInflater();
-        View listViewItem = inflater.inflate(R.layout.layout_artist_list, null, true);
+        View listViewItem = inflater.inflate(R.layout.layout_macro_list, null, true);
 
         TextView textViewName = (TextView) listViewItem.findViewById(R.id.textViewName);
 
-        macro artist = artists.get(position);
-        textViewName.setText(artist.getArtistName());
+        macro macro = macros.get(position);
+        textViewName.setText(macro.getmacroName());
 
 
         return listViewItem;

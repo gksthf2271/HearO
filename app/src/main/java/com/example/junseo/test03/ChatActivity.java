@@ -4,6 +4,7 @@ package com.example.junseo.test03;
  * Created by KHR on 2017-08-09.
  */
 
+import android.annotation.TargetApi;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -27,8 +28,6 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.HashMap;
 import java.util.Locale;
-import android.annotation.TargetApi;
-import android.widget.Toast;
 
 public class ChatActivity extends AppCompatActivity {
     TextToSpeech tts;
@@ -79,7 +78,7 @@ public class ChatActivity extends AppCompatActivity {
         String id = email.substring(0,i);
 
 
-        final DatabaseReference chatdatabaseReference = FirebaseDatabase.getInstance().getReference().child("USER").child(id).child("chat"); // 채팅 레퍼런스
+        final DatabaseReference chatdatabaseReference = FirebaseDatabase.getInstance().getReference().child("huser").child(id).child("chat"); // 채팅 레퍼런스
 
         // 메시지 전송 버튼에 대한 클릭 리스너 지정
         chat_send.setOnClickListener(new View.OnClickListener() {
@@ -117,6 +116,7 @@ public class ChatActivity extends AppCompatActivity {
                 String chatkey = chatpushedPostRefkey.getKey();
                 ChatDTO chat = new ChatDTO("","전송할 내용을 입력하세요");
                 chatdatabaseReference.child(CHAT_NAME).child(chatkey).setValue(chat);
+
                 Log.e("LOG","removemessage");
 
                 finish();
@@ -157,6 +157,7 @@ public class ChatActivity extends AppCompatActivity {
         adapter.remove(chatDTO.getUserName() + " : " + chatDTO.getMessage());
     }
 
+
     private void openChat(String chatName) {
         // 리스트 어댑터 생성 및 세팅
         final ArrayAdapter<String> adapter
@@ -172,7 +173,7 @@ public class ChatActivity extends AppCompatActivity {
         String id = email.substring(0,i);
 
         // 데이터 받아오기 및 어댑터 데이터 추가 및 삭제 등..리스너 관리
-        databaseReference.child("USER").child(id).child("chat").child(chatName).addChildEventListener(new ChildEventListener() {
+        databaseReference.child("huser").child(id).child("chat").child(chatName).addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 addMessage(dataSnapshot, adapter);
@@ -182,6 +183,7 @@ public class ChatActivity extends AppCompatActivity {
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
 
+
             }
 
             @Override
@@ -189,9 +191,6 @@ public class ChatActivity extends AppCompatActivity {
 
                 Log.e("LOG","removemessage");
                 removeMessage(dataSnapshot, adapter);
-
-
-
 
 
             }
@@ -207,4 +206,5 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
     }
+
 }

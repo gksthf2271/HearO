@@ -7,29 +7,29 @@ import com.google.firebase.database.IgnoreExtraProperties;
  */
 @IgnoreExtraProperties
 public class macro {
-    private String artistId;
-    private String artistName;
-   // private String artistGenre;
+    private String macroId;
+    private String macroName;
+    // private String macroGenre;
 
     public macro(){
         //this constructor is required
     }
 
-    public macro(String artistId, String artistName) {
-        this.artistId = artistId;
-        this.artistName = artistName;
-      //  this.artistGenre = artistGenre;
+    public macro(String macroId, String macroName) {
+        this.macroId = macroId;
+        this.macroName = macroName;
+        //  this.macroGenre = macroGenre;
     }
 
-    public String getArtistId() {
-        return artistId;
+    public String getmacroId() {
+        return macroId;
     }
 
-    public String getArtistName() {
-        return artistName;
+    public String getmacroName() {
+        return macroName;
     }
 /*
-    public String getArtistGenre() {
-        return artistGenre;
+    public String getmacroGenre() {
+        return macroGenre;
     }*/
 }

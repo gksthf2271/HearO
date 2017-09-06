@@ -32,8 +32,7 @@ public class StartActivity extends AppCompatActivity {
     private Button user_next;
     private ListView chat_list;
     List<ChatDTO> chatlist;
-    private FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-    private DatabaseReference databaseReference = firebaseDatabase.getReference();
+    private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference(); // 기본 루트 레퍼런스
     private FirebaseAuth firebaseAuth;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,7 +100,7 @@ public class StartActivity extends AppCompatActivity {
         int i = email.indexOf("@");
         String id = email.substring(0,i);
         // 데이터 받아오기 및 어댑터 데이터 추가 및 삭제 등..리스너 관리
-        databaseReference.child("USER").child(id).child("chat").addChildEventListener(new ChildEventListener() {
+        databaseReference.child("huser").child(id).child("chat").addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 Log.e("LOG", "dataSnapshot.getKey() : " + dataSnapshot.getKey());
