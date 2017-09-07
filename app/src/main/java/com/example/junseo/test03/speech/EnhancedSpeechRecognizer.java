@@ -15,9 +15,18 @@ import android.speech.SpeechRecognizer;
 import android.util.Log;
 
 import com.example.junseo.test03.STTActivity;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.lang.ref.WeakReference;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * Responsible for improving recognition service and hiding complex logic.
@@ -34,7 +43,8 @@ public class EnhancedSpeechRecognizer implements RecognitionListener {
     private static final int kMsgRecognizerStart = 1;
     private static final int kMsgRecognizerStop = 2;
     private static final String TAG = EnhancedSpeechRecognizer.class.getSimpleName();
-
+    private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference(); // 기본 루트 레퍼런스
+    private FirebaseAuth firebaseAuth;
     // Max speech value from SpeechRecognizer
     public static final float kSpeechMinValue = -2.12f;
     // Min speech value from SpeechRecognizer
@@ -193,7 +203,28 @@ public class EnhancedSpeechRecognizer implements RecognitionListener {
         // notifies the speeches each by each.
         for (String speech : results_in_arraylist) {
             Log.d(TAG, "match: " + speech);
+            final DatabaseReference pushedPostRefkey = databaseReference.push();
+
+            final String speechkey = pushedPostRefkey.getKey();
+            firebaseAuth = FirebaseAuth.getInstance();
+            FirebaseUser user = firebaseAuth.getCurrentUser();
+            final String email = user.getEmail();
+            int i = email.indexOf("@");
+            String id = email.substring(0,i);
+
+            long now = System.currentTimeMillis();
+            // 현재시간을 date 변수에 저장한다.
+            Date date = new Date(now);
+            // 시간을 나타냇 포맷을 정한다 ( yyyy/MM/dd 같은 형태로 변형 가능 )
+            SimpleDateFormat sdfNow = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+            // nowDate 변수에 값을 저장한다.
+            String speechtime = sdfNow.format(date);
+
+            databaseReference.child("huser").child(id).child("speach").child(speechtime).setValue(speech);
         }
+
+
+
         speech_listener_.onSpeechRecognized(results_in_arraylist);
 
         // When speech detected, start the recognition again since in this case
@@ -202,6 +233,43 @@ public class EnhancedSpeechRecognizer implements RecognitionListener {
 
         duplicated_listening_ = false;
         speech_recognized_ = false;
+
+
+        firebaseAuth = FirebaseAuth.getInstance();
+        FirebaseUser user = firebaseAuth.getCurrentUser();
+        final String email = user.getEmail();
+        int i = email.indexOf("@");
+        String id = email.substring(0,i);
+
+
+        databaseReference.child("USER").child(id).child("SPEACH").addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(final DataSnapshot dataSnapshot) {
+
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
     }
 
     @Override

@@ -4,7 +4,6 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -27,7 +26,6 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.example.junseo.test03.arduino.ArduinoConnector;
@@ -47,7 +45,7 @@ import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
 
 
-public class MenuActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener{
+public class MenuActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
 
 
     private Button buttonLogout;
@@ -58,7 +56,7 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
     private ArduinoConnector arduinoConnector_;
     private ArduinoConnector.Listener arduino_listener_;
 
-    protected  BluetoothSerial.Listener bluetooth_listener_;
+    protected BluetoothSerial.Listener bluetooth_listener_;
     private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference(); // 기본 루트 레퍼런스
 
     private FirebaseAuth firebaseAuth;
@@ -70,9 +68,9 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
     Button start = null; // 화재 애니메이션 시작
     Button blinking_animation2 = null; // 노크 애니메이션
     Button start2 = null; // 노크 애니메이션 시작
-    Button blinking_animation3=null; // 음성 애니메이션
+    Button blinking_animation3 = null; // 음성 애니메이션
     Button start3 = null; // 음성 애니메이션 시작
-    Button blinking_animation4=null; // 초인종 애니메이션
+    Button blinking_animation4 = null; // 초인종 애니메이션
     Button start4 = null; // 초인종 애니메이션
     TextView firetext = null; // 불났어요 출력
     TextView doortext = null; // 노크 출력
@@ -89,7 +87,7 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
 
         super.onCreate(savedInstanceState);
 
-            pushnoti();
+        pushnoti();
 
 
         setContentView(R.layout.activity_menu);
@@ -197,12 +195,13 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
-    public void Vibrator_pattern(){
+    public void Vibrator_pattern() {
 
         long[] vibratePattern = {100, 100, 100};
         mVibe.vibrate(vibratePattern, 0);
         flag = TRUE;
     }
+
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -211,18 +210,19 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
         } else {
             super.onBackPressed();
         }
-        if(flag==TRUE)
-        {
+        if (flag == TRUE) {
             mVibe.cancel();
             flag = FALSE;
         }
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu, menu);
         return true;
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -242,8 +242,7 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
     protected void onUserLeaveHint() {  //홈버튼 이벤트
 //여기서 감지
         Log.d("한솔", "Home Button Touch");
-        if(flag==TRUE)
-        {
+        if (flag == TRUE) {
             mVibe.cancel();
             flag = FALSE;
         }
@@ -251,17 +250,8 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
-    public void NotoficationVoice() {
-
-        Resources res = getResources();
-        Intent notificationIntent = new Intent(this, MenuActivity.class);
-        notificationIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP
-                | Intent.FLAG_ACTIVITY_SINGLE_TOP);// 루트 액티비티 하나만 뜨게 플래그 잡아줌
-        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
 
 
-    }
     public void NotificationFire() {
 
 
@@ -374,8 +364,9 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
         firetext.setVisibility(View.VISIBLE);
 
     }
-    public void onvoice()
+    /*public void onvoice()
     {
+
         mVibe.cancel();
         blinking_animation.clearAnimation();
         firetext.setVisibility(View.GONE);
@@ -386,7 +377,7 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
 
         blinking_animation3.setVisibility(View.VISIBLE);
         voicetext.setVisibility(View.VISIBLE);
-    }
+    }*/
     public void onbell(){
         Notificationbell();
         mVibe.cancel();
@@ -461,8 +452,19 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
+    public void onvoice() {
+
+
+    }
     public void pushnoti() {
         // 리스트 어댑터 생성 및 세팅
+
+        final Resources res = getResources();
+        Intent notificationIntent = new Intent(this, MenuActivity.class);
+        notificationIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP
+                | Intent.FLAG_ACTIVITY_SINGLE_TOP);// 루트 액티비티 하나만 뜨게 플래그 잡아줌
+        final PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+        final NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
 
         firebaseAuth = FirebaseAuth.getInstance();
         FirebaseUser user = firebaseAuth.getCurrentUser();
@@ -473,7 +475,7 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
         DatabaseReference sensordb = databaseReference.child("huser").child(id).child("sensor");
         DatabaseReference knockdb = sensordb.child("knock");
         DatabaseReference firedb = sensordb.child("fire");
-
+        DatabaseReference voicedb = sensordb.child("voice");
         // 데이터 받아오기 및 어댑터 데이터 추가 및 삭제 등..리스너 관리
 
         knockdb.addChildEventListener(new ChildEventListener() {
@@ -498,25 +500,76 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
         });
 
         firedb.addChildEventListener(new ChildEventListener() {
-                @Override
-               public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
 
-                  }
-               @Override
-               public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                   Log.e("LOG", "dataSnapshot.getKey() : " + dataSnapshot.getKey());
-                   onfire();
-                 }
-                 @Override
-                  public void onChildRemoved(DataSnapshot dataSnapshot) {
-                 }
-               @Override
-          public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-                 }
-              @Override
-              public void onCancelled(DatabaseError databaseError) {
-                 }
-});
+            }
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                Log.e("LOG", "dataSnapshot.getKey() : " + dataSnapshot.getKey());
+                onfire();
+            }
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+            }
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+
+        voicedb.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+
+            }
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                Log.e("LOG", "dataSnapshot.getKey() : " + dataSnapshot.getKey());
+                Log.e("LOG", "dataSnapshot.getValue() : " + dataSnapshot.getValue());
+
+                builder.setContentTitle("HearO")
+                        .setContentText((String) dataSnapshot.getValue())
+                        .setTicker("음성")
+                        .setSmallIcon(R.mipmap.ic_launcher)
+                        .setLargeIcon(BitmapFactory.decodeResource(res, R.mipmap.ic_launcher))
+                        .setContentIntent(contentIntent)
+                        .setAutoCancel(true)
+                        .setWhen(System.currentTimeMillis())
+                        .setDefaults(Notification.DEFAULT_SOUND);
+                voicetext.setText((String) dataSnapshot.getValue());
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                    builder.setCategory(Notification.CATEGORY_MESSAGE)
+                            .setPriority(Notification.PRIORITY_HIGH)
+                            .setVisibility(Notification.VISIBILITY_PUBLIC);
+                }
+
+                NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                nm.notify(1234, builder.build());
+                mVibe.cancel();
+                blinking_animation.clearAnimation();
+                firetext.setVisibility(View.GONE);
+                blinking_animation2.setVisibility(View.GONE);
+                doortext.setVisibility(View.GONE);
+                blinking_animation4.setVisibility(View.INVISIBLE);
+                belltext.setVisibility(View.GONE);
+
+                blinking_animation3.setVisibility(View.VISIBLE);
+                voicetext.setVisibility(View.VISIBLE);
+            }
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+            }
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+
+        });
 
     }
 
