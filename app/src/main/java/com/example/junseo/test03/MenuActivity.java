@@ -251,6 +251,17 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
+    public void NotoficationVoice() {
+
+        Resources res = getResources();
+        Intent notificationIntent = new Intent(this, MenuActivity.class);
+        notificationIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP
+                | Intent.FLAG_ACTIVITY_SINGLE_TOP);// 루트 액티비티 하나만 뜨게 플래그 잡아줌
+        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+
+
+    }
     public void NotificationFire() {
 
 
