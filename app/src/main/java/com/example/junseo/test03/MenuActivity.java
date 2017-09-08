@@ -82,15 +82,14 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
 
     int[] img = {R.drawable.hback1}; // 여기서  , , , 식으로 추가를 하면 랜덤으로 뽑아옴
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-
         pushnoti();
-
-
         setContentView(R.layout.activity_menu);
+
         //배경 랜덤 설정
         back = (LinearLayout) findViewById(R.id.layout);
         Random ram = new Random();

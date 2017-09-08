@@ -36,6 +36,8 @@ public class MacroActivity extends AppCompatActivity {
     Button button1;
     private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference(); // 기본 루트 레퍼런스
     private DatabaseReference huser = databaseReference.child("huser");
+
+    private DatabaseReference dashboardReference = FirebaseDatabase.getInstance().getReference().child("hdashboard"); // 대쉬보드 레퍼런스
     private FirebaseAuth firebaseAuth;
     EditText editTextName;
     //  Spinner spinnerGenre;
@@ -57,8 +59,6 @@ public class MacroActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_macro);
         Cancel5 = (Button) findViewById(R.id.Cancel5);
-        //getting the reference of macros node
-        //databasemacros = FirebaseDatabase.getInstance().getReference("macros");
 
         tts=new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
             @Override
@@ -70,11 +70,6 @@ public class MacroActivity extends AppCompatActivity {
         });
         //getting views
 
-        firebaseAuth = FirebaseAuth.getInstance();
-        FirebaseUser user = firebaseAuth.getCurrentUser();
-        final String email = user.getEmail();
-        int i = email.indexOf("@");
-        String id1 = email.substring(0,i);
 
 
         editTextName = (EditText) findViewById(R.id.editTextName);
@@ -123,8 +118,16 @@ public class MacroActivity extends AppCompatActivity {
                 } else {
                     ttsUnder20(text);
                 }
-
-            }
+                firebaseAuth = FirebaseAuth.getInstance();
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+                final String email = user.getEmail();
+                int g = email.indexOf("@");
+                final String userid = user.getUid();
+                String id1 = email.substring(0,g);
+                String id = databaseReference.push().getKey();
+                    //Saving the macro
+                dashboardReference.child(userid).child("macro").child(id).setValue(macro);
+                }
         });
 
 
@@ -284,7 +287,6 @@ public class MacroActivity extends AppCompatActivity {
     * Firebase Realtime Database
     * */
     private void addmacro() {
-        //getting the values to save
         //getting the values to save
         String name = editTextName.getText().toString().trim();
 

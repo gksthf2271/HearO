@@ -8,6 +8,7 @@ import android.annotation.TargetApi;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.speech.tts.TextToSpeech;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -26,6 +27,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 
@@ -76,15 +80,16 @@ public class ChatActivity extends AppCompatActivity {
         final String email = user.getEmail();
         int i = email.indexOf("@");
         String id = email.substring(0,i);
+        final String userid = user.getUid();
 
 
         final DatabaseReference chatdatabaseReference = FirebaseDatabase.getInstance().getReference().child("huser").child(id).child("chat"); // 채팅 레퍼런스
-
+        final DatabaseReference dashboard = FirebaseDatabase.getInstance().getReference().child("hdashboard").child(userid).child("chat"); // 대쉬보드 레퍼런스
         // 메시지 전송 버튼에 대한 클릭 리스너 지정
         chat_send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int position = chat_view.getFirstVisiblePosition();
+                int position = chat_view.getFirstVisiblePosition(); // chat list 위치
                 if (chat_edit.getText().toString().equals(""))
                     return;
                 String text = chat_edit.getText().toString();
@@ -99,9 +104,8 @@ public class ChatActivity extends AppCompatActivity {
                 final DatabaseReference chatpushedPostRefkey = chatdatabaseReference.push();
                 final String chatkey = chatpushedPostRefkey.getKey();
                 final ChatDTO chat = new ChatDTO(USER_NAME, chat_edit.getText().toString()); //ChatDTO를 이용하여 데이터를 묶는다.
-/*                databaseReference.child("chat").child(CHAT_NAME).push().setValue(chat); // 데이터 푸쉬*/
-
                 chatdatabaseReference.child(CHAT_NAME).child(chatkey).setValue(chat); // 데이터 푸쉬
+                dashboard.child(CHAT_NAME).child(chatkey).setValue(chat);
 
                 chat_edit.setText(""); //입력창 초기화
                 chat_view.smoothScrollToPosition(position);
@@ -172,39 +176,35 @@ public class ChatActivity extends AppCompatActivity {
         int i = email.indexOf("@");
         String id = email.substring(0,i);
 
+
         // 데이터 받아오기 및 어댑터 데이터 추가 및 삭제 등..리스너 관리
         databaseReference.child("huser").child(id).child("chat").child(chatName).addChildEventListener(new ChildEventListener() {
+
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 addMessage(dataSnapshot, adapter);
                 Log.e("LOG", "s:"+s);
-            }
 
+            }
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
 
-
             }
-
             @Override
             public void onChildRemoved(final DataSnapshot dataSnapshot) {
-
                 Log.e("LOG","removemessage");
                 removeMessage(dataSnapshot, adapter);
-
-
             }
 
             @Override
             public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
             }
-
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
             }
         });
+
     }
 
 }
