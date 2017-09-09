@@ -1,6 +1,8 @@
 package com.example.junseo.test03;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
@@ -26,8 +28,10 @@ import android.widget.Toast;
 
 import com.example.junseo.test03.arduino.ArduinoConnector;
 import com.example.junseo.test03.arduino.BluetoothPairActivity;
+//import com.example.junseo.test03.arduino.BluetoothService;
 import com.example.junseo.test03.arduino.BluetoothSerial;
 import com.example.junseo.test03.arduino.PacketParser;
+//import com.example.junseo.test03.arduino.PairActivity;
 import com.example.junseo.test03.speech.CommandSpeechFilter;
 import com.example.junseo.test03.speech.EnhancedSpeechRecognizer;
 import com.example.junseo.test03.speech.SignalSpeechFilter;
@@ -36,9 +40,11 @@ import com.example.junseo.test03.speech.SpeechListener;
 import java.io.IOException;
 import java.util.ArrayList;
 
+
 /**
  * Created by Junseo on 2017-07-04.
  */
+
 
 public class STTActivity extends AppCompatActivity implements View.OnClickListener  {
     Button checkbtn = null;
@@ -60,6 +66,7 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
 
 
 
+
     //블루투스 상태
     private TextView txtState;
     private ImageView mImageBT;
@@ -68,6 +75,7 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
     //다이얼
     AlertDialog.Builder ad;
 
+    DialogInterface mPopupDlg = null;
 
 
     private static final String TAG = STTActivity.class.getSimpleName();
@@ -100,7 +108,7 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
         //블루투스 브로드캐스트 리시버
         IntentFilter stateFilter = new IntentFilter();
         stateFilter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED); //BluetoothAdapter.ACTION_STATE_CHANGED : 블루투스 상태변화 액션
-        registerReceiver(mBluetoothStateReceiver, stateFilter);
+        //registerReceiver(mBluetoothStateReceiver, stateFilter);
 
 
         speech_recognizer_ = buildSpeechRecognizer();       // 여기까지 화면구성
@@ -132,6 +140,7 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
             public void onClick(DialogInterface dialog, int which) {
                 Log.v(TAG,"닫기 클릭");
                 dialog.dismiss();     //닫기
+                //09.08
                 speech_recognizer_.stop();
                 finish();
 
@@ -155,9 +164,11 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
 
     }
     private EnhancedSpeechRecognizer buildSpeechRecognizer() {
-        /*
-        Build listener chain in reverse order of event deliver order.
-         */
+
+
+        //Build listener chain in reverse order of event deliver order.
+
+
         CommandSpeechFilter cmd_filter = new CommandSpeechFilter(speech_listener_);
         // Add commands that it will listen for.
         final Resources rs = getResources();
@@ -176,9 +187,9 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unregisterReceiver(mBluetoothStateReceiver);
-        arduinoConnector_.destroy();
-        speech_recognizer_.destroy();
+       // unregisterReceiver(mBluetoothStateReceiver);
+        //arduinoConnector_.destroy();
+        //speech_recognizer_.destroy();
     }
 
     @Override
@@ -187,7 +198,7 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
         super.onResume();
 
 
-
+    //09.08
         if(flag == true) {
             speech_recognizer_.destroy();
             speech_recognizer_.start();
@@ -199,6 +210,7 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
     protected void onPause() {
         Log.d(TAG, "onPause");
         super.onPause();
+        //09.08
         speech_recognizer_.stop();
     }
 
@@ -229,7 +241,7 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
         if (resultCode == RESULT_OK) {
             BluetoothDevice device = intent.getParcelableExtra("device");
             arduinoConnector_.connect(device);
-            Log.d(TAG,"블루투스 연결 성공");
+            Log.d(TAG,"BLUETOOTH CONNECT");
 
             Intent result_intent = new Intent(getApplicationContext(), MenuActivity.class);
             result_intent.putExtra("device",device);
@@ -265,19 +277,23 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
         }
     };
 
-    /**
+
+/**
      * Change the value, ranged from -2.12 to 10, into new value ranged from 0 to 1212.
      * @param value speech level from SpeechRecognizer.
      * @return normalized value.
      */
+
     private int normalizeSpeechValue(float value) {
         return (int)((value + Math.abs(EnhancedSpeechRecognizer.kSpeechMinValue))
                 * kSpeechMagnifyingValue);
     }
 
-    /**
+
+/**
      * Listener for speech recognition.
      */
+
     private EnhancedSpeechRecognizer.Listener speech_recognizer_listener_ =
             new EnhancedSpeechRecognizer.Listener() {
                 @Override
@@ -299,9 +315,11 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
                 }
             };
 
-    /**
+
+/**
      * Listener for Arduino.
      */
+
     private ArduinoConnector.Listener arduino_listener_ = new ArduinoConnector.Listener() {
         @Override
         public void onConnect(BluetoothDevice device) {
@@ -339,18 +357,23 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
             case Disconnected:
                 txt_app_status_.setText(
                         getResources().getString(R.string.txtview_disconnected));
+
                 break;
             case Standby:
                 txt_app_status_.setText(getResources().getString(R.string.txtview_standby));
-                //ad.show();
+
                 //다이얼로그 띄우고 계속 음성인식을 하시겠습니까? yes면 stats = Listening 구현
+                ad.show();
+
                 break;
             case Listening:
                 txt_app_status_.setText(
                         getResources().getString(R.string.txtview_listening));
+
                 break;
         }
     }
+
 
     // Represent current application status.
     private enum AppState {
@@ -359,49 +382,58 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
         Listening    // listening speech recognition.
     }
 
-    /**
+
+/**
      * Manage current app status.
      * Evaluate application status using input status.
      */
+
     static class AppStateManager {
         private boolean connected_ = false;
         private boolean is_listening_ = false;
 
-        /**
+
+/**
          * Update Arduino connection status.
          * @param connected true if connected to Arduino.
          * @return Current app status.
          */
+
         public AppState updateConnectionStatus(boolean connected) {
             connected_ = connected;
             return getStatus();
         }
 
-        /**
-         * Update speech recognition status.
+
+         /* Update speech recognition status.
          * @param is_listening true if speech recognition is working.
          * @return Current app status.
          */
+
         public AppState updateSpeechRecognitionStatus(boolean is_listening) {
             is_listening_ = is_listening;
             return getStatus();
         }
 
-        /**
+
+/**
          * Evaluate the current AppStatus.
          * @return Current AppStatus.
          */
+
         AppState getStatus() {
             if (connected_) {
 
                 return is_listening_ ? AppState.Listening : AppState.Standby;
-                /*return AppState.Listening;*/
+
+               // return AppState.Listening;
+
             } else {
                 return  AppState.Disconnected;
             }
         }
     }
-    //블루투스 상태변화 BroadcastReceiver
+    /*//블루투스 상태변화 BroadcastReceiver
     BroadcastReceiver mBluetoothStateReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -434,8 +466,8 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
         }
     };
 
-
-
+*/
 
 
 }
+

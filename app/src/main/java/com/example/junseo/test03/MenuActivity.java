@@ -1,5 +1,7 @@
 package com.example.junseo.test03;
 
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -11,6 +13,7 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.design.widget.NavigationView;
+import android.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -31,6 +34,8 @@ import android.widget.ToggleButton;
 import com.example.junseo.test03.arduino.ArduinoConnector;
 import com.example.junseo.test03.arduino.BluetoothPairActivity;
 import com.example.junseo.test03.arduino.BluetoothSerial;
+//import com.example.junseo.test03.arduino.BluetoothService;
+//import com.example.junseo.test03.arduino.PairActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -51,8 +56,8 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
     private Button buttonLogout;
 
     private BluetoothAdapter bluetooth_;
+    //private BluetoothPairActivity btService = null;
     private BluetoothPairActivity btService = null;
-
     private ArduinoConnector arduinoConnector_;
     private ArduinoConnector.Listener arduino_listener_;
 
@@ -96,6 +101,7 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
         int num = ram.nextInt(img.length);
         back.setBackgroundResource(img[num]);
         blinking_animation = (Button) findViewById(R.id.blinking_animation);
+
         start = (Button) findViewById(R.id.start);
         firetext = (TextView) findViewById(R.id.firetext);
         mVibe = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
@@ -149,6 +155,20 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
             public void onClick(View view) {
                 Intent sttIntent = new Intent(MenuActivity.this, STTActivity.class);
                 MenuActivity.this.startActivity(sttIntent);
+
+            /*    Fragment stt_fr;
+                Fragment state_fr;
+
+                stt_fr = new Fragment();
+                state_fr = new Fragment();
+
+                FragmentManager fm = getFragmentManager();
+                FragmentTransaction fragmentTransaction = fm.beginTransaction();
+                fragmentTransaction.replace(R.id.fragmentA, stt_fr);
+                fragmentTransaction.replace(R.id.fragmentA, state_fr);
+                fragmentTransaction.commit();
+
+*/
             }
         });
 
@@ -406,6 +426,8 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
             startActivity(new Intent(this,HelpActivity.class)); //도움말
         } else if (id == R.id.nav_module) {
             startActivity(new Intent(this, BluetoothPairActivity.class)); //모듈 연결/해제
+
+
         } else if (id == R.id.nav_alert) {
             startActivity(new Intent(this,AlarmActivity.class)); //알림 설정
         } else if (id == R.id.Logout) {

@@ -8,9 +8,9 @@
     <!--  These are variations of the command speech
         this is for increasing recognition accuracy. -->
     <string name="command_lighton_variant">
-        전등 켜|점등 켜|정등 켜|
+        전등 켜|점등 켜|정등 켜|전든 켜
     </string>
     <string name="command_lightoff_variant">
-        전등 꺼|점등 꺼|정등 꺼
+        전등 꺼|점등 꺼|정등 꺼|전등 거|전듬 거
     </string>
 </resources>

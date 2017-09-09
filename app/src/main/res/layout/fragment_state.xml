@@ -1,0 +1,32 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.junseo.test03.StateFragment">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="26dip"
+        android:layout_gravity="bottom"
+        android:orientation="horizontal"
+        android:id="@+id/bl_monitoring"
+        style="@style/AppTheme.ConnectionInfoContainer" >
+
+        <ImageView
+            android:id="@+id/status_title"
+            android:layout_width="wrap_content"
+            android:layout_height="20dip"
+            android:layout_marginRight="3dip"
+            android:layout_marginTop="3dip"
+            android:layout_marginBottom="3dip"
+            android:layout_alignLeft="@+id/status_text"
+            android:layout_alignStart="@+id/status_text" />
+        <TextView
+            android:id="@+id/status_text"
+            android:layout_width="match_parent"
+            android:layout_height="20dip"
+            android:layout_margin="3dip"
+            android:text="블루투스 미연결"
+            style="@style/AppTheme.ConnectionInfoText" />
+    </RelativeLayout>
+</FrameLayout>

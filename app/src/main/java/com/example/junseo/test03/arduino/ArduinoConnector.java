@@ -7,7 +7,6 @@ import android.nfc.Tag;
 import android.os.Handler;
 import android.util.Log;
 
-import com.example.junseo.test03.STTActivity;
 import com.example.junseo.test03.arduino.PacketParser.Decoder;
 import com.example.junseo.test03.arduino.PacketParser.Encoder;
 /**
@@ -60,6 +59,7 @@ public class ArduinoConnector {
         Log.d(LOG, "Packet Send -> " + packet);
         bluetooth_.Write(packet.getBytes());
     }
+
 
     public void destroy() {
         if (bluetooth_ != null) {

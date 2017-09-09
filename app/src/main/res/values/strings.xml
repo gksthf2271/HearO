@@ -6,7 +6,6 @@
     <string name="action_settings">Settings</string>
 
 
-
     <!-- Options Menu -->
     <string name="secure_connect">Connect a device - Secure</string>
     <string name="insecure_connect">Connect a device - Insecure</string>
@@ -24,4 +23,7 @@
     <string name="button_bluetooth_device_refresh">새로고침</string>
     <string name="button_bluetooth_device_search">검색</string>
     <string name="button_bluetooth_device_stop">정지</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

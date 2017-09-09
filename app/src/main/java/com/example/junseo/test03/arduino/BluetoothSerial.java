@@ -37,18 +37,20 @@ public class BluetoothSerial {
 
     private static final String TAG = BluetoothSerial.class.getSimpleName();
     private final BluetoothAdapter bluetooth_;
-    private ConnectThread connect_thread_;
+    public ConnectThread connect_thread_;
     ///08.09 수정
     //private AcceptThread accept_thread_;
     private String name = "OHOHME";
     ///
-    private ReadThread read_thread_;
+    private ReadThread read_thread_= new ReadThread();
     private Listener listener_;
     private BluetoothSocket socket_;
     private BluetoothDevice device_;
 
     private ReadHandler read_handler_;
     private OutputStream output_stream_ = null;
+    private InputStream input_stream_ = null;
+    char mCharDelimiter =  '\n';
 
 
     public interface Listener {
@@ -83,6 +85,7 @@ public class BluetoothSerial {
 
         //accept_thread_.start();
         connect_thread_.start();
+
 
 
     }
@@ -134,7 +137,7 @@ public class BluetoothSerial {
         }
     }
 
-    private class ConnectThread extends Thread {
+    public class ConnectThread extends Thread {
         public ConnectThread(BluetoothDevice device) {
             // Use a temporary object that is later assigned to socket_,
             // because socket_ is final
@@ -165,6 +168,10 @@ public class BluetoothSerial {
                 // until it succeeds or throws an exception
                 Log.d(TAG, "Connect...");
                 socket_.connect();
+
+                output_stream_ = socket_.getOutputStream();
+                input_stream_ = socket_.getInputStream();
+
             } catch (IOException connectException) {
                 connectException.printStackTrace();
                 // Unable to connect; close the socket and get out
@@ -175,26 +182,17 @@ public class BluetoothSerial {
                 }
                 return;
             }
+  /*          read_thread_ = new ReadThread();*/
+
 
             Log.d(TAG, "Connected");
-
-
-
-
 
 
             Message msg = read_handler_.obtainMessage(kMsgConnectBluetooth);
             read_handler_.sendMessage(msg);
 
-            // start reading thread.
-            read_thread_ = new ReadThread();
             read_thread_.start();
 
-            try {
-                output_stream_ = socket_.getOutputStream();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
 
             // release connect object
             connect_thread_ = null;
@@ -210,59 +208,74 @@ public class BluetoothSerial {
         }
     }
 
-    private class ReadThread extends Thread {
-        private InputStream input_stream_;
+    public class ReadThread extends Thread{
 
         public ReadThread() {
-            InputStream tmpIn = null;
 
-            // Get the input and output streams, using temp objects because
+
+   /*         // Get the input and output streams, using temp objects because
             // member streams are final
             try {
-                tmpIn = socket_.getInputStream();
+                input_stream_ = socket_.getInputStream();
             } catch (IOException e) {
                 e.printStackTrace();
-            }
+            }*/
 
-            input_stream_ = tmpIn;
             Log.d("HS_input_stream ", String.valueOf(input_stream_));
         }
 
         public void run() {
             byte[] buffer = new byte[1024];  // buffer store for the stream
-            int bytes; // bytes returned from read()
+            //int bytes; // bytes returned from read()
             int readBufferPosition = 0;
+
+            Log.d(TAG,"TEST00 : " +input_stream_);
 
             // Keep listening to the InputStream until an exception occurs
             while (true) {
                 try {
                     // Read from the InputStream
-                    bytes = input_stream_.read(buffer);
+                    //int bytes = input_stream_.read(buffer);
+
+                    int bytesAvailable = input_stream_.available();
+                    /*Log.d(TAG,"TEST1");
+                    Log.d(TAG, String.valueOf(bytes));*/
                     // TODO: To prevent memory allocation each time,
                     // it may need a byte queue and synchronization.
-                    byte[] fragment = Arrays.copyOf(buffer, bytes);
+
+                    byte[] fragment = Arrays.copyOf(buffer, bytesAvailable);
 
                     // Send the obtained bytes to the UI activity
-                    read_handler_.obtainMessage(kMsgReadBluetooth, bytes, -1, fragment)
+                    read_handler_.obtainMessage(kMsgReadBluetooth, bytesAvailable, -1, fragment)
                             .sendToTarget();
 
-                    if(bytes >0){
-                        byte[] packetBytes = new byte[bytes];
+                    if(bytesAvailable > 0){
+                        Log.d(TAG,"TEST2 : " + bytesAvailable);
+                        byte[] packetBytes = new byte[bytesAvailable];
+
                         input_stream_.read(packetBytes);
 
-                        for(int i=0; i<bytes; i++){
+                        Log.d(TAG,"input : "+ String.valueOf(input_stream_.read(packetBytes)));
+
+                        for(int i=0; i<bytesAvailable; i++){
+
                             byte b = packetBytes[i];
-                            if(b=='\n')
+
+                            Log.d(TAG,"b값은 : "+ b);
+                            if(b== mCharDelimiter)
                             {
+                                Log.d(TAG,"TEST3");
                                 byte[] encodedBytes = new byte[readBufferPosition];
-                                System.arraycopy(buffer, 0, encodedBytes, 0, encodedBytes.length);
-                                String recvMessage = new String(encodedBytes, "UTF-8");
+                                System.arraycopy(buffer, 0, encodedBytes, 0,
+                                        encodedBytes.length);
+                                final String recvMessage = new String(encodedBytes, "UTF-8");
                                 readBufferPosition = 0;
                                 Log.d(TAG, "recv message: " + recvMessage);
 
                             }
                             else
                             {
+                                Log.d(TAG,"TEST4");
                                 buffer[readBufferPosition++] = b;
                             }
                         }

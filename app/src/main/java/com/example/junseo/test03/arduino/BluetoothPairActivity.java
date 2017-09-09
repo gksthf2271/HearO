@@ -1,14 +1,19 @@
+
 package com.example.junseo.test03.arduino;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
+import android.os.IBinder;
+import android.os.Messenger;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -28,6 +33,7 @@ import com.example.junseo.test03.MainActivity;
 import com.example.junseo.test03.MenuActivity;
 import com.example.junseo.test03.R;
 import com.example.junseo.test03.STTActivity;
+//import com.example.junseo.test03.STTFragment;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,11 +41,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+
 /**
  * Activity that pairs with bluetooth devices.
  *
  * Lists out the bluetooth devices and connects them.
  */
+
+
 public class BluetoothPairActivity extends Activity {
     private static final String TAG = BluetoothPairActivity.class.getSimpleName();
     private ListView listview_devices_;
@@ -67,6 +76,10 @@ public class BluetoothPairActivity extends Activity {
     //list - Device 목록 저장
     private List<Map<String, String>> dataPaired;
 
+    //서비스
+    private BluetoothService  mService = null;    // 서비스와 통신하는데 사용되는 메신저
+    private boolean mBound = false;    // 서비스 연결 여부
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,7 +87,12 @@ public class BluetoothPairActivity extends Activity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_bluetooth_pair);
 
+        //Intent intent = new Intent(this, BluetoothService.class);
+        //bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+
         //setBackgroundColor();
+        Intent intent = new Intent(this, BluetoothService.class);
+        startService(intent);
 
 
         //블루투스 장치 새로운 device , 페얼이된 paired device setup view
@@ -91,9 +109,9 @@ public class BluetoothPairActivity extends Activity {
         device_refresh_.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Toast.makeText(getApplicationContext(),
+                        "새로고침!", Toast.LENGTH_LONG).show();
                 UpdateDeviceListView();
-/*                device_refresh_.setVisibility(v.GONE);
-                device_stop_.setVisibility(v.VISIBLE);*/
             }
         });
 
@@ -103,8 +121,6 @@ public class BluetoothPairActivity extends Activity {
             @Override
             public void onClick(View v) {
                 StopDeviceListView();
-  /*              device_stop_.setVisibility(v.GONE);
-                device_refresh_.setVisibility(v.VISIBLE);*/
             }
         });
 
@@ -121,10 +137,11 @@ public class BluetoothPairActivity extends Activity {
         pairedListView.setOnItemClickListener(mDeviceClickListener);
         listview_devices_.setOnItemClickListener(mDeviceClickListener);
 
-/*        listview_devices_.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+        listview_devices_.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String name = listview_devices_.getItemAtPosition(position).toString();
-                Log.d(TAG, "Connect name : " + name);
+                Log.d(TAG, "Connect name1 : " + name);
                 BluetoothDevice device = device_name_map_.get(name);
                 if (device == null) {
                     Toast.makeText(getApplicationContext(), "Can't find the device!",
@@ -139,7 +156,7 @@ public class BluetoothPairActivity extends Activity {
 
 
             }
-        });*/
+        });
 
 
 //        UpdateBondedDevices();
@@ -272,7 +289,8 @@ public class BluetoothPairActivity extends Activity {
                     //리스트 목록갱신
                     adapterPaired.notifyDataSetChanged();
 
-                     /*   //검색된 목록
+
+/*   //검색된 목록
                         if(selectDevice != -1){
                             bluetoothDevices.remove(selectDevice);
 
@@ -280,6 +298,7 @@ public class BluetoothPairActivity extends Activity {
                             adapterDevice.notifyDataSetChanged();
                             selectDevice = -1;
                         }*/
+
                 }
 
             }
@@ -334,6 +353,7 @@ public class BluetoothPairActivity extends Activity {
     }
 
 
+
 /*    public void GetListPairedDevice() {
         Set<BluetoothDevice> paired_devices_ = bluetooth_.getBondedDevices();
 
@@ -351,6 +371,7 @@ public class BluetoothPairActivity extends Activity {
         adapterPaired.notifyDataSetChanged();
     }*/
 
+
     private AdapterView.OnItemClickListener mDeviceClickListener = new AdapterView.OnItemClickListener() {
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             bluetooth_.cancelDiscovery();
@@ -358,13 +379,14 @@ public class BluetoothPairActivity extends Activity {
 
             //String name = listview_devices_.getItemAtPosition(position).toString();
             String name = ((TextView) view).getText().toString();
-            Log.d(TAG, "Connect name : " + name);
+            Log.d(TAG, "Connect name2 : " + name);
             BluetoothDevice device = device_name_map_.get(name);
             if (device == null) {
                 Toast.makeText(getApplicationContext(), "Can't find the device!",
                         Toast.LENGTH_LONG).show();
                 return;
             }
+
 
             Intent result_intent = new Intent(getApplicationContext(), STTActivity.class);
             result_intent.putExtra("device", device_name_map_.get(name));
@@ -376,5 +398,26 @@ public class BluetoothPairActivity extends Activity {
     };
 
 
+    private ServiceConnection mConnection = new ServiceConnection(){
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            BluetoothService.ServiceBinder binder = (BluetoothService.ServiceBinder) service;
+            mService = binder.getService();
+            mBound = true;
+        }
+        @Override
+        public void onServiceDisconnected(ComponentName arg0){
+            mService = null;
+            mBound = false;
+        }
+    };
+
+    @Override
+    protected void onStart(){
+        super.onStart();
+    }
+    // 액티비티가 종료되면 서비스 연결을 해제
+
 }
+
 

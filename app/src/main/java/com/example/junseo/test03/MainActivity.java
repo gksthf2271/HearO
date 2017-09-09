@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import com.example.junseo.test03.arduino.ArduinoConnector;
 import com.example.junseo.test03.arduino.BluetoothPairActivity;
+//import com.example.junseo.test03.arduino.BluetoothService;
 import com.example.junseo.test03.arduino.PacketParser;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
