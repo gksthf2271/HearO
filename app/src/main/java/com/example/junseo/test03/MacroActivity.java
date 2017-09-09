@@ -24,7 +24,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -121,18 +123,23 @@ public class MacroActivity extends AppCompatActivity {
                 firebaseAuth = FirebaseAuth.getInstance();
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 final String email = user.getEmail();
-                int g = email.indexOf("@");
                 final String userid = user.getUid();
-                String id1 = email.substring(0,g);
+
                 String id = databaseReference.push().getKey();
+
+                long now = System.currentTimeMillis();
+                // 현재시간을 date 변수에 저장한다.
+                Date date = new Date(now);
+                // 시간을 나타냇 포맷을 정한다 ( yyyy/MM/dd 같은 형태로 변형 가능 )
+                SimpleDateFormat sdfNow = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+                // nowDate 변수에 값을 저장한다.
+                String macrotime = sdfNow.format(date);
                     //Saving the macro
-                dashboardReference.child(userid).child("macro").child(id).setValue(macro);
+                dashboardReference.child(userid).child("macro").child(id).setValue(macrotime);
                 }
         });
 
-
-
-        //꾹 눌렀을 때 실행하기
+        //길게 눌렀을 때 실행하기
         listViewmacros.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -203,7 +210,7 @@ public class MacroActivity extends AppCompatActivity {
             }
         });
     }
-
+    //매크로 수정
     private boolean updatemacro(String id, String name) {
         //getting the specified macro reference
         firebaseAuth = FirebaseAuth.getInstance();
@@ -219,7 +226,7 @@ public class MacroActivity extends AppCompatActivity {
         Toast.makeText(getApplicationContext(), "상용구가 수정되었습니다.", Toast.LENGTH_LONG).show();
         return true;
     }
-
+    // 매크로 삭제
     private boolean deletemacro(String id) {
         //getting the specified macro reference
         firebaseAuth = FirebaseAuth.getInstance();
@@ -234,14 +241,12 @@ public class MacroActivity extends AppCompatActivity {
 
         //getting the tracks reference for the specified macro
 
-
         //removing all tracks
-
         Toast.makeText(getApplicationContext(), "상용구가 삭제되었습니다.", Toast.LENGTH_LONG).show();
 
         return true;
     }
-
+    //매크로 시작, 리스트 뷰를 가져옴.
     @Override
     protected void onStart() {
         super.onStart();
@@ -286,6 +291,7 @@ public class MacroActivity extends AppCompatActivity {
     * This method is saving a new macro to the
     * Firebase Realtime Database
     * */
+    //매크로 추가부분.
     private void addmacro() {
         //getting the values to save
         String name = editTextName.getText().toString().trim();

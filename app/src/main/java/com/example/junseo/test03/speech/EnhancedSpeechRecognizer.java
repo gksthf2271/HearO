@@ -216,11 +216,11 @@ public class EnhancedSpeechRecognizer implements RecognitionListener {
             // 현재시간을 date 변수에 저장한다.
             Date date = new Date(now);
             // 시간을 나타냇 포맷을 정한다 ( yyyy/MM/dd 같은 형태로 변형 가능 )
-            SimpleDateFormat sdfNow = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+            SimpleDateFormat sdfNow = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss E요일");
             // nowDate 변수에 값을 저장한다.
             String speechtime = sdfNow.format(date);
 
-            databaseReference.child("huser").child(id).child("speach").child(speechtime).setValue(speech);
+            databaseReference.child("huser").child(id).child("sensor").child("voice").child(speechtime).setValue(speech);
         }
 
 

@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -23,6 +24,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 public class RegistActivity extends AppCompatActivity {
 
+    private EditText etName;
     private EditText etEmail;
     private EditText etPassword;
     private EditText etPasswordConfirm;

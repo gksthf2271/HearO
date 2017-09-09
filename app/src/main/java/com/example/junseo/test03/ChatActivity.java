@@ -82,7 +82,6 @@ public class ChatActivity extends AppCompatActivity {
         String id = email.substring(0,i);
         final String userid = user.getUid();
 
-
         final DatabaseReference chatdatabaseReference = FirebaseDatabase.getInstance().getReference().child("huser").child(id).child("chat"); // 채팅 레퍼런스
         final DatabaseReference dashboard = FirebaseDatabase.getInstance().getReference().child("hdashboard").child(userid).child("chat"); // 대쉬보드 레퍼런스
         // 메시지 전송 버튼에 대한 클릭 리스너 지정
@@ -100,12 +99,18 @@ public class ChatActivity extends AppCompatActivity {
                 } else {
                     ttsUnder20(text);
                 }
-
+                long now = System.currentTimeMillis();
+                // 현재시간을 date 변수에 저장한다.
+                Date date = new Date(now);
+                // 시간을 나타냇 포맷을 정한다 ( yyyy/MM/dd 같은 형태로 변형 가능 )
+                SimpleDateFormat sdfNow = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+                // nowDate 변수에 값을 저장한다.
+                String chattime = sdfNow.format(date);
                 final DatabaseReference chatpushedPostRefkey = chatdatabaseReference.push();
                 final String chatkey = chatpushedPostRefkey.getKey();
                 final ChatDTO chat = new ChatDTO(USER_NAME, chat_edit.getText().toString()); //ChatDTO를 이용하여 데이터를 묶는다.
                 chatdatabaseReference.child(CHAT_NAME).child(chatkey).setValue(chat); // 데이터 푸쉬
-                dashboard.child(CHAT_NAME).child(chatkey).setValue(chat);
+                dashboard.child(CHAT_NAME).child(chatkey).setValue(chattime);
 
                 chat_edit.setText(""); //입력창 초기화
                 chat_view.smoothScrollToPosition(position);
