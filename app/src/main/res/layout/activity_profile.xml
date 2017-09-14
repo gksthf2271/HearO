@@ -3,6 +3,12 @@
     android:layout_width="match_parent" android:layout_height="match_parent"
     android:screenOrientation="portrait"
     android:background="@drawable/hback">
+
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/linearLayout" />
  <LinearLayout
      android:orientation="vertical"
      android:layout_centerHorizontal="true"
@@ -10,6 +16,16 @@
      android:layout_margin="16dp"
      android:layout_width="match_parent"
      android:layout_height="match_parent">
+
+     <Button
+         android:id="@+id/Cancel1"
+         android:layout_width="wrap_content"
+         android:layout_height="50dp"
+
+         android:layout_gravity="right"
+         android:background="#1cb189"
+         android:text="뒤로" />
+
      <ImageView
          android:src="@mipmap/ic_launcher"
          android:layout_gravity="center_horizontal"
@@ -22,31 +38,34 @@
          android:layout_margin="16dp"
          android:layout_width="wrap_content"
          android:layout_height="wrap_content" />
+     <RelativeLayout
+         android:layout_gravity="center_horizontal"
+         android:layout_width="200dp"
+         android:layout_height="wrap_content">
+     <Button
+         android:id="@+id/buttonResign"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_gravity="center_horizontal"
+         android:text="회원 정보 수정" />
      <Button
          android:id="@+id/buttonLogout"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_gravity="center_horizontal"
          android:text="로그아웃"
-         android:layout_gravity="center_horizontal"
-         android:layout_width="wrap_content"
-         android:layout_height="wrap_content" />
+         android:layout_alignParentTop="true"
+         android:layout_alignParentRight="true"
+         android:layout_alignParentEnd="true" />
+     </RelativeLayout>
      <TextView
-         android:text="회원탈퇴 합니다."
          android:id="@+id/textviewDelete"
-         android:layout_gravity="center_horizontal"
-         android:textColor="@color/colorAccent"
-         android:layout_margin="16dp"
          android:layout_width="wrap_content"
-         android:layout_height="wrap_content" />
-
-
+         android:layout_height="wrap_content"
+         android:layout_gravity="center_horizontal"
+         android:layout_margin="16dp"
+         android:text="회원탈퇴 합니다."
+         android:textColor="@color/colorAccent" />
  </LinearLayout>
 
-    <Button
-        android:id="@+id/Cancel1"
-        android:layout_width="100dp"
-        android:layout_height="50dp"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_gravity="center_horizontal"
-        android:background="#1cb189"
-        android:text="뒤로" />
 </RelativeLayout>

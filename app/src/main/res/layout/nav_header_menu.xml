@@ -28,6 +28,4 @@
         android:text="HearO 메뉴"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
-
-
 </LinearLayout>
