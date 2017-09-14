@@ -1,20 +1,18 @@
 package com.example.junseo.test03;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothSocket;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.ServiceConnection;
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.IBinder;
-import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -95,8 +93,7 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stt);
         Cancel3 = (Button) findViewById(R.id.Cancel3);
-        checkbtn = (Button) findViewById(R.id.checkbtn);
-        editstt = (EditText) findViewById(R.id.editstt);
+
         speakbtn = (Button) findViewById(R.id.speakbtn);
 
         //블루투스 setup view
@@ -156,7 +153,6 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
 
             }
         });
-
     }
 
     @Override
@@ -198,7 +194,7 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
     @Override
     protected void onDestroy() {
         super.onDestroy();
-       // unregisterReceiver(mBluetoothStateReceiver);
+        // unregisterReceiver(mBluetoothStateReceiver);
         //arduinoConnector_.destroy();
         //speech_recognizer_.destroy();
     }
@@ -208,13 +204,13 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
         Log.d(TAG, "onResume");
         super.onResume();
 
-/*
+
     //09.08
         if(flag == true) {
             speech_recognizer_.destroy();
             speech_recognizer_.start();
             flag = false;
-        }*/
+        }
     }
 
     @Override
@@ -222,7 +218,7 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
         Log.d(TAG, "onPause");
         super.onPause();
         //09.08
-        //speech_recognizer_.stop();
+        speech_recognizer_.stop();
     }
 
     @Override
@@ -397,7 +393,7 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
     }
 
 
-/**
+    /**
      * Manage current app status.
      * Evaluate application status using input status.
      */
@@ -447,7 +443,7 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
             }
         }
     }
- /*   //블루투스 상태변화 BroadcastReceiver
+    /*//블루투스 상태변화 BroadcastReceiver
     BroadcastReceiver mBluetoothStateReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {

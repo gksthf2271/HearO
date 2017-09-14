@@ -211,7 +211,7 @@ public class EnhancedSpeechRecognizer implements RecognitionListener {
             final String email = user.getEmail();
             int i = email.indexOf("@");
             String id = email.substring(0,i);
-
+            final String userid = user.getUid();
             long now = System.currentTimeMillis();
             // 현재시간을 date 변수에 저장한다.
             Date date = new Date(now);
@@ -221,6 +221,7 @@ public class EnhancedSpeechRecognizer implements RecognitionListener {
             String speechtime = sdfNow.format(date);
 
             databaseReference.child("huser").child(id).child("sensor").child("voice").child(speechtime).setValue(speech);
+            databaseReference.child("hdashboard").child(userid).child("sensor").child("voice").child(speechtime).setValue(speech);
         }
 
 

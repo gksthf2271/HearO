@@ -18,7 +18,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="bottom"
-        android:layout_alignParentTop="true">
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
 
     </LinearLayout>
 
@@ -68,9 +70,9 @@
         android:id="@+id/HearMainbutton"
         android:layout_width="143dp"
         android:layout_height="154dp"
-        android:gravity="center"
+        android:layout_centerInParent="true"
         android:background="@drawable/hearobutton"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="50dp"
         android:layout_below="@+id/but"
         android:layout_centerHorizontal="true"
         android:textOn=""
@@ -124,7 +126,7 @@
         android:layout_width="150dp"
         android:layout_height="100dp"
         android:layout_gravity="center"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="19dp"
         android:background="@drawable/frame"
         android:gravity="center"
         android:text="불이 났나봐요!"
@@ -179,40 +181,62 @@
         android:layout_alignBottom="@+id/firetext"
         android:layout_centerHorizontal="true"
         />
-
-    <LinearLayout
-        android:id="@+id/imgbut"
+    <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="30dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerInParent="true"
+
+>
+    <RelativeLayout
+
+        android:id="@+id/imgbut"
+        android:layout_width="150dp"
+        android:layout_height="70dp"
+
         android:gravity="center"
         android:orientation="horizontal"
-
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="75dp"
-        android:layout_alignParentBottom="true"
-        >
-
-
+>
         <Button
             android:id="@+id/button1"
             android:layout_width="70dp"
             android:layout_height="70dp"
             android:layout_weight="1"
-            android:background="@drawable/click" />
+            android:background="@drawable/click"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
 
         <Button
             android:id="@+id/button2"
             android:layout_width="70dp"
             android:layout_height="70dp"
             android:layout_weight="1"
-            android:background="@drawable/click2" />
+            android:background="@drawable/click2"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
 
-        <Button
-            android:id="@+id/button3"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
-            android:layout_weight="1"
-            android:background="@drawable/click3"/>
-    </LinearLayout>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/button3Rel"
+        android:layout_marginTop="0dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/imgbut"
+        android:layout_centerInParent="true"
+
+        >
+    <Button
+        android:id="@+id/button3"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_weight="1"
+        android:background="@drawable/click3"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+    </RelativeLayout>
+    </RelativeLayout>
 
 </RelativeLayout>
