@@ -27,9 +27,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.junseo.test03.arduino.ArduinoConnector;
-import com.example.junseo.test03.arduino.PacketParser;
 import com.example.junseo.test03.arduino.BluetoothPairActivity;
-import com.example.junseo.test03.service.BTCTemplateService;
+//import com.example.junseo.test03.arduino.BluetoothService;
+import com.example.junseo.test03.arduino.BluetoothSerial;
+import com.example.junseo.test03.arduino.PacketParser;
+//import com.example.junseo.test03.arduino.PairActivity;
 import com.example.junseo.test03.speech.CommandSpeechFilter;
 import com.example.junseo.test03.speech.EnhancedSpeechRecognizer;
 import com.example.junseo.test03.speech.SignalSpeechFilter;
@@ -39,6 +41,7 @@ import com.example.junseo.test03.utils.Constants;
 import com.example.junseo.test03.utils.Logs;
 import com.example.junseo.test03.utils.RecycleUtils;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Timer;
 
@@ -194,7 +197,7 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        // unregisterReceiver(mBluetoothStateReceiver);
+       // unregisterReceiver(mBluetoothStateReceiver);
         //arduinoConnector_.destroy();
         //speech_recognizer_.destroy();
     }
@@ -393,7 +396,7 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
     }
 
 
-    /**
+/**
      * Manage current app status.
      * Evaluate application status using input status.
      */
