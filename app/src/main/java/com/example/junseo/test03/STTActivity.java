@@ -85,8 +85,7 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stt);
         Cancel3 = (Button) findViewById(R.id.Cancel3);
-        checkbtn = (Button) findViewById(R.id.checkbtn);
-        editstt = (EditText) findViewById(R.id.editstt);
+
         speakbtn = (Button) findViewById(R.id.speakbtn);
 
         //블루투스 setup view
@@ -153,9 +152,6 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
 
         switch (view.getId()){
 
-            case R.id.checkbtn:
-
-                break;
 
             case R.id.speakbtn:
 
@@ -187,7 +183,7 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
     @Override
     protected void onDestroy() {
         super.onDestroy();
-       // unregisterReceiver(mBluetoothStateReceiver);
+        // unregisterReceiver(mBluetoothStateReceiver);
         //arduinoConnector_.destroy();
         //speech_recognizer_.destroy();
     }
@@ -198,7 +194,7 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
         super.onResume();
 
 
-    //09.08
+        //09.08
         if(flag == true) {
             speech_recognizer_.destroy();
             speech_recognizer_.start();
@@ -278,7 +274,7 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
     };
 
 
-/**
+    /**
      * Change the value, ranged from -2.12 to 10, into new value ranged from 0 to 1212.
      * @param value speech level from SpeechRecognizer.
      * @return normalized value.
@@ -290,7 +286,7 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
     }
 
 
-/**
+    /**
      * Listener for speech recognition.
      */
 
@@ -316,7 +312,7 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
             };
 
 
-/**
+    /**
      * Listener for Arduino.
      */
 
@@ -383,7 +379,7 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
     }
 
 
-/**
+    /**
      * Manage current app status.
      * Evaluate application status using input status.
      */
@@ -393,7 +389,7 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
         private boolean is_listening_ = false;
 
 
-/**
+        /**
          * Update Arduino connection status.
          * @param connected true if connected to Arduino.
          * @return Current app status.
@@ -416,7 +412,7 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
         }
 
 
-/**
+        /**
          * Evaluate the current AppStatus.
          * @return Current AppStatus.
          */
@@ -426,7 +422,7 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
 
                 return is_listening_ ? AppState.Listening : AppState.Standby;
 
-               // return AppState.Listening;
+                // return AppState.Listening;
 
             } else {
                 return  AppState.Disconnected;
@@ -439,7 +435,6 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
         public void onReceive(Context context, Intent intent) {
             //BluetoothAdapter.EXTRA_STATE : 블루투스의 현재상태 변화
             int ble_state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, -1);
-
             //블루투스 활성화
             if(ble_state == BluetoothAdapter.STATE_ON){
                 txtState.setText("블루투스 활성화");
@@ -462,12 +457,9 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
             }
             else
                 mImageBT.setImageDrawable(getResources().getDrawable(android.R.drawable.presence_invisible));
-
         }
     };
-
 */
 
 
 }
-

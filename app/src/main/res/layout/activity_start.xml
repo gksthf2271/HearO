@@ -19,9 +19,8 @@
         android:layout_marginTop="12dp">
 
         <LinearLayout
-            android:layout_weight="1"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="211dp"
             android:orientation="vertical"
             android:gravity="center"
             android:layout_alignParentTop="true"
@@ -55,25 +54,49 @@
                 android:gravity="center"
                 android:layout_marginBottom="20dp"/>
 
+
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/buttonlay"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="horizontal"
+            android:weightSum="1">
+
             <Button
                 android:id="@+id/user_next"
                 android:layout_width="100dp"
+
                 android:layout_height="wrap_content"
-                android:text="접속"/>
+                android:text="접속"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_marginLeft="85dp"
+                android:layout_marginStart="85dp" />
 
             <Button
                 android:id="@+id/Cancel4"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
-                android:text="뒤로" />
+                android:text="뒤로"
+                android:layout_alignParentTop="true"
+                android:layout_toRightOf="@+id/user_next"
+                android:layout_toEndOf="@+id/user_next"
+                android:layout_marginLeft="26dp"
+                android:layout_marginStart="26dp" />
+        </RelativeLayout>
 
-        </LinearLayout>
 
         <LinearLayout
             android:layout_weight="2"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            >
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -87,7 +110,7 @@
 
             </ListView>
         </LinearLayout>
-    </LinearLayout>
 
+    </LinearLayout>
 
 </RelativeLayout>

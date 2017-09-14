@@ -103,14 +103,17 @@ public class ChatActivity extends AppCompatActivity {
                 // 현재시간을 date 변수에 저장한다.
                 Date date = new Date(now);
                 // 시간을 나타냇 포맷을 정한다 ( yyyy/MM/dd 같은 형태로 변형 가능 )
-                SimpleDateFormat sdfNow = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+                SimpleDateFormat sdfNow = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss E요일");
                 // nowDate 변수에 값을 저장한다.
                 String chattime = sdfNow.format(date);
                 final DatabaseReference chatpushedPostRefkey = chatdatabaseReference.push();
                 final String chatkey = chatpushedPostRefkey.getKey();
                 final ChatDTO chat = new ChatDTO(USER_NAME, chat_edit.getText().toString()); //ChatDTO를 이용하여 데이터를 묶는다.
+
+                SimpleDateFormat yo = new SimpleDateFormat("E요일");
+                String yoman = yo.format(date);
                 chatdatabaseReference.child(CHAT_NAME).child(chatkey).setValue(chat); // 데이터 푸쉬
-                dashboard.child(CHAT_NAME).child(chatkey).setValue(chattime);
+                dashboard.child(CHAT_NAME).child(chattime).child(yoman).setValue(chattime);
 
                 chat_edit.setText(""); //입력창 초기화
                 chat_view.smoothScrollToPosition(position);
