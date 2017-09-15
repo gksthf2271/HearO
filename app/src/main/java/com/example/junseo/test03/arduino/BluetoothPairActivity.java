@@ -395,7 +395,7 @@ public class BluetoothPairActivity extends Activity {
         public void onServiceConnected(ComponentName name, IBinder service) {
             BTCTemplateService.ServiceBinder binder = (BTCTemplateService.ServiceBinder) service;
             mService = binder.getService();
-            mBound = true;
+            mBound = true;//d
         }
         @Override
         public void onServiceDisconnected(ComponentName arg0){
