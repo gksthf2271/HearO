@@ -71,7 +71,7 @@ public class EnhancedSpeechRecognizer implements RecognitionListener {
         void onSoundChanged(float rmsdB);
     }
 
-    public EnhancedSpeechRecognizer(STTActivity parent_activity, Listener listener,
+    public EnhancedSpeechRecognizer(Activity parent_activity, Listener listener,
                                     SpeechListener speech_listener) {
         parent_activity_ = parent_activity;
         listener_ = listener;

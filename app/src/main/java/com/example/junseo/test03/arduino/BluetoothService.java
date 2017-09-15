@@ -4,7 +4,6 @@ package com.example.junseo.test03.arduino;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothManager;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.Handler;
@@ -13,11 +12,7 @@ import android.os.IBinder;
 import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
-import android.provider.SyncStateContract;
 import android.util.Log;
-import android.widget.Toast;
-
-import com.example.junseo.test03.STTActivity;
 
 import java.io.FileDescriptor;
 

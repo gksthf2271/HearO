@@ -10,10 +10,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
-import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.os.Messenger;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,20 +20,16 @@ import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.junseo.test03.MainActivity;
-import com.example.junseo.test03.MenuActivity;
 import com.example.junseo.test03.R;
 import com.example.junseo.test03.STTActivity;
+import com.example.junseo.test03.service.BTCTemplateService;
 //import com.example.junseo.test03.STTFragment;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -77,7 +71,7 @@ public class BluetoothPairActivity extends Activity {
     private List<Map<String, String>> dataPaired;
 
     //서비스
-    private BluetoothService  mService = null;    // 서비스와 통신하는데 사용되는 메신저
+    private BTCTemplateService  mService = null;    // 서비스와 통신하는데 사용되는 메신저
     private boolean mBound = false;    // 서비스 연결 여부
 
 
@@ -87,11 +81,9 @@ public class BluetoothPairActivity extends Activity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_bluetooth_pair);
 
-        //Intent intent = new Intent(this, BluetoothService.class);
-        //bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
 
         //setBackgroundColor();
-        Intent intent = new Intent(this, BluetoothService.class);
+        Intent intent = new Intent(this, BTCTemplateService.class);
         startService(intent);
 
 
@@ -185,7 +177,7 @@ public class BluetoothPairActivity extends Activity {
 
     }
 
-    // Set gradient background color.
+/*    // Set gradient background color.
     private void setBackgroundColor() {
         View layout = findViewById(R.id.pairActivity);
         GradientDrawable gd = new GradientDrawable(
@@ -193,7 +185,7 @@ public class BluetoothPairActivity extends Activity {
                 new int[]{0xFFF0FAFF, 0xFFA3E0FF});
         gd.setCornerRadius(0f);
         layout.setBackground(gd);
-    }
+    }*/
 
     @Override
     public void onResume() {
@@ -353,8 +345,8 @@ public class BluetoothPairActivity extends Activity {
     }
 
 
-
-/*    public void GetListPairedDevice() {
+/*
+    public void GetListPairedDevice() {
         Set<BluetoothDevice> paired_devices_ = bluetooth_.getBondedDevices();
 
         dataPaired.clear();
@@ -401,9 +393,9 @@ public class BluetoothPairActivity extends Activity {
     private ServiceConnection mConnection = new ServiceConnection(){
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
-            BluetoothService.ServiceBinder binder = (BluetoothService.ServiceBinder) service;
+            BTCTemplateService.ServiceBinder binder = (BTCTemplateService.ServiceBinder) service;
             mService = binder.getService();
-            mBound = true;
+            mBound = true;//d
         }
         @Override
         public void onServiceDisconnected(ComponentName arg0){
