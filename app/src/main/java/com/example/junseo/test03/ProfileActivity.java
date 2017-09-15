@@ -53,7 +53,8 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         FirebaseUser user = firebaseAuth.getCurrentUser();
 
         //textViewUserEmail의 내용을 변경해 준다.
-        textViewUserEmail.setText("반갑습니다.\n"+ user.getEmail()+"으로 로그인 하였습니다.");
+        assert user != null;
+        textViewUserEmail.setText("반갑습니다."+user.getDisplayName()+"님\n"+ user.getEmail()+"으로 로그인 하였습니다.");
 
         //logout button event
         buttonLogout.setOnClickListener(this);
