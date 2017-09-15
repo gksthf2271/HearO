@@ -134,20 +134,6 @@ public class ResignFragment1 extends Fragment {
                     }
                 });
 
-                /*user.updatePassword(password).addOnCompleteListener(getActivity(),new OnCompleteListener<Void>(){
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            Toast.makeText(getActivity(), "패스워드가 성공적으로 바뀌었습니다!", Toast.LENGTH_SHORT).show();
-                            Log.e("패스워드 성공1","test:");
-                        }
-                        Log.e("패스워드 성공2","test:" + password );
-
-
-                    }
-                }
-                );*/
-
                 user.updatePassword(password)
                         .addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
