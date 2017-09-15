@@ -75,7 +75,7 @@ public class ArduinoConnector {
             bluetooth_.Write(packet.getBytes());
             listener_.onConnect(device);
         }
-        //아아아아
+
 
         @Override
         public void onRead(BluetoothDevice device, byte[] data, int len) {
