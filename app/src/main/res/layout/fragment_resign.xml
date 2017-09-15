@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <TextView
+        android:id="@+id/resign"
+        android:gravity="center"
+        android:layout_width="100dp"
+        android:layout_height="20dp"
+        android:text="회원 정보 수정"
+        android:layout_centerInParent="true"
+        android:layout_centerHorizontal="true" />
+    <TextView
+        android:id="@+id/myEmail"
+        android:gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:layout_centerInParent="true"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/resign"
+        />
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textEmailAddress"
+        android:ems="10"
+        android:hint="이름"
+        android:id="@+id/etName"
+        android:layout_below="@id/myEmail" />
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textPassword"
+        android:layout_below="@id/etName"
+        android:ems="10"
+        android:hint="비밀번호"
+        android:id="@+id/reetPassword" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textPassword"
+        android:ems="10"
+        android:hint="비밀번호 확인"
+        android:layout_below="@id/reetPassword"
+        android:id="@+id/reetPasswordConfirm" />
+    <Button
+        android:id="@+id/reDone"
+        android:text="확인"
+        android:textColor="#ffffff"
+        android:background="#1cb119"
+        android:layout_weight="1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/reetPasswordConfirm"
+        android:layout_toLeftOf="@+id/myEmail"
+        android:layout_toStartOf="@+id/myEmail"
+        android:layout_marginRight="17dp"
+        android:layout_marginEnd="17dp"
+        android:layout_marginTop="14dp" />
+    <Button
+        android:id="@+id/reCancel"
+        android:text="취소"
+        android:textColor="#ffffff"
+        android:background="#1cb119"
+        android:layout_weight="1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/reDone"
+        android:layout_alignBottom="@+id/reDone"
+        android:layout_toRightOf="@+id/myEmail"
+        android:layout_toEndOf="@+id/myEmail"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp" />
+
+</RelativeLayout>

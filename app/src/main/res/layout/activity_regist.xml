@@ -20,13 +20,7 @@
         android:hint="이메일"
         android:id="@+id/etEmail" />
 
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="textEmailAddress"
-        android:ems="10"
-        android:hint="이름"
-        android:id="@+id/etName" />
+
 
     <EditText
         android:layout_width="match_parent"

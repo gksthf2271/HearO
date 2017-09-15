@@ -163,9 +163,6 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
 
         switch (view.getId()){
 
-            case R.id.checkbtn:
-
-                break;
 
             case R.id.speakbtn:
 

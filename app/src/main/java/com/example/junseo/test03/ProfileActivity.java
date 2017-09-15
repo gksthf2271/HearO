@@ -1,5 +1,6 @@
 package com.example.junseo.test03;
 
+import android.app.Fragment;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,7 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import android.support.v4.app.FragmentTransaction;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -27,6 +28,8 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     private static final String TAG = "ProfileActivity";
     //firebase auth object
     private FirebaseAuth firebaseAuth;
+    private final int FRAGMENT1 = 1;
+    private Button buttonResign;
     //view objects
     private TextView textViewUserEmail;
     private Button buttonLogout;
@@ -42,13 +45,14 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         buttonLogout = (Button) findViewById(R.id.buttonLogout);
         textivewDelete = (TextView) findViewById(R.id.textviewDelete);
         Cancel1 = (Button) findViewById(R.id.Cancel1);
+        buttonResign = (Button) findViewById(R.id.buttonResign);
         //initializing firebase authentication object
         firebaseAuth = FirebaseAuth.getInstance();
         //유저가 로그인 하지 않은 상태라면 null 상태이고 이 액티비티를 종료하고 로그인 액티비티를 연다.
         if(firebaseAuth.getCurrentUser() == null) {
             finish(); startActivity(new Intent(this, MainActivity.class));
         }
-
+        buttonResign.setOnClickListener(this);
         //유저가 있다면, null이 아니면 계속 진행
         FirebaseUser user = firebaseAuth.getCurrentUser();
 
@@ -66,10 +70,24 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                 finish();
             }
         });
-    }
 
+    }
+    private void callFragment(int fragment_no){
+
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        switch(fragment_no){
+            case 1:
+                ResignFragment1 fragment1 = new ResignFragment1();
+                transaction.replace(R.id.fragment_container, fragment1); // 프래그먼트 컨테이너에 fragment1을 담는다.
+                transaction.commit();
+        }
+    }
     @Override
     public void onClick(View view) {
+
+        if(view == buttonResign) {
+            callFragment(FRAGMENT1);
+        }
         if (view == buttonLogout) {
             firebaseAuth.signOut(); finish(); startActivity(new Intent(this, MainActivity.class));
         }
@@ -80,7 +98,8 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             {
                 @Override public void onClick(DialogInterface dialogInterface, int i)
                 {
-                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser(); user.delete() .addOnCompleteListener(new OnCompleteListener<Void>()
+                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                    user.delete() .addOnCompleteListener(new OnCompleteListener<Void>()
                 {
                     @Override public void onComplete(@NonNull Task<Void> task)
                     { Toast.makeText(ProfileActivity.this, "계정이 삭제 되었습니다.", Toast.LENGTH_LONG).show();
