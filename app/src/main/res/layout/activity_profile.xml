@@ -19,12 +19,12 @@
 
      <Button
          android:id="@+id/Cancel1"
-         android:layout_width="wrap_content"
-         android:layout_height="50dp"
+         android:layout_width="35dp"
+         android:layout_height="30dp"
 
          android:layout_gravity="right"
-         android:background="#1cb189"
-         android:text="뒤로" />
+         android:background="@drawable/backimgj"
+       />
 
      <ImageView
          android:src="@mipmap/ic_launcher"

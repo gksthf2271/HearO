@@ -1,5 +1,6 @@
 package com.example.junseo.test03;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -128,7 +129,7 @@ public class ResignFragment1 extends Fragment {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
-                            Toast.makeText(getActivity(), "유저 이름이 정상적으로 변경되었습니다.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity(), "유저 이름과 패스워드가 정상적으로 변경되었습니다.", Toast.LENGTH_SHORT).show();
                             Log.e("유저 이름 성공","test:");
                         }
                     }
@@ -140,10 +141,13 @@ public class ResignFragment1 extends Fragment {
                             public void onComplete(@NonNull Task<Void> task) {
                                 if (task.isSuccessful()) {
                                     Log.e("패스워드 성공2","test:" + password );
-
+                                    firebaseAuth.signOut();
+                                    getActivity().getSupportFragmentManager().beginTransaction().remove(ResignFragment1.this).commit();
+                                    startActivity(new Intent(getActivity(), MainActivity.class));
                                 }
                             }
                         });
+
             }
         });
         //reCancel.setOnClickListener();
