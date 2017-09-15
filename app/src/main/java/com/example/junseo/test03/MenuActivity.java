@@ -1,7 +1,5 @@
 package com.example.junseo.test03;
 
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -13,7 +11,6 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.design.widget.NavigationView;
-import android.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -32,10 +29,11 @@ import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import com.example.junseo.test03.arduino.ArduinoConnector;
-import com.example.junseo.test03.arduino.BluetoothPairActivity;
 import com.example.junseo.test03.arduino.BluetoothSerial;
 //import com.example.junseo.test03.arduino.BluetoothService;
 //import com.example.junseo.test03.arduino.PairActivity;
+import com.example.junseo.test03.arduino.BluetoothPairActivity;
+import com.example.junseo.test03.bluetooth.BluetoothManager;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -61,7 +59,7 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
     private ArduinoConnector arduinoConnector_;
     private ArduinoConnector.Listener arduino_listener_;
 
-    protected BluetoothSerial.Listener bluetooth_listener_;
+    protected BluetoothManager bluetoothManager;
     private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference(); // 기본 루트 레퍼런스
 
     private FirebaseAuth firebaseAuth;

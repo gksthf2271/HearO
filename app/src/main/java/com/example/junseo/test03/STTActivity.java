@@ -1,18 +1,20 @@
 package com.example.junseo.test03;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothSocket;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.IBinder;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -27,18 +29,20 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.junseo.test03.arduino.ArduinoConnector;
-import com.example.junseo.test03.arduino.BluetoothPairActivity;
-//import com.example.junseo.test03.arduino.BluetoothService;
-import com.example.junseo.test03.arduino.BluetoothSerial;
 import com.example.junseo.test03.arduino.PacketParser;
-//import com.example.junseo.test03.arduino.PairActivity;
+import com.example.junseo.test03.arduino.BluetoothPairActivity;
+import com.example.junseo.test03.service.BTCTemplateService;
 import com.example.junseo.test03.speech.CommandSpeechFilter;
 import com.example.junseo.test03.speech.EnhancedSpeechRecognizer;
 import com.example.junseo.test03.speech.SignalSpeechFilter;
 import com.example.junseo.test03.speech.SpeechListener;
+import com.example.junseo.test03.utils.AppSettings;
+import com.example.junseo.test03.utils.Constants;
+import com.example.junseo.test03.utils.Logs;
+import com.example.junseo.test03.utils.RecycleUtils;
 
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Timer;
 
 
 /**
@@ -65,7 +69,10 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
     private Button Cancel3;
 
 
-
+    // Context, System
+    private Context mContext;
+    private BTCTemplateService mService;
+    private ActivityHandler mActivityHandler;
 
     //블루투스 상태
     private TextView txtState;
@@ -76,6 +83,9 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
     AlertDialog.Builder ad;
 
     DialogInterface mPopupDlg = null;
+
+    // Refresh timer
+    private Timer mRefreshTimer = null;
 
 
     private static final String TAG = STTActivity.class.getSimpleName();
@@ -146,6 +156,7 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
 
             }
         });
+
     }
 
     @Override
@@ -197,13 +208,13 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
         Log.d(TAG, "onResume");
         super.onResume();
 
-
+/*
     //09.08
         if(flag == true) {
             speech_recognizer_.destroy();
             speech_recognizer_.start();
             flag = false;
-        }
+        }*/
     }
 
     @Override
@@ -211,7 +222,7 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
         Log.d(TAG, "onPause");
         super.onPause();
         //09.08
-        speech_recognizer_.stop();
+        //speech_recognizer_.stop();
     }
 
     @Override
@@ -326,6 +337,9 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
             app_status_manager_.updateConnectionStatus(true);
             updateStatusUIText(app_status_manager_.getStatus());
             Toast.makeText(getApplicationContext(), "Connected", Toast.LENGTH_SHORT).show();
+
+            doStartService();
+
             // Starting recognition right after connection made.
             speech_recognizer_.start();
         }
@@ -433,7 +447,7 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
             }
         }
     }
-    /*//블루투스 상태변화 BroadcastReceiver
+ /*   //블루투스 상태변화 BroadcastReceiver
     BroadcastReceiver mBluetoothStateReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -464,9 +478,138 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
                 mImageBT.setImageDrawable(getResources().getDrawable(android.R.drawable.presence_invisible));
 
         }
+    };*/
+    private void doStartService() {
+        Logs.d(TAG, "# Activity - doStartService()");
+        startService(new Intent(this, BTCTemplateService.class));
+        bindService(new Intent(this, BTCTemplateService.class), mServiceConn, Context.BIND_AUTO_CREATE);
+    }
+
+    /**
+     * Service connection
+     */
+    private ServiceConnection mServiceConn = new ServiceConnection() {
+
+        public void onServiceConnected(ComponentName className, IBinder binder) {
+            Logs.d(TAG, "Activity - Service connected");
+
+            mService = ((BTCTemplateService.ServiceBinder) binder).getService();
+
+            // Activity couldn't work with mService until connections are made
+            // So initialize parameters and settings here. Do not initialize while running onCreate()
+            initialize();
+        }
+
+        public void onServiceDisconnected(ComponentName className) {
+            mService = null;
+        }
     };
 
-*/
+    /**
+     * Stop the service
+     */
+    private void doStopService() {
+        Logs.d(TAG, "# Activity - doStopService()");
+        mService.finalizeService();
+        stopService(new Intent(this, BTCTemplateService.class));
+    }
+
+    private void initialize() {
+        Logs.d(TAG, "# Activity - initialize()");
+        mService.setupService(mActivityHandler);
+
+        // If BT is not on, request that it be enabled.
+        // RetroWatchService.setupBT() will then be called during onActivityResult
+        if(!mService.isBluetoothEnabled()) {
+            Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivityForResult(enableIntent, Constants.REQUEST_ENABLE_BT);
+        }
+
+        // Load activity reports and display
+        if(mRefreshTimer != null) {
+            mRefreshTimer.cancel();
+        }
+
+        // Use below timer if you want scheduled job
+        //mRefreshTimer = new Timer();
+        //mRefreshTimer.schedule(new RefreshTimerTask(), 5*1000);
+    }
+
+    private void finalizeActivity() {
+        Logs.d(TAG, "# Activity - finalizeActivity()");
+
+        if(!AppSettings.getBgService()) {
+            doStopService();
+        } else {
+        }
+
+        // Clean used resources
+        RecycleUtils.recursiveRecycle(getWindow().getDecorView());
+        System.gc();
+    }
+
+    public class ActivityHandler extends Handler {
+        @Override
+        public void handleMessage(Message msg)
+        {
+            switch(msg.what) {
+                // Receives BT state messages from service
+                // and updates BT state UI
+                case Constants.MESSAGE_BT_STATE_INITIALIZED:
+                    txtState.setText(getResources().getString(R.string.bt_title) + ": " +
+                            getResources().getString(R.string.bt_state_init));
+                    mImageBT.setImageDrawable(getResources().getDrawable(android.R.drawable.presence_invisible));
+                    break;
+                case Constants.MESSAGE_BT_STATE_LISTENING:
+                    txtState.setText(getResources().getString(R.string.bt_title) + ": " +
+                            getResources().getString(R.string.bt_state_wait));
+                    mImageBT.setImageDrawable(getResources().getDrawable(android.R.drawable.presence_invisible));
+                    break;
+                case Constants.MESSAGE_BT_STATE_CONNECTING:
+                    txtState.setText(getResources().getString(R.string.bt_title) + ": " +
+                            getResources().getString(R.string.bt_state_connect));
+                    mImageBT.setImageDrawable(getResources().getDrawable(android.R.drawable.presence_away));
+                    break;
+                case Constants.MESSAGE_BT_STATE_CONNECTED:
+                    if(mService != null) {
+                        String deviceName = mService.getDeviceName();
+                        if(deviceName != null) {
+                            txtState.setText(getResources().getString(R.string.bt_title) + ": " +
+                                    getResources().getString(R.string.bt_state_connected) + " " + deviceName);
+                            mImageBT.setImageDrawable(getResources().getDrawable(android.R.drawable.presence_online));
+                        }
+                    }
+                    break;
+                case Constants.MESSAGE_BT_STATE_ERROR:
+                    txtState.setText(getResources().getString(R.string.bt_state_error));
+                    mImageBT.setImageDrawable(getResources().getDrawable(android.R.drawable.presence_busy));
+                    break;
+
+                // BT Command status
+                case Constants.MESSAGE_CMD_ERROR_NOT_CONNECTED:
+                    txtState.setText(getResources().getString(R.string.bt_cmd_sending_error));
+                    mImageBT.setImageDrawable(getResources().getDrawable(android.R.drawable.presence_busy));
+                    break;
+
+                ///////////////////////////////////////////////
+                // When there's incoming packets on bluetooth
+                // do the UI works like below
+                ///////////////////////////////////////////////
+//			case Constants.MESSAGE_READ_ACCEL_REPORT:
+//				ActivityReport ar = (ActivityReport)msg.obj;
+//				if(ar != null) {
+//					TimelineFragment frg = (TimelineFragment) mSectionsPagerAdapter.getItem(FragmentAdapter.FRAGMENT_POS_TIMELINE);
+//					frg.showActivityReport(ar);
+//				}
+//				break;
+
+                default:
+                    break;
+            }
+
+            super.handleMessage(msg);
+        }
+    }	// End of class ActivityHandler
 
 
 }
