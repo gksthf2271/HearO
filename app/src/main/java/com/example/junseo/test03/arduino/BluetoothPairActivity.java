@@ -402,7 +402,7 @@ public class BluetoothPairActivity extends Activity {
             mService = null;
             mBound = false;
         }
-    };
+    };//ㅇ
 
     @Override
     protected void onStart(){
