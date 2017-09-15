@@ -47,5 +47,33 @@
         android:hint="비밀번호 확인"
         android:layout_below="@id/reetPassword"
         android:id="@+id/reetPasswordConfirm" />
+    <Button
+        android:id="@+id/reDone"
+        android:text="확인"
+        android:textColor="#ffffff"
+        android:background="#1cb119"
+        android:layout_weight="1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/reetPasswordConfirm"
+        android:layout_toLeftOf="@+id/myEmail"
+        android:layout_toStartOf="@+id/myEmail"
+        android:layout_marginRight="17dp"
+        android:layout_marginEnd="17dp"
+        android:layout_marginTop="14dp" />
+    <Button
+        android:id="@+id/reCancel"
+        android:text="취소"
+        android:textColor="#ffffff"
+        android:background="#1cb119"
+        android:layout_weight="1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/reDone"
+        android:layout_alignBottom="@+id/reDone"
+        android:layout_toRightOf="@+id/myEmail"
+        android:layout_toEndOf="@+id/myEmail"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp" />
 
 </RelativeLayout>
