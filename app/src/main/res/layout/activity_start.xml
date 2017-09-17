@@ -18,6 +18,13 @@
         android:layout_alignParentStart="true"
         android:layout_marginTop="12dp">
 
+        <Button
+            android:id="@+id/Cancel4"
+            android:layout_width="40dp"
+            android:layout_height="35dp"
+            android:layout_gravity="right"
+            android:background="@drawable/backimgj" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="211dp"
@@ -69,25 +76,12 @@
             <Button
                 android:id="@+id/user_next"
                 android:layout_width="100dp"
-
                 android:layout_height="wrap_content"
                 android:text="접속"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
+                android:layout_centerInParent="true"
                 android:layout_marginLeft="85dp"
                 android:layout_marginStart="85dp" />
 
-            <Button
-                android:id="@+id/Cancel4"
-                android:layout_width="100dp"
-                android:layout_height="wrap_content"
-                android:text="뒤로"
-                android:layout_alignParentTop="true"
-                android:layout_toRightOf="@+id/user_next"
-                android:layout_toEndOf="@+id/user_next"
-                android:layout_marginLeft="26dp"
-                android:layout_marginStart="26dp" />
         </RelativeLayout>
 
 

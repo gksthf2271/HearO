@@ -53,11 +53,10 @@
         android:layout_above="@+id/linearLayout"></ListView>
     <Button
         android:id="@+id/Cancel5"
-        android:layout_width="100dp"
-        android:layout_height="wrap_content"
+        android:layout_width="35dp"
+        android:layout_height="30dp"
         android:layout_gravity="center_horizontal"
-        android:background="#1cb189"
-        android:text="뒤로"
+        android:background="@drawable/backimgj"
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />

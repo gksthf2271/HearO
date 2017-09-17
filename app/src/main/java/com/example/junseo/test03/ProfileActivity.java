@@ -82,6 +82,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                 transaction.commit();
         }
     }
+    //layout
     @Override
     public void onClick(View view) {
 

@@ -26,10 +26,10 @@
 
         <Button
             android:id="@+id/Cancel10"
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
+            android:layout_width="40dp"
+            android:layout_height="35dp"
             android:text="뒤로"
-            android:background="#1cb189"
+            android:background="@drawable/backimgj"
             android:layout_gravity="right"/>
     </LinearLayout>
 
@@ -57,7 +57,7 @@
                 android:background="@drawable/frame3"
                 android:id="@+id/chat_view"
                 android:layout_width="match_parent"
-                android:layout_height="54dp"
+                android:layout_height="200dp"
                 android:layout_gravity="bottom"
                 android:layout_below="@+id/te4"
                 android:transcriptMode="alwaysScroll" />
