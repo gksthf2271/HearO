@@ -230,6 +230,7 @@ public class EnhancedSpeechRecognizer implements RecognitionListener {
 
         // When speech detected, start the recognition again since in this case
         // there will be a high chance that people try speech recognition more times.
+
         asyncStart();
 
         duplicated_listening_ = false;

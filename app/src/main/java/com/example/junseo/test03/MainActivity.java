@@ -2,11 +2,17 @@ package com.example.junseo.test03;
 
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothSocket;
+import android.content.Context;
+import android.content.res.Resources;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.content.Intent;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -15,6 +21,10 @@ import android.widget.Toast;
 
 import com.example.junseo.test03.arduino.ArduinoConnector;
 //import com.example.junseo.test03.arduino.BluetoothService;
+import com.example.junseo.test03.bluetooth.BluetoothManager;
+import com.example.junseo.test03.speech.CommandSpeechFilter;
+import com.example.junseo.test03.speech.EnhancedSpeechRecognizer;
+import com.example.junseo.test03.speech.SignalSpeechFilter;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -32,6 +42,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private BluetoothAdapter bluetooth_;
     private ArduinoConnector arduinoConnector_;
     private ArduinoConnector.Listener arduino_listener_;
+    BluetoothManager bluetoothManager;
+
+
+    private EnhancedSpeechRecognizer speech_recognizer_;
+
+    public static Context mContext=null;
+    public static Handler handler=null;
+
 
     private static final String TAG = MainActivity.class.getSimpleName();
     TextView textviewMessage;
@@ -73,6 +91,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnLogin = (Button) findViewById(R.id.btnLogin);
         forgotpasswordtv = (TextView) findViewById(R.id.forgotpasswordtv);
 
+
         //비밀번호 찾기
         forgotpasswordtv.setOnClickListener(new View.OnClickListener()
         {
@@ -104,6 +123,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
 
+        mContext = this;
+
+
+
     }
 
 
@@ -128,6 +151,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //액션 바 숨기기
     // private void hideActionBar() {
     //   ActionBar actionBar = getSupportActionBar(); if(actionBar != null) actionBar.hide(); }
+
+
 
     private void userLogin() {
         String email = etEmail.getText().toString().trim();
@@ -165,13 +190,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
+
     @Override
     public void onStart(){
         super.onStart();
-        //블루투스 MainActivity 초기에 실행하기
-/*        Intent intent = getIntent();
-        int resultCode = intent.getExtras().getInt("resultCode");
-        int requestCode = intent.getExtras().getInt("requestCode");*/
+
 
         bluetooth_ = BluetoothAdapter.getDefaultAdapter();
         if (!bluetooth_.isEnabled()) {
@@ -179,12 +202,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     Toast.LENGTH_LONG).show();
             Intent enableintent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableintent, 0);
-/*
-            Intent intent = new Intent(getApplicationContext(), BluetoothPairActivity.class);
-            startActivityForResult(intent, 0);*/
         }
+        speech_recognizer_.start();
     }
 
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        Log.d(TAG,"onRestart 진입");
+        //음성인식
+        speech_recognizer_ = ((STTActivity) STTActivity.mContext).buildSpeechRecognizer();
+
+        bluetoothManager = new BluetoothManager(mContext, handler);
+
+        if(bluetoothManager.getState()==3)
+        {
+            Log.d(TAG,"메인화면 복귀 블루투스 유지중");
+            speech_recognizer_.start();
+        }
+
+    }
 }
 
 

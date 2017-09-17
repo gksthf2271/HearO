@@ -168,7 +168,7 @@ public class BluetoothManager {
      * @param socket  The BluetoothSocket on which the connection was made
      * @param device  The BluetoothDevice that has been connected
      */
-    public synchronized void connected(BluetoothSocket socket, BluetoothDevice device) {
+    public synchronized boolean connected(BluetoothSocket socket, BluetoothDevice device) {
     	Log.d(TAG, "connected");
 
         // Cancel the thread that completed the connection
@@ -190,6 +190,7 @@ public class BluetoothManager {
         mHandler.sendMessage(msg);
 
         setState(STATE_CONNECTED);
+        return true;
     }
 
     /**

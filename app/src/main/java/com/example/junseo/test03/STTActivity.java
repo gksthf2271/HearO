@@ -7,12 +7,17 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.IBinder;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -32,6 +37,7 @@ import com.example.junseo.test03.arduino.BluetoothPairActivity;
 import com.example.junseo.test03.arduino.BluetoothSerial;
 import com.example.junseo.test03.arduino.PacketParser;
 //import com.example.junseo.test03.arduino.PairActivity;
+import com.example.junseo.test03.service.BTCTemplateService;
 import com.example.junseo.test03.speech.CommandSpeechFilter;
 import com.example.junseo.test03.speech.EnhancedSpeechRecognizer;
 import com.example.junseo.test03.speech.SignalSpeechFilter;
@@ -52,8 +58,6 @@ import java.util.Timer;
 
 
 public class STTActivity extends AppCompatActivity implements View.OnClickListener  {
-    Button checkbtn = null;
-    EditText editstt = null;
     Button speakbtn = null;
 
     private boolean flag = false;
@@ -71,7 +75,7 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
 
 
     // Context, System
-    private Context mContext;
+    public static Context mContext;
     private BTCTemplateService mService;
     private ActivityHandler mActivityHandler;
 
@@ -123,9 +127,10 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
 
         speech_recognizer_ = buildSpeechRecognizer();       // 여기까지 화면구성
         arduinoConnector_ = new ArduinoConnector(arduino_listener_);    //아두이노 리스너 객체 생성
-        Cancel3.setOnClickListener(new View.OnClickListener() {
+        Cancel3.setOnClickListener(new View.OnClickListener() { //뒤로가기버튼
             @Override
             public void onClick(View v) {
+                unbindService(mServiceConn);
                 finish();
             }
         });
@@ -156,6 +161,9 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
 
             }
         });
+        doStartService();
+
+        mContext=this;
     }
 
     @Override
@@ -170,7 +178,7 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
         }
 
     }
-    private EnhancedSpeechRecognizer buildSpeechRecognizer() {
+    EnhancedSpeechRecognizer buildSpeechRecognizer() {
 
 
         //Build listener chain in reverse order of event deliver order.
@@ -194,9 +202,9 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
     @Override
     protected void onDestroy() {
         super.onDestroy();
-       // unregisterReceiver(mBluetoothStateReceiver);
+        //unregisterReceiver(mBluetoothStateReceiver);
         //arduinoConnector_.destroy();
-        //speech_recognizer_.destroy();
+        speech_recognizer_.destroy();
     }
 
     @Override
@@ -205,12 +213,12 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
         super.onResume();
 
 
-    //09.08
+/*    //09.08
         if(flag == true) {
             speech_recognizer_.destroy();
             speech_recognizer_.start();
             flag = false;
-        }
+        }*/
     }
 
     @Override
@@ -218,7 +226,7 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
         Log.d(TAG, "onPause");
         super.onPause();
         //09.08
-        speech_recognizer_.stop();
+        //speech_recognizer_.stop();
     }
 
     @Override
@@ -259,6 +267,7 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
 
     // connection button listener.
     public void onPair(View v){
+
         Intent intent = new Intent(getApplicationContext(), BluetoothPairActivity.class);
         startActivityForResult(intent, 0);
     }
@@ -333,8 +342,6 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
             app_status_manager_.updateConnectionStatus(true);
             updateStatusUIText(app_status_manager_.getStatus());
             Toast.makeText(getApplicationContext(), "Connected", Toast.LENGTH_SHORT).show();
-
-            doStartService();
 
             // Starting recognition right after connection made.
             speech_recognizer_.start();
