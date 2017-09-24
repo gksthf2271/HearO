@@ -59,8 +59,8 @@ public class BluetoothManager {
     public static final int MESSAGE_TOAST = 5;
     
     // 
-	public static final String SERVICE_HANDLER_MSG_KEY_DEVICE_NAME = "OHOHME";
-	public static final String SERVICE_HANDLER_MSG_KEY_DEVICE_ADDRESS = "20:16:01:19:97:11";
+	public static final String SERVICE_HANDLER_MSG_KEY_DEVICE_NAME = "device_name";
+	public static final String SERVICE_HANDLER_MSG_KEY_DEVICE_ADDRESS = "device_address";
 	public static final String SERVICE_HANDLER_MSG_KEY_TOAST = "toast";
     
     
@@ -186,7 +186,10 @@ public class BluetoothManager {
 
         // Send the name of the connected device back to the UI Activity
         Message msg = mHandler.obtainMessage(MESSAGE_DEVICE_NAME);
-        Bundle bundle = new Bundle();
+        Bundle bundle = new Bundle(); //?
+        bundle.putString(SERVICE_HANDLER_MSG_KEY_DEVICE_ADDRESS, device.getAddress());
+        bundle.putString(SERVICE_HANDLER_MSG_KEY_DEVICE_NAME, device.getName());
+        msg.setData(bundle);
         mHandler.sendMessage(msg);
 
         setState(STATE_CONNECTED);

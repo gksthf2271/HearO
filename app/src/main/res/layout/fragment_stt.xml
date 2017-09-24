@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:background="@drawable/hback"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginBottom="25dip">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+
+            android:orientation="horizontal">
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/speakbtn"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:background="@drawable/click3"
+            android:onClick="onPair1"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true" />
+
+
+        <ProgressBar
+            android:id="@+id/progressBarSpeech"
+            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/speakbtn"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="40dp"
+            android:indeterminate="false"
+            android:minWidth="200dp"
+            android:progressDrawable="@drawable/progressbar" />
+
+        <TextView
+            android:id="@+id/textViewSpeachResult"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/progressBarSpeech"
+            android:layout_alignStart="@+id/progressBarSpeech"
+            android:layout_below="@+id/progressBarSpeech"
+            android:layout_marginTop="22dp"
+            android:gravity="center"
+            android:minWidth="200dp"
+            android:textColor="#5D8091"
+            android:textSize="@dimen/font_size" />
+        <!--android:text="@string/txtview_disconnected"-->
+
+
+        <Button
+            android:id="@+id/Cancel3"
+            android:layout_width="35dp"
+            android:layout_height="30dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginEnd="12dp"
+            android:layout_marginRight="12dp"
+            android:layout_marginTop="13dp"
+            android:background="@drawable/backimgj"
+             />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="26dip"
+        android:layout_gravity="bottom"
+        android:orientation="horizontal"
+        android:id="@+id/bl_monitoring"
+        style="@style/AppTheme.ConnectionInfoContainer" >
+
+        <ImageView
+            android:id="@+id/status_title"
+            android:layout_width="wrap_content"
+            android:layout_height="20dip"
+            android:layout_marginRight="3dip"
+            android:layout_marginTop="3dip"
+            android:layout_marginBottom="3dip"
+            android:layout_alignLeft="@+id/status_text"
+            android:layout_alignStart="@+id/status_text" />
+        <TextView
+            android:id="@+id/status_text"
+            android:layout_width="match_parent"
+            android:layout_height="20dip"
+            android:layout_margin="3dip"
+            android:text="블루투스 미연결"
+            style="@style/AppTheme.ConnectionInfoText" />
+    </RelativeLayout>
+</LinearLayout>

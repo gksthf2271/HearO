@@ -203,7 +203,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Intent enableintent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableintent, 0);
         }
-        speech_recognizer_.start();
+//        speech_recognizer_.start();
     }
 
     @Override

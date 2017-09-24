@@ -338,9 +338,9 @@ public void setupBT() {
 					}
 					break;
 					
-/*				case BluetoothManager.STATE_LISTEN:
+   				case BluetoothManager.STATE_LISTEN:
 					mActivityHandler.obtainMessage(Constants.MESSAGE_BT_STATE_LISTENING).sendToTarget();
-					break;*/
+					break;
 					
 				case BluetoothManager.STATE_CONNECTING:
 					mActivityHandler.obtainMessage(Constants.MESSAGE_BT_STATE_CONNECTING).sendToTarget();

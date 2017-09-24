@@ -11,4 +11,13 @@
         android:orderInCategory="100"
         android:title="로그아웃"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/action_scan"
+        android:orderInCategory="10"
+        android:icon="@android:drawable/ic_menu_view"
+        android:showAsAction="always|withText"
+        android:title="@string/connect"/>
+
+
+
 </menu>
