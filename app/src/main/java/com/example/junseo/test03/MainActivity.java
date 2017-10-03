@@ -211,7 +211,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onRestart();
         Log.d(TAG,"onRestart 진입");
         //음성인식
-        speech_recognizer_ = ((STTActivity) STTActivity.mContext).buildSpeechRecognizer();
+        speech_recognizer_ = ((SttFragment) SttFragment.mContext).buildSpeechRecognizer();
 
         bluetoothManager = new BluetoothManager(mContext, handler);
 

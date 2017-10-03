@@ -26,9 +26,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.junseo.test03.R;
-import com.example.junseo.test03.STTActivity;
+
 import com.example.junseo.test03.service.BTCTemplateService;
-//import com.example.junseo.test03.STTFragment;
+import com.example.junseo.test03.SttFragment;
 
 import java.util.HashMap;
 import java.util.List;
@@ -141,7 +141,7 @@ public class BluetoothPairActivity extends Activity {
                     return;
                 }
 
-                Intent result_intent = new Intent(getApplicationContext(), STTActivity.class);
+                Intent result_intent = new Intent(getApplicationContext(), SttFragment.class);
                 result_intent.putExtra("device", device_name_map_.get(name));
                 setResult(RESULT_OK, result_intent);
                 finish();
@@ -380,7 +380,7 @@ public class BluetoothPairActivity extends Activity {
             }
 
 
-            Intent result_intent = new Intent(getApplicationContext(), STTActivity.class);
+            Intent result_intent = new Intent(getApplicationContext(), SttFragment.class);
             result_intent.putExtra("device", device_name_map_.get(name));
             setResult(RESULT_OK, result_intent);
             finish();

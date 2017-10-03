@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothSocket;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -36,6 +37,7 @@ import com.example.junseo.test03.arduino.BluetoothPairActivity;
 import com.example.junseo.test03.arduino.BluetoothSerial;
 import com.example.junseo.test03.arduino.PacketParser;
 //import com.example.junseo.test03.arduino.PairActivity;
+import com.example.junseo.test03.bluetooth.BluetoothManager;
 import com.example.junseo.test03.service.BTCTemplateService;
 import com.example.junseo.test03.speech.CommandSpeechFilter;
 import com.example.junseo.test03.speech.EnhancedSpeechRecognizer;
@@ -55,9 +57,13 @@ import java.util.Timer;
  */
 
 public class SttFragment extends Fragment {
+    public static Object mContext;
+
+
     public SttFragment() {
         // Required empty public constructor
     }
+
     private Button cancel3;
 
     private ImageView mImageBT;
@@ -70,8 +76,14 @@ public class SttFragment extends Fragment {
     // The value for magnifying to display on progress bar.
     private final int kSpeechMagnifyingValue = 100;
 
+
+    //device
+  //  private BluetoothDevice device;
+    private BluetoothManager Blmanager;
+    private BluetoothSocket socket;
+
     // Context, System
-    public Context mContext;
+   // public Context mContext;
     private BTCTemplateService mService;
     private SttFragment.ActivityHandler mActivityHandler;
 
@@ -87,6 +99,9 @@ public class SttFragment extends Fragment {
     // Refresh timer
     private Timer mRefreshTimer = null;
 
+    //View 객체생성
+
+
     private static final String TAG = SttFragment.class.getSimpleName();
 
     @Nullable
@@ -99,7 +114,15 @@ public class SttFragment extends Fragment {
         speakbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                bluetooth_ = BluetoothAdapter.getDefaultAdapter();
+                if (!bluetooth_.isEnabled()) {
+                    Toast.makeText(getActivity().getApplicationContext(), "bluetooth is not enabled",
+                            Toast.LENGTH_LONG).show();
+                    Intent enableintent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                    startActivityForResult(enableintent, 0);
+                }
+               // else if(Blmanager.connected(socket,device))
+                //    arduino_listener_.onConnect(device);
             }
         });
         // Inflate the layout for this fragment
@@ -132,7 +155,7 @@ public class SttFragment extends Fragment {
         cancel3.setOnClickListener(new View.OnClickListener() { //뒤로가기버튼
             @Override
             public void onClick(View v) {
-            //    getActivity().unbindService(mServiceConn);
+                //    getActivity().unbindService(mServiceConn);
                 getView().setVisibility(View.GONE); // 프래그먼트 없앰
             }
 
@@ -231,12 +254,11 @@ public class SttFragment extends Fragment {
         }
     }
 
-        // connection button listener.
-    public void onPair1(View v){
-
+    // connection button listener.
+/*    public void onPair1(View view){
         Intent intent = new Intent(getActivity().getApplicationContext(), BluetoothPairActivity.class);
         startActivityForResult(intent, 0);
-    }
+    }*/
     // Handles the speeches delivered by EnhancedSpeechRecognizer.
     private SpeechListener speech_listener_ = new SpeechListener() {
         @Override
@@ -401,13 +423,13 @@ public class SttFragment extends Fragment {
                 return SttFragment.AppState.Disconnected;
             }
         }
-   }
+    }
 
-  private void doStartService() {
-      Logs.d(TAG, "# Activity - doStartService()");
-      getActivity().startService(new Intent(getActivity(), BTCTemplateService.class));
-      getActivity().bindService(new Intent(getActivity(), BTCTemplateService.class), mServiceConn, Context.BIND_AUTO_CREATE);
-  }
+    private void doStartService() {
+        Logs.d(TAG, "# Activity - doStartService()");
+        getActivity().startService(new Intent(getActivity(), BTCTemplateService.class));
+        getActivity().bindService(new Intent(getActivity(), BTCTemplateService.class), mServiceConn, Context.BIND_AUTO_CREATE);
+    }
 
     /**
      * Service connection
@@ -526,13 +548,13 @@ public class SttFragment extends Fragment {
                 // When there's incoming packets on bluetooth
                 // do the UI works like below
                 ///////////////////////////////////////////////
-//			case Constants.MESSAGE_READ_ACCEL_REPORT:
-//				ActivityReport ar = (ActivityReport)msg.obj;
-//				if(ar != null) {
-//					TimelineFragment frg = (TimelineFragment) mSectionsPagerAdapter.getItem(FragmentAdapter.FRAGMENT_POS_TIMELINE);
-//					frg.showActivityReport(ar);
-//				}
-//				break;
+//         case Constants.MESSAGE_READ_ACCEL_REPORT:
+//            ActivityReport ar = (ActivityReport)msg.obj;
+//            if(ar != null) {
+//               TimelineFragment frg = (TimelineFragment) mSectionsPagerAdapter.getItem(FragmentAdapter.FRAGMENT_POS_TIMELINE);
+//               frg.showActivityReport(ar);
+//            }
+//            break;
 
                 default:
                     break;
@@ -540,6 +562,6 @@ public class SttFragment extends Fragment {
 
             super.handleMessage(msg);
         }
-    }	// End of class ActivityHandler
+    }   // End of class ActivityHandler
 
 }
