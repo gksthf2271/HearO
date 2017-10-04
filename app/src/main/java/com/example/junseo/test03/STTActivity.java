@@ -130,7 +130,7 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
         Cancel3.setOnClickListener(new View.OnClickListener() { //뒤로가기버튼
             @Override
             public void onClick(View v) {
-                unbindService(mServiceConn);
+                //unbindService(mServiceConn);
                 finish();
             }
         });
@@ -173,7 +173,7 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
 
 
             case R.id.speakbtn:
-
+                speech_recognizer_.start();
                 break;
         }
 
@@ -265,12 +265,12 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
         }
     }
 
-    // connection button listener.
+/*    // connection button listener.
     public void onPair(View v){
 
         Intent intent = new Intent(getApplicationContext(), BluetoothPairActivity.class);
         startActivityForResult(intent, 0);
-    }
+    }*/
 
     // Handles the speeches delivered by EnhancedSpeechRecognizer.
     private SpeechListener speech_listener_ = new SpeechListener() {
@@ -283,13 +283,13 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
             String cmd = recognitions.get(0);
             Toast.makeText(getApplicationContext(), cmd, Toast.LENGTH_SHORT).show();
 
-            try {
+/*            try {
                 arduinoConnector_.send(cmd);
                 Log.d(TAG,"안드로이드 -> 아두이노 데이터전달");
             } catch (Exception e) {
                 e.printStackTrace();
                 throw e;
-            }
+            }*/
         }
     };
 
@@ -485,13 +485,13 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
     private void doStartService() {
         Logs.d(TAG, "# Activity - doStartService()");
         startService(new Intent(this, BTCTemplateService.class));
-        bindService(new Intent(this, BTCTemplateService.class), mServiceConn, Context.BIND_AUTO_CREATE);
+        //bindService(new Intent(this, BTCTemplateService.class), mServiceConn, Context.BIND_AUTO_CREATE);
     }
 
     /**
      * Service connection
      */
-    private ServiceConnection mServiceConn = new ServiceConnection() {
+/*    private ServiceConnection mServiceConn = new ServiceConnection() {
 
         public void onServiceConnected(ComponentName className, IBinder binder) {
             Logs.d(TAG, "Activity - Service connected");
@@ -506,7 +506,7 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
         public void onServiceDisconnected(ComponentName className) {
             mService = null;
         }
-    };
+    };*/
 
     /**
      * Stop the service

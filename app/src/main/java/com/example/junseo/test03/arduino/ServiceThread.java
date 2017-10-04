@@ -1,3 +1,4 @@
+/*
 package com.example.junseo.test03.arduino;
 
 import android.os.Handler;
@@ -26,3 +27,4 @@ public class ServiceThread extends Thread{
         }
     }
 }
+*/

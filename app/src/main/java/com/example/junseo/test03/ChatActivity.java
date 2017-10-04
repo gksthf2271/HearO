@@ -132,7 +132,7 @@ public class ChatActivity extends AppCompatActivity {
                 Log.e("LOG","removemessage");
 
                 finish();
-                Intent intent = new Intent(ChatActivity.this, StartActivity.class);
+                Intent intent = new Intent(ChatActivity.this, MenuActivity.class);      // 1003 수정
                 startActivity(intent);
             }
         });

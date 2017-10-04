@@ -174,7 +174,7 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
         button1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent ttsIntent = new Intent(MenuActivity.this, StartActivity.class);
+                Intent ttsIntent = new Intent(MenuActivity.this, ChatActivity.class);
                 MenuActivity.this.startActivity(ttsIntent);
             }
         });
@@ -190,28 +190,14 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
         button3 = (Button) findViewById(R.id.button3);
         button3.setOnClickListener(this);
         //STT 버튼
-        /*
         button3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent sttIntent = new Intent(MenuActivity.this, STTActivity.class);
                 MenuActivity.this.startActivity(sttIntent);
 
-                Fragment stt_fr;
-                Fragment state_fr;
-
-                stt_fr = new Fragment();
-                state_fr = new Fragment();
-
-                FragmentManager fm = getFragmentManager();
-                FragmentTransaction fragmentTransaction = fm.beginTransaction();
-                fragmentTransaction.replace(R.id.fragmentA, stt_fr);
-                fragmentTransaction.replace(R.id.fragmentA, state_fr);
-                fragmentTransaction.commit();
-
-
             }
-        });*/
+        });
 
         //  FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
       /*  fab.setOnClickListener(new View.OnClickListener() {
@@ -254,16 +240,7 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
         FirebaseUser user = firebaseAuth.getCurrentUser();
 
     }
-    private void callFragment(int fragment_no){
 
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        switch(fragment_no) {
-            case 1:
-                SttFragment fragment_stt = new SttFragment();
-                transaction.replace(R.id.sttfragment_container, fragment_stt);
-                transaction.commit();
-        }
-    }
 
     public void Vibrator_pattern() {
 
@@ -503,7 +480,7 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
         } else if (id == R.id.nav_help) {
             startActivity(new Intent(this,HelpActivity.class)); //도움말
         } else if (id == R.id.nav_module) {
-            startActivity(new Intent(this, BluetoothPairActivity.class)); //모듈 연결/해제
+            startActivity(new Intent(this, StartActivity.class)); //모듈 연결/해제    //1003 네비게이션 수정
 
 
         } else if (id == R.id.nav_alert) {
@@ -539,10 +516,10 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
     }
     @Override
     public void onClick(View view){
-        if(view == button3)
+/*        if(view == button3)
         {
             callFragment(FRAGMENT_STT);
-        }
+        }*/
         switch (view.getId()){
             case R.id.blinking_animation:
                 blinking_animation.clearAnimation();

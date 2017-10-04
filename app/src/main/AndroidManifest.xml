@@ -42,7 +42,6 @@
             android:theme="@android:style/Theme.Dialog" />
         <activity android:name=".ChatActivity" />
         <activity android:name=".StartActivity" />
-        <service android:name=".arduino.BluetoothService">/</service>
         <service android:name=".service.BTCTemplateService"></service>
 
 

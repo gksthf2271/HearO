@@ -202,7 +202,9 @@ public class EnhancedSpeechRecognizer implements RecognitionListener {
 
         // notifies the speeches each by each.
         for (String speech : results_in_arraylist) {
-            Log.d(TAG, "match: " + speech);
+
+            Log.d(TAG, "match: " + speech);         // 여기서 이값을 리스트형식으로 출력해야하고 클릭시 파이어베이스에 다른 형태로 저장해야된다
+
             final DatabaseReference pushedPostRefkey = databaseReference.push();
 
             final String speechkey = pushedPostRefkey.getKey();

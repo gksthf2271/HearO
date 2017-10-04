@@ -1,3 +1,4 @@
+/*
 
 package com.example.junseo.test03.arduino;
 
@@ -116,8 +117,10 @@ public class BluetoothService extends Service implements IBinder {
             Intent intent = new Intent(BluetoothService.this, BluetoothPairActivity.class);
             PendingIntent pendingIntent = PendingIntent.getActivity(BluetoothService.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
             //블루투스 장치 새로운 device , 페얼이된 paired device setup view
-  /*          Toast.makeText(getApplicationContext(),
-                    "시작한다!", Toast.LENGTH_LONG).show();*/
+  */
+/*          Toast.makeText(getApplicationContext(),
+                    "시작한다!", Toast.LENGTH_LONG).show();*//*
+
 
                 switch(msg.arg1){
                     case BluetoothSerial.kMsgConnectBluetooth:
@@ -143,3 +146,4 @@ public class BluetoothService extends Service implements IBinder {
     }
 }
 
+*/

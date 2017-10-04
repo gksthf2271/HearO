@@ -1,9 +1,11 @@
+/*
 package com.example.junseo.test03;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothSocket;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -36,6 +38,7 @@ import com.example.junseo.test03.arduino.BluetoothPairActivity;
 import com.example.junseo.test03.arduino.BluetoothSerial;
 import com.example.junseo.test03.arduino.PacketParser;
 //import com.example.junseo.test03.arduino.PairActivity;
+import com.example.junseo.test03.bluetooth.BluetoothManager;
 import com.example.junseo.test03.service.BTCTemplateService;
 import com.example.junseo.test03.speech.CommandSpeechFilter;
 import com.example.junseo.test03.speech.EnhancedSpeechRecognizer;
@@ -50,9 +53,11 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Timer;
 
+*/
 /**
  * Created by Junseo on 2017-09-21.
- */
+ *//*
+
 
 public class SttFragment extends Fragment {
     public SttFragment() {
@@ -69,6 +74,13 @@ public class SttFragment extends Fragment {
     private final AppStateManager app_status_manager_ = new AppStateManager();
     // The value for magnifying to display on progress bar.
     private final int kSpeechMagnifyingValue = 100;
+
+
+    //device
+    private BluetoothDevice device;
+
+    private BluetoothManager Blmanager;
+    private BluetoothSocket socket;
 
     // Context, System
     public Context mContext;
@@ -87,19 +99,30 @@ public class SttFragment extends Fragment {
     // Refresh timer
     private Timer mRefreshTimer = null;
 
+    //View 객체생성
+    private View view;
+
     private static final String TAG = SttFragment.class.getSimpleName();
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragment_stt, container, false);
+        view = inflater.inflate(R.layout.fragment_stt, container, false);
         cancel3 = (Button) view.findViewById(R.id.Cancel3);
         Button speakbtn = (Button) view.findViewById(R.id.speakbtn);
         speakbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                bluetooth_ = BluetoothAdapter.getDefaultAdapter();
+                if (!bluetooth_.isEnabled()) {
+                    Toast.makeText(getActivity().getApplicationContext(), "bluetooth is not enabled",
+                            Toast.LENGTH_LONG).show();
+                    Intent enableintent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                    startActivityForResult(enableintent, 0);
+                }
+                else if(Blmanager.connected(socket,device))
+                    arduino_listener_.onConnect(device);
             }
         });
         // Inflate the layout for this fragment
@@ -168,6 +191,7 @@ public class SttFragment extends Fragment {
 
         mContext = getActivity();
     }
+*/
 /*
     public void onClick(View view) {
 
@@ -178,7 +202,8 @@ public class SttFragment extends Fragment {
 
                 break;
         }
-    }*/
+    }*//*
+
 
     EnhancedSpeechRecognizer buildSpeechRecognizer() {
 
@@ -232,11 +257,12 @@ public class SttFragment extends Fragment {
     }
 
         // connection button listener.
-    public void onPair1(View v){
-
+*/
+/*    public void onPair1(View view){
         Intent intent = new Intent(getActivity().getApplicationContext(), BluetoothPairActivity.class);
         startActivityForResult(intent, 0);
-    }
+    }*//*
+
     // Handles the speeches delivered by EnhancedSpeechRecognizer.
     private SpeechListener speech_listener_ = new SpeechListener() {
         @Override
@@ -257,19 +283,23 @@ public class SttFragment extends Fragment {
             }
         }
     };
-    /**
+    */
+/**
      * Change the value, ranged from -2.12 to 10, into new value ranged from 0 to 1212.
      * @param value speech level from SpeechRecognizer.
      * @return normalized value.
-     */
+     *//*
+
 
     private int normalizeSpeechValue(float value) {
         return (int)((value + Math.abs(EnhancedSpeechRecognizer.kSpeechMinValue))
                 * kSpeechMagnifyingValue);
     }
-    /**
+    */
+/**
      * Listener for speech recognition.
-     */
+     *//*
+
 
     private EnhancedSpeechRecognizer.Listener speech_recognizer_listener_ =
             new EnhancedSpeechRecognizer.Listener() {
@@ -291,9 +321,11 @@ public class SttFragment extends Fragment {
                     progress_bar_.incrementProgressBy(increment);
                 }
             };
-    /**
+    */
+/**
      * Listener for Arduino.
-     */
+     *//*
+
 
     private ArduinoConnector.Listener arduino_listener_ = new ArduinoConnector.Listener() {
         @Override
@@ -353,42 +385,50 @@ public class SttFragment extends Fragment {
         Standby,       // waiting until activity detected
         Listening    // listening speech recognition.
     }
-    /**
+    */
+/**
      * Manage current app status.
      * Evaluate application status using input status.
-     */
+     *//*
+
 
     private static class AppStateManager {
         private boolean connected_ = false;
         private boolean is_listening_ = false;
 
-        /**
+        */
+/**
          * Update Arduino connection status.
          *
          * @param connected true if connected to Arduino.
          * @return Current app status.
-         */
+         *//*
+
 
         public SttFragment.AppState updateConnectionStatus(boolean connected) {
             connected_ = connected;
             return getStatus();
         }
 
-         /* Update speech recognition status.
+         */
+/* Update speech recognition status.
          * @param is_listening true if speech recognition is working.
          * @return Current app status.
-         */
+         *//*
+
 
         public SttFragment.AppState updateSpeechRecognitionStatus(boolean is_listening) {
             is_listening_ = is_listening;
             return getStatus();
         }
 
-        /**
+        */
+/**
          * Evaluate the current AppStatus.
          *
          * @return Current AppStatus.
-         */
+         *//*
+
 
         SttFragment.AppState getStatus() {
             if (connected_) {
@@ -409,9 +449,11 @@ public class SttFragment extends Fragment {
       getActivity().bindService(new Intent(getActivity(), BTCTemplateService.class), mServiceConn, Context.BIND_AUTO_CREATE);
   }
 
-    /**
+    */
+/**
      * Service connection
-     */
+     *//*
+
     private ServiceConnection mServiceConn = new ServiceConnection() {
 
         public void onServiceConnected(ComponentName className, IBinder binder) {
@@ -428,9 +470,11 @@ public class SttFragment extends Fragment {
             mService = null;
         }
     };
-    /**
+    */
+/**
      * Stop the service
-     */
+     *//*
+
     private void doStopService() {
         Logs.d(TAG, "# Activity - doStopService()");
         mService.finalizeService();
@@ -543,3 +587,4 @@ public class SttFragment extends Fragment {
     }	// End of class ActivityHandler
 
 }
+*/

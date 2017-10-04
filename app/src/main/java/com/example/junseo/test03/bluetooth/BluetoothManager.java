@@ -181,6 +181,7 @@ public class BluetoothManager {
         if (mAcceptThread != null) {mAcceptThread.cancel(); mAcceptThread = null;}
 
         // Start the thread to manage the connection and perform transmissions
+
         mConnectedThread = new ConnectedThread(socket);
         mConnectedThread.start();
 
