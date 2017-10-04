@@ -26,7 +26,6 @@ import java.util.List;
 public class StartActivity extends AppCompatActivity {
     Button Cancel4;
     private static final String TAG = "StartActivity";
-    private String user_id = "ID";
 
     private EditText user_chat, user_edit;
     private Button user_next;
