@@ -26,7 +26,6 @@
         <activity
             android:name=".MenuActivity"
             android:theme="@style/AppTheme" />
-        <activity android:name=".DeviceListActivity"  android:theme="@android:style/Theme.Dialog" android:configChanges="keyboardHidden|orientation|screenSize"/>
         <activity android:name=".FindpasswordActivity" />
         <activity android:name=".ProfileActivity" />
         <activity android:name=".HelpActivity" />
@@ -37,13 +36,9 @@
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity android:name=".STTActivity" />
 
-        <activity
-            android:name=".arduino.BluetoothPairActivity"
-            android:theme="@android:style/Theme.Dialog" />
         <activity android:name=".ChatActivity" />
         <activity android:name=".StartActivity" />
-        <service android:name=".service.BTCTemplateService"></service>
-
+        <activity android:name=".STTList" android:theme="@android:style/Theme.DeviceDefault.Light.Dialog" />
 
 
     </application>

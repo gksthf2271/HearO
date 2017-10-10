@@ -19,9 +19,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.junseo.test03.arduino.ArduinoConnector;
-//import com.example.junseo.test03.arduino.BluetoothService;
-import com.example.junseo.test03.bluetooth.BluetoothManager;
 import com.example.junseo.test03.speech.CommandSpeechFilter;
 import com.example.junseo.test03.speech.EnhancedSpeechRecognizer;
 import com.example.junseo.test03.speech.SignalSpeechFilter;
@@ -39,16 +36,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ProgressDialog progressDialog;
     private Button btnLogin;
     private TextView forgotpasswordtv;
-    private BluetoothAdapter bluetooth_;
-    private ArduinoConnector arduinoConnector_;
-    private ArduinoConnector.Listener arduino_listener_;
-    BluetoothManager bluetoothManager;
 
 
-    private EnhancedSpeechRecognizer speech_recognizer_;
 
     public static Context mContext=null;
-    public static Handler handler=null;
 
 
     private static final String TAG = MainActivity.class.getSimpleName();
@@ -70,17 +61,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //액션바 설정하기// 타이틀 변경하기
         //getSupportActionBar().setTitle("HearO");
 
-        //블루투스
-        bluetooth_ = BluetoothAdapter.getDefaultAdapter();
-        if (!bluetooth_.isEnabled()) {
-            Toast.makeText(getApplicationContext(), "bluetooth is not enabled",
-                    Toast.LENGTH_LONG).show();
-            Intent enableintent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivityForResult(enableintent, 0);
 
-        }
-
-        arduinoConnector_ = new ArduinoConnector(arduino_listener_);    //아두이노 리스너 객체 생성
 
         progressDialog = new ProgressDialog(this);
         textviewMessage = (TextView) findViewById(R.id.textviewMessage);
@@ -135,11 +116,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onActivityResult(requestCode, resultCode, data);
 
 
-/*        if (resultCode == RESULT_OK) {
-            BluetoothDevice device = data.getParcelableExtra("device");
-            arduinoConnector_.connect(device);
-            Log.d(TAG,"블루투스 연결");
-        }*/
 
         if (requestCode == 1000 && resultCode == RESULT_OK) {
             Toast.makeText(MainActivity.this, "회원가입을 완료했습니다!", Toast.LENGTH_SHORT).show();
@@ -194,32 +170,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onStart(){
         super.onStart();
-
-
-        bluetooth_ = BluetoothAdapter.getDefaultAdapter();
-        if (!bluetooth_.isEnabled()) {
-            Toast.makeText(getApplicationContext(), "bluetooth is not enabled",
-                    Toast.LENGTH_LONG).show();
-            Intent enableintent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivityForResult(enableintent, 0);
-        }
-//        speech_recognizer_.start();
     }
 
     @Override
     protected void onRestart() {
         super.onRestart();
         Log.d(TAG,"onRestart 진입");
-        //음성인식
-        speech_recognizer_ = ((SttFragment) SttFragment.mContext).buildSpeechRecognizer();
-
-        bluetoothManager = new BluetoothManager(mContext, handler);
-
-        if(bluetoothManager.getState()==3)
-        {
-            Log.d(TAG,"메인화면 복귀 블루투스 유지중");
-            speech_recognizer_.start();
-        }
+        
 
     }
 }

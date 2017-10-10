@@ -3,8 +3,7 @@
     android:orientation="vertical"
     android:background="@drawable/hback"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_marginBottom="25dip">
+    android:layout_height="match_parent">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -41,19 +40,6 @@
             android:minWidth="200dp"
             android:progressDrawable="@drawable/progressbar" />
 
-        <TextView
-            android:id="@+id/textViewSpeachResult"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignLeft="@+id/progressBarSpeech"
-            android:layout_alignStart="@+id/progressBarSpeech"
-            android:layout_below="@+id/progressBarSpeech"
-            android:layout_marginTop="22dp"
-            android:gravity="center"
-            android:minWidth="200dp"
-            android:textColor="#5D8091"
-            android:textSize="@dimen/font_size" />
-        <!--android:text="@string/txtview_disconnected"-->
 
 
         <Button
@@ -69,31 +55,20 @@
             android:layout_marginTop="13dp"
             android:background="@drawable/backimgj"
              />
-    </RelativeLayout>
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="26dip"
-        android:layout_gravity="bottom"
-        android:orientation="horizontal"
-        android:id="@+id/bl_monitoring"
-        style="@style/AppTheme.ConnectionInfoContainer" >
 
-        <ImageView
-            android:id="@+id/status_title"
+        <Switch
+
+            android:text="음성인식 스위치"
+            android:singleLine="false"
             android:layout_width="wrap_content"
-            android:layout_height="20dip"
-            android:layout_marginRight="3dip"
-            android:layout_marginTop="3dip"
-            android:layout_marginBottom="3dip"
-            android:layout_alignLeft="@+id/status_text"
-            android:layout_alignStart="@+id/status_text" />
-        <TextView
-            android:id="@+id/status_text"
-            android:layout_width="match_parent"
-            android:layout_height="20dip"
-            android:layout_margin="3dip"
-            android:text="블루투스 미연결"
-            style="@style/AppTheme.ConnectionInfoText" />
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/progressBarSpeech"
+            android:layout_alignStart="@+id/progressBarSpeech"
+            android:layout_below="@+id/progressBarSpeech"
+            android:layout_marginTop="22dp"
+            android:gravity="center"
+            android:layout_centerInParent="true"
+            android:id="@+id/sw_speech"/>
     </RelativeLayout>
 </LinearLayout>

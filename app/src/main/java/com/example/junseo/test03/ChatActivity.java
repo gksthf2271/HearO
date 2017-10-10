@@ -35,30 +35,24 @@ import java.util.Locale;
 
 public class ChatActivity extends AppCompatActivity {
     TextToSpeech tts;
-
-    private String CHAT_NAME;
-    private String USER_NAME;
-    private String DDR;
     private ListView chat_view;
     private EditText chat_edit;
     private Button chat_send;
     Button Cancel10;
 
     private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference(); // 기본 루트 레퍼런스
-    private FirebaseAuth firebaseAuth;
+    private FirebaseAuth firebaseAuth; // 파이어베이스 인증
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
 
-
-
-        tts=new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
+        tts=new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() { // tts 처리
             @Override
             public void onInit(int status) {
                 if(status != TextToSpeech.ERROR) {
-                    tts.setLanguage(Locale.KOREAN);
+                    tts.setLanguage(Locale.KOREAN); // 한국어로 tts처리
                 }
             }
         });
@@ -68,13 +62,10 @@ public class ChatActivity extends AppCompatActivity {
         chat_send = (Button) findViewById(R.id.chat_sent);
         Cancel10 = (Button) findViewById(R.id.Cancel10);
         // 로그인 화면에서 받아온 채팅방 이름, 유저 이름 저장
-        final Intent intent = getIntent();
-
-        CHAT_NAME = intent.getStringExtra("chatName");
-        USER_NAME = intent.getStringExtra("userName");
+        //final Intent intent = getIntent();
 
         // 채팅 방 입장
-        openChat(CHAT_NAME);
+        openChat();
         firebaseAuth = FirebaseAuth.getInstance();
         FirebaseUser user = firebaseAuth.getCurrentUser();
         final String email = user.getEmail();
@@ -84,6 +75,7 @@ public class ChatActivity extends AppCompatActivity {
 
         final DatabaseReference chatdatabaseReference = FirebaseDatabase.getInstance().getReference().child("huser").child(id).child("chat"); // 채팅 레퍼런스
         final DatabaseReference dashboard = FirebaseDatabase.getInstance().getReference().child("hdashboard").child(userid).child("chat"); // 대쉬보드 레퍼런스
+
         // 메시지 전송 버튼에 대한 클릭 리스너 지정
         chat_send.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -108,12 +100,13 @@ public class ChatActivity extends AppCompatActivity {
                 String chattime = sdfNow.format(date);
                 final DatabaseReference chatpushedPostRefkey = chatdatabaseReference.push();
                 final String chatkey = chatpushedPostRefkey.getKey();
-                final ChatDTO chat = new ChatDTO(USER_NAME, chat_edit.getText().toString()); //ChatDTO를 이용하여 데이터를 묶는다.
+                final ChatDTO chat = new ChatDTO(chat_edit.getText().toString()); //ChatDTO를 이용하여 데이터를 묶는다.
 
+                // firebase 저장
                 SimpleDateFormat yo = new SimpleDateFormat("E요일");
                 String yoman = yo.format(date);
-                chatdatabaseReference.child(CHAT_NAME).child(chatkey).setValue(chat); // 데이터 푸쉬
-                dashboard.child(CHAT_NAME).child(chattime).child(yoman).setValue(chattime);
+                chatdatabaseReference.child(chatkey).setValue(chat); // 데이터 푸쉬
+                dashboard.child(chattime).child(yoman).setValue(chattime);
 
                 chat_edit.setText(""); //입력창 초기화
                 chat_view.smoothScrollToPosition(position);
@@ -123,16 +116,16 @@ public class ChatActivity extends AppCompatActivity {
         Cancel10.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                chatdatabaseReference.child(CHAT_NAME).removeValue();
+                chatdatabaseReference.removeValue();
                 DatabaseReference chatpushedPostRefkey = chatdatabaseReference.push();
                 String chatkey = chatpushedPostRefkey.getKey();
-                ChatDTO chat = new ChatDTO("","전송할 내용을 입력하세요");
-                chatdatabaseReference.child(CHAT_NAME).child(chatkey).setValue(chat);
+                ChatDTO chat = new ChatDTO("전송할 내용을 입력하세요");
+                chatdatabaseReference.child(chatkey).setValue(chat);
 
                 Log.e("LOG","removemessage");
 
                 finish();
-                Intent intent = new Intent(ChatActivity.this, MenuActivity.class);      // 1003 수정
+                Intent intent = new Intent(ChatActivity.this, MenuActivity.class);
                 startActivity(intent);
             }
         });
@@ -166,11 +159,11 @@ public class ChatActivity extends AppCompatActivity {
 
     private void removeMessage(DataSnapshot dataSnapshot, ArrayAdapter<String> adapter) {
         ChatDTO chatDTO = dataSnapshot.getValue(ChatDTO.class);
-        adapter.remove(chatDTO.getUserName() + " : " + chatDTO.getMessage());
+        adapter.remove(chatDTO.getMessage());
     }
 
 
-    private void openChat(String chatName) {
+    private void openChat() {
         // 리스트 어댑터 생성 및 세팅
         final ArrayAdapter<String> adapter
                 = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, android.R.id.text1);
@@ -186,7 +179,7 @@ public class ChatActivity extends AppCompatActivity {
 
 
         // 데이터 받아오기 및 어댑터 데이터 추가 및 삭제 등..리스너 관리
-        databaseReference.child("huser").child(id).child("chat").child(chatName).addChildEventListener(new ChildEventListener() {
+        databaseReference.child("huser").child(id).child("chat").addChildEventListener(new ChildEventListener() {
 
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {

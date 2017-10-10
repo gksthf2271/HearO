@@ -1,7 +1,6 @@
 package com.example.junseo.test03;
 
 import com.example.junseo.test03.utils.Constants;
-import com.example.junseo.test03.service.BTCTemplateService;
 import com.example.junseo.test03.utils.RecycleUtils;
 import com.example.junseo.test03.utils.AppSettings;
 
@@ -45,12 +44,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
-import com.example.junseo.test03.arduino.ArduinoConnector;
-import com.example.junseo.test03.arduino.BluetoothSerial;
-//import com.example.junseo.test03.arduino.BluetoothService;
-//import com.example.junseo.test03.arduino.PairActivity;
-import com.example.junseo.test03.arduino.BluetoothPairActivity;
-import com.example.junseo.test03.bluetooth.BluetoothManager;
 import com.example.junseo.test03.utils.Logs;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -69,24 +62,13 @@ import static java.lang.Boolean.TRUE;
 
 
 public class MenuActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
-    //블루투스 상태창
-    private ImageView mImageBT = null;
-    private TextView mTextStatus = null;
-    private ActivityHandler mActivityHandler;
 
-    private final int FRAGMENT_STT = 1;
     // Refresh timer
     private Timer mRefreshTimer = null;
     private Context mContext;
-    private BTCTemplateService mService;
     private Button buttonLogout;
 
-    private BluetoothAdapter bluetooth_;
-    private BluetoothPairActivity btService = null;
-    private ArduinoConnector arduinoConnector_;
-    private ArduinoConnector.Listener arduino_listener_;
     private Button button3;
-    protected BluetoothManager bluetoothManager;
     private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference(); // 기본 루트 레퍼런스
 
     private FirebaseAuth firebaseAuth;
@@ -119,11 +101,9 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         pushnoti(); // 노티피케이션
         setContentView(R.layout.activity_menu);
-        doStartService(); //블루투스 서비스 강제 시작?
 
         //----- System, Context
         mContext = this;	//.getApplicationContext(); context를 가져와야만 실행이 되는 것 같은데..
-        mActivityHandler = new ActivityHandler(); // 블루투스 상태 핸들러
         AppSettings.initializeAppSettings(mContext);
 
         //배경 랜덤 설정
@@ -159,12 +139,10 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
         blinking_animation4.setOnClickListener(this);
         start4.setOnClickListener(this);
 
-        mImageBT = (ImageView) findViewById(R.id.status_title);
+/*        mImageBT = (ImageView) findViewById(R.id.status_title);
         mImageBT.setImageDrawable(getResources().getDrawable(android.R.drawable.presence_invisible));
         mTextStatus = (TextView) findViewById(R.id.status_text);
-        mTextStatus.setText(getResources().getString(R.string.bt_state_init)); // 블루투스 상태
-
-        mActivityHandler = new ActivityHandler();
+        mTextStatus.setText(getResources().getString(R.string.bt_state_init)); // 블루투스 상태*/
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -299,7 +277,6 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
             return true;
         }
         if(id== R.id.action_scan){
-            doScan();
             return true;
         }
         /*
@@ -668,42 +645,8 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
-    private ServiceConnection mServiceConn = new ServiceConnection() {
-
-        public void onServiceConnected(ComponentName className, IBinder binder) {
-            Log.d(TAG, "Activity - Service connected");
-
-            mService = ((BTCTemplateService.ServiceBinder) binder).getService();
-
-            // Activity couldn't work with mService until connections are made
-            // So initialize parameters and settings here. Do not initialize while running onCreate()
-            initialize();
-        }
-
-        public void onServiceDisconnected(ComponentName className) {
-            mService = null;
-        }
-    };
-
-    /**
-     * Start service if it's not running
-     */
-    private void doStartService() {
-        Log.d(TAG, "# Activity - doStartService()");
-        startService(new Intent(this, BTCTemplateService.class));
-        bindService(new Intent(this, BTCTemplateService.class), mServiceConn, Context.BIND_AUTO_CREATE);
-    }
-
     private void initialize() {
         Logs.d(TAG, "# Activity - initialize()");
-        mService.setupService(mActivityHandler);
-
-        // If BT is not on, request that it be enabled.
-        // RetroWatchService.setupBT() will then be called during onActivityResult
-        if(!mService.isBluetoothEnabled()) {
-            Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivityForResult(enableIntent, Constants.REQUEST_ENABLE_BT);
-        }
 
         // Load activity reports and display
         if(mRefreshTimer != null) {
@@ -717,155 +660,11 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
     private void finalizeActivity() {
         Logs.d(TAG, "# Activity - finalizeActivity()");
 
-        if(!AppSettings.getBgService()) {
-            doStopService();
-        } else {
-        }
-
         // Clean used resources
         RecycleUtils.recursiveRecycle(getWindow().getDecorView());
         System.gc();
     }
 
-    private void doStopService() {
-        Log.d(TAG, "# Activity - doStopService()");
-        mService.finalizeService();
-        stopService(new Intent(this, BTCTemplateService.class));
-    }
-    /**
-     * Launch the DeviceListActivity to see devices and do scan
-     */
-    private void doScan() {
-        Intent intent = new Intent(this, DeviceListActivity.class);
-        startActivityForResult(intent, Constants.REQUEST_CONNECT_DEVICE);
-    }
-
-    /**
-     * Ensure this device is discoverable by others
-     */
-    private void ensureDiscoverable() {
-        if (mService.getBluetoothScanMode() != BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE) {
-            Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
-            intent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
-            startActivity(intent);
-        }
-    }
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Logs.d(TAG, "onActivityResult " + resultCode);
-
-        switch(requestCode) {
-            case Constants.REQUEST_CONNECT_DEVICE:
-                // When DeviceListActivity returns with a device to connect
-                if (resultCode == Activity.RESULT_OK) {
-                    // Get the device MAC address
-                    String address = data.getExtras().getString(DeviceListActivity.EXTRA_DEVICE_ADDRESS);
-                    // Attempt to connect to the device
-                    if(address != null && mService != null)
-                        mService.connectDevice(address);
-                }
-                break;
-
-            case Constants.REQUEST_ENABLE_BT:
-                // When the request to enable Bluetooth returns
-                if (resultCode == Activity.RESULT_OK) {
-                    // Bluetooth is now enabled, so set up a BT session
-                    mService.setupBT();
-                } else {
-                    // User did not enable Bluetooth or an error occured
-                    Logs.e(TAG, "BT is not enabled");
-                    Toast.makeText(this, R.string.bt_not_enabled_leaving, Toast.LENGTH_SHORT).show();
-                }
-                break;
-        }	// End of switch(requestCode)
-    }
-    public class ActivityHandler extends Handler {
-        @Override
-        public void handleMessage(Message msg)
-        {
-            switch(msg.what) {
-                // Receives BT state messages from service
-                // and updates BT state UI
-                case Constants.MESSAGE_BT_STATE_INITIALIZED:
-                    mTextStatus.setText(getResources().getString(R.string.bt_title) + ": " +
-                            getResources().getString(R.string.bt_state_init));
-                    mImageBT.setImageDrawable(getResources().getDrawable(android.R.drawable.presence_invisible));
-                    break;
-                case Constants.MESSAGE_BT_STATE_LISTENING:
-                    mTextStatus.setText(getResources().getString(R.string.bt_title) + ": " +
-                            getResources().getString(R.string.bt_state_wait));
-                    mImageBT.setImageDrawable(getResources().getDrawable(android.R.drawable.presence_invisible));
-                    break;
-                case Constants.MESSAGE_BT_STATE_CONNECTING:
-                    mTextStatus.setText(getResources().getString(R.string.bt_title) + ": " +
-                            getResources().getString(R.string.bt_state_connect));
-                    mImageBT.setImageDrawable(getResources().getDrawable(android.R.drawable.presence_away));
-                    break;
-                case Constants.MESSAGE_BT_STATE_CONNECTED:
-                    if(mService != null) {
-                        String deviceName = mService.getDeviceName();
-                        if(deviceName != null) {
-                            mTextStatus.setText(getResources().getString(R.string.bt_title) + ": " +
-                                    getResources().getString(R.string.bt_state_connected) + " " + deviceName);
-                            mImageBT.setImageDrawable(getResources().getDrawable(android.R.drawable.presence_online));
-                        }
-                    }
-                    break;
-                case Constants.MESSAGE_BT_STATE_ERROR:
-                    mTextStatus.setText(getResources().getString(R.string.bt_state_error));
-                    mImageBT.setImageDrawable(getResources().getDrawable(android.R.drawable.presence_busy));
-                    break;
-
-                // BT Command status
-                case Constants.MESSAGE_CMD_ERROR_NOT_CONNECTED:
-                    mTextStatus.setText(getResources().getString(R.string.bt_cmd_sending_error));
-                    mImageBT.setImageDrawable(getResources().getDrawable(android.R.drawable.presence_busy));
-                    break;
-
-                ///////////////////////////////////////////////
-                // When there's incoming packets on bluetooth
-                // do the UI works like below
-                ///////////////////////////////////////////////
 
 
-                default:
-                    break;
-            }
-
-            super.handleMessage(msg);
-        }
-    }	// End of class ActivityHandler
-
-    /*
-    @Override
-    public void onStart(){
-        super.onStart();
-        //블루투스 MainActivity 초기에 실행하기
-*//*        Intent intent = getIntent();
-        int resultCode = intent.getExtras().getInt("resultCode");
-        int requestCode = intent.getExtras().getInt("requestCode");*//*
-
-        bluetooth_ = BluetoothAdapter.getDefaultAdapter();
-        if (!bluetooth_.isEnabled()) {
-            Toast.makeText(getApplicationContext(), "bluetooth is not enabled",
-                    Toast.LENGTH_LONG).show();
-            Intent enableintent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivityForResult(enableintent, 0);
-*//*
-            Intent intent = new Intent(getApplicationContext(), BluetoothPairActivity.class);
-            startActivityForResult(intent, 0);*//*
-        }
-    }*/
-
-    private class RefreshTimerTask extends TimerTask {
-        public RefreshTimerTask() {}
-
-        public void run() {
-            mActivityHandler.post(new Runnable() {
-                public void run() {
-                    //
-                    mRefreshTimer = null;
-                }
-            });
-        }
-    }
 }

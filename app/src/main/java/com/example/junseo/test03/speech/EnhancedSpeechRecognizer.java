@@ -15,6 +15,8 @@ import android.speech.SpeechRecognizer;
 import android.util.Log;
 
 
+import com.example.junseo.test03.STTActivity;
+import com.example.junseo.test03.STTList;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -27,6 +29,8 @@ import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+
+import static android.support.v4.app.ActivityCompat.startActivityForResult;
 
 /**
  * Responsible for improving recognition service and hiding complex logic.
@@ -61,6 +65,7 @@ public class EnhancedSpeechRecognizer implements RecognitionListener {
     private boolean speech_recognized_ = false;
     private final SoundController sound_controllor_;
     private final Messenger server_messenger_ = new Messenger(new IncomingHandler(this));
+    public static Context mContext;
 
     public interface Listener {
         // Start of speech recognition.
@@ -71,18 +76,18 @@ public class EnhancedSpeechRecognizer implements RecognitionListener {
         void onSoundChanged(float rmsdB);
     }
 
-    public EnhancedSpeechRecognizer(Activity parent_activity, Listener listener,
+    public EnhancedSpeechRecognizer(Context context, Listener listener,
                                     SpeechListener speech_listener) {
-        parent_activity_ = parent_activity;
+        mContext = context;
         listener_ = listener;
         speech_listener_ = speech_listener;
 
-        sound_controllor_ = new SoundController(parent_activity.getApplicationContext());
+        sound_controllor_ = new SoundController(mContext);
 
         // set intent for speech recognizer
         intent_ = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         intent_.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE,
-                parent_activity_.getPackageName());
+                mContext.getPackageName());
         intent_.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "ko-KR");
         intent_.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
                 RecognizerIntent.LANGUAGE_MODEL_WEB_SEARCH);
@@ -98,7 +103,7 @@ public class EnhancedSpeechRecognizer implements RecognitionListener {
             return;
         }
 
-        speech_recog_ = SpeechRecognizer.createSpeechRecognizer(parent_activity_);
+        speech_recog_ = SpeechRecognizer.createSpeechRecognizer(mContext);
         speech_recog_.setRecognitionListener(this);
         speech_recog_.startListening(intent_);
 
@@ -159,6 +164,7 @@ public class EnhancedSpeechRecognizer implements RecognitionListener {
     public void onBeginningOfSpeech() {
         Log.d(TAG, "onBeginningOfSpeech");
         speech_recognized_ = true;
+
     }
 
     @Override
@@ -204,26 +210,6 @@ public class EnhancedSpeechRecognizer implements RecognitionListener {
         for (String speech : results_in_arraylist) {
 
             Log.d(TAG, "match: " + speech);         // 여기서 이값을 리스트형식으로 출력해야하고 클릭시 파이어베이스에 다른 형태로 저장해야된다
-
-            final DatabaseReference pushedPostRefkey = databaseReference.push();
-
-            final String speechkey = pushedPostRefkey.getKey();
-            firebaseAuth = FirebaseAuth.getInstance();
-            FirebaseUser user = firebaseAuth.getCurrentUser();
-            final String email = user.getEmail();
-            int i = email.indexOf("@");
-            String id = email.substring(0,i);
-            final String userid = user.getUid();
-            long now = System.currentTimeMillis();
-            // 현재시간을 date 변수에 저장한다.
-            Date date = new Date(now);
-            // 시간을 나타냇 포맷을 정한다 ( yyyy/MM/dd 같은 형태로 변형 가능 )
-            SimpleDateFormat sdfNow = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss E요일");
-            // nowDate 변수에 값을 저장한다.
-            String speechtime = sdfNow.format(date);
-
-            databaseReference.child("huser").child(id).child("sensor").child("voice").child(speechtime).setValue(speech);
-            databaseReference.child("hdashboard").child(userid).child("sensor").child("voice").child(speechtime).setValue(speech);
         }
 
 
@@ -239,48 +225,18 @@ public class EnhancedSpeechRecognizer implements RecognitionListener {
         speech_recognized_ = false;
 
 
-        firebaseAuth = FirebaseAuth.getInstance();
-        FirebaseUser user = firebaseAuth.getCurrentUser();
-        final String email = user.getEmail();
-        int i = email.indexOf("@");
-        String id = email.substring(0,i);
-
-
-        databaseReference.child("USER").child(id).child("SPEACH").addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onChildRemoved(final DataSnapshot dataSnapshot) {
-
-
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
 
     }
 
     @Override
-    public void onPartialResults(Bundle partialResults) {}
+    public void onPartialResults(Bundle partialResults) {
+        Log.d(TAG, "onPartialResults");
+    }
 
     @Override
-    public void onEvent(int eventType, Bundle params) {}
+    public void onEvent(int eventType, Bundle params) {
+        Log.d(TAG, "onEvent");
+    }
 
     private static class IncomingHandler extends Handler {
         private WeakReference<EnhancedSpeechRecognizer> target_;
