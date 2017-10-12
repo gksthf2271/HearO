@@ -86,7 +86,7 @@
         android:layout_height="154dp"
 
         android:gravity="center"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="50dp"
         android:layout_below="@+id/but"
         android:layout_centerHorizontal="true" />
 
@@ -99,7 +99,7 @@
         android:visibility="gone"
         android:layout_below="@+id/but"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="30dp"  />
+        android:layout_marginTop="50dp"  />
     <Button
         android:id="@+id/blinking_animation3"
         android:layout_width="143dp"
@@ -109,7 +109,7 @@
         android:visibility="gone"
         android:layout_below="@+id/but"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="30dp"  />
+        android:layout_marginTop="50dp"  />
 
     <Button
         android:id="@+id/blinking_animation4"
@@ -120,7 +120,7 @@
         android:visibility="gone"
         android:layout_below="@+id/but"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="30dp"  />
+        android:layout_marginTop="50dp"  />
 
     <TextView
         android:id="@+id/firetext"
