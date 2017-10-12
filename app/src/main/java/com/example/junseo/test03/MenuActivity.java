@@ -621,6 +621,7 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
         final DatabaseReference knockdb = sensordb.child("knock");
         final DatabaseReference firedb = sensordb.child("fire");
         final DatabaseReference voicedb = sensordb.child("voice");
+        final DatabaseReference voiceSend = sensordb.child("voice").child("text");
         // 데이터 받아오기 및 어댑터 데이터 추가 및 삭제 등..리스너 관리
                     knockdb.addChildEventListener(new ChildEventListener() {
                         @Override
@@ -686,43 +687,73 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
                                 public void onDataChange(DataSnapshot dataSnapshot1) {
                                     String value = dataSnapshot1.getValue(String.class); // val 값을 가져온다.
                                     if(Objects.equals(value, flag1)){
-                                        Log.e("LOG", "dataSnapshot.getKey() : " + dataSnapshot.getKey());
-                                        Log.e("LOG", "dataSnapshot.getValue() : " + dataSnapshot.getValue());
 
-                                        builder.setContentTitle("HearO")
-                                                .setContentText((String) dataSnapshot.getValue())
-                                                .setTicker("음성")
-                                                .setSmallIcon(R.mipmap.ic_launcher)
-                                                .setLargeIcon(BitmapFactory.decodeResource(res, R.mipmap.ic_launcher))
-                                                .setContentIntent(contentIntent)
-                                                .setAutoCancel(true)
-                                                .setWhen(System.currentTimeMillis())
-                                                .setDefaults(Notification.DEFAULT_SOUND);
-                                        voicetext.setText((String) dataSnapshot.getValue());
-                                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-                                            builder.setCategory(Notification.CATEGORY_MESSAGE)
-                                                    .setPriority(Notification.PRIORITY_HIGH)
-                                                    .setVisibility(Notification.VISIBILITY_PUBLIC);
-                                        }
+                                       voiceSend.addValueEventListener(new ValueEventListener() {
+                                           @Override
+                                           public void onDataChange(DataSnapshot dataSnapshot2) {
+                                               Log.e("LOG", "dataSnapshot.getKey() : " + dataSnapshot.getKey());
+                                               Log.e("LOG", "dataSnapshot.getValue() : " + dataSnapshot.getValue());
+                                               Log.e("LOG", "dataSnapshot.child('text').getValue() :" + dataSnapshot2.getValue());
+                                               builder.setContentTitle("HearO")
+                                                       .
 
-                                        NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-                                        nm.notify(1234, builder.build());
-                                        mVibe.cancel();
-                                        blinking_animation.clearAnimation();
-                                        firetext.setVisibility(View.GONE);
-                                        blinking_animation2.setVisibility(View.GONE);
-                                        doortext.setVisibility(View.GONE);
-                                        blinking_animation4.setVisibility(View.INVISIBLE);
-                                        belltext.setVisibility(View.GONE);
+                                                               setContentText((String) dataSnapshot2.getValue())
+                                                       .
 
-                                        blinking_animation3.setVisibility(View.VISIBLE);
-                                        voicetext.setVisibility(View.VISIBLE);
+                                                               setTicker("음성")
+                                                       .
+
+                                                               setSmallIcon(R.mipmap.ic_launcher)
+                                                       .
+
+                                                               setLargeIcon(BitmapFactory.decodeResource(res, R.mipmap.ic_launcher))
+                                                       .
+
+                                                               setContentIntent(contentIntent)
+                                                       .
+
+                                                               setAutoCancel(true)
+                                                       .
+
+                                                               setWhen(System.currentTimeMillis())
+                                                       .
+
+                                                               setDefaults(Notification.DEFAULT_SOUND);
+                                               voicetext.setText((String) dataSnapshot2.getValue());
+
+                                               if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP)
+
+                                               {
+                                                   builder.setCategory(Notification.CATEGORY_MESSAGE)
+                                                           .setPriority(Notification.PRIORITY_HIGH)
+                                                           .setVisibility(Notification.VISIBILITY_PUBLIC);
+                                               }
+
+                                               NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                                               nm.notify(1234, builder.build());
+                                               mVibe.cancel();
+                                               blinking_animation.clearAnimation();
+                                               firetext.setVisibility(View.GONE);
+                                               blinking_animation2.setVisibility(View.GONE);
+                                               doortext.setVisibility(View.GONE);
+                                               blinking_animation4.setVisibility(View.INVISIBLE);
+                                               belltext.setVisibility(View.GONE);
+
+                                               blinking_animation3.setVisibility(View.VISIBLE);
+                                               voicetext.setVisibility(View.VISIBLE);
+                                           }
+                                           @Override
+                                           public void onCancelled(DatabaseError databaseError) {
+                                           }
+                                       });
+
                                     }
                                 }
                                 @Override
                                 public void onCancelled(DatabaseError databaseError) {
                                 }
                             });
+
 
                         }
 
