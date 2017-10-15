@@ -64,7 +64,6 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
     private final int kSpeechMagnifyingValue = 100;
     private Button Cancel3;
 
-
     // Context, System
     public static Context mContext;
 
@@ -72,6 +71,7 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
     AlertDialog.Builder ad;
 
     Switch sw;
+    public ArrayList<String> arSpeech;
 
 
 
@@ -94,7 +94,7 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
 
         final Animation animation = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.mic_animation);
 
-
+        arSpeech = new ArrayList<>();
 
         speech_recognizer_ = buildSpeechRecognizer();       // 여기까지 화면구성
         Cancel3.setOnClickListener(new View.OnClickListener() { //뒤로가기버튼
@@ -111,8 +111,17 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
             public void onClick(View v) {
                 Log.d(TAG,"클릭 테스트");
                 speech_recognizer_.start();
+/*                if(arSpeech.size() > 0){
+                    Log.d(TAG, "체크1");
+                    Intent SpeechIntent = new Intent(STTActivity.this, STTList.class);
+                    SpeechIntent.putExtra("arSpeech", arSpeech);
+                    startActivity(SpeechIntent);
+                    arSpeech.clear();
+                    speech_recognizer_.stop();
+                }*/
             }
         });
+
 
         sw.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -123,6 +132,15 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
                 if(isChecked == true){
                     speech_recognizer_.start();
                     speakbtn.startAnimation(animation);
+                   // Log.d(TAG, s_arSpeech.get(s_arSpeech.size()-1));
+     /*               if(arSpeech.size() > 0) {
+                        Log.d(TAG, "체크");
+                        Intent SpeechIntent = new Intent(STTActivity.this, STTList.class);
+                        SpeechIntent.putExtra("arSpeech", arSpeech);
+                        startActivity(SpeechIntent);
+                        arSpeech.clear();
+                        speech_recognizer_.stop();
+                    }*/
                 }else {
                     speech_recognizer_.destroy();
                     speech_recognizer_.stop();
@@ -147,10 +165,10 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
         CommandSpeechFilter cmd_filter = new CommandSpeechFilter(speech_listener_);
         // Add commands that it will listen for.
         final Resources rs = getResources();
-        cmd_filter.addPattern(rs.getString(R.string.command_lighton),
+/*        cmd_filter.addPattern(rs.getString(R.string.command_lighton),
                 rs.getString(R.string.command_lighton_variant));
         cmd_filter.addPattern(rs.getString(R.string.command_lightoff),
-                rs.getString(R.string.command_lightoff_variant));
+                rs.getString(R.string.command_lightoff_variant));*/
 
         SignalSpeechFilter signal_filter = new SignalSpeechFilter(cmd_filter, // connect cmd_filter.
                 rs.getString(R.string.speech_singal));
@@ -211,10 +229,19 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
                 return;
             }
             // Use only the first command.
-            String cmd = recognitions.get(0);
-            Toast.makeText(getApplicationContext(), cmd, Toast.LENGTH_SHORT).show();
+            for (int i = 0; i <= recognitions.size()-1; i++){
+                arSpeech.add(recognitions.get(i));
+                Log.d(TAG+"kimhansol",arSpeech.get(i));
+            }
 
-            Log.d(TAG+"kimhansol",cmd);
+            if(arSpeech.size() > 0) {
+                Log.d(TAG, "체크");
+                Intent SpeechIntent = new Intent(STTActivity.this, STTList.class);
+                SpeechIntent.putExtra("arSpeech", arSpeech);
+                startActivity(SpeechIntent);
+                arSpeech.clear();
+                speech_recognizer_.stop();
+            }
         }
     };
 

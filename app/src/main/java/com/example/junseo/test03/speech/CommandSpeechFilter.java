@@ -32,6 +32,7 @@ public class CommandSpeechFilter implements SpeechListener {
     private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference(); // 기본 루트 레퍼런스
     private FirebaseAuth firebaseAuth;
 
+    public ArrayList<String> s_arSpeech;
     /**
      * Load patterns from setting file.
      * @param file_path file that contains speech patterns.
@@ -77,6 +78,7 @@ public class CommandSpeechFilter implements SpeechListener {
     @Override
     public void onSpeechRecognized(ArrayList<String> recognitions) {
         ArrayList<String> commands = new ArrayList<>();
+        s_arSpeech = new ArrayList<>();
         for (String speech : recognitions) {
             String pattern = pattern_speeches_.get(speech);
 
@@ -84,9 +86,10 @@ public class CommandSpeechFilter implements SpeechListener {
                 commands.add(pattern);
             } else {
                 Log.d(TAG, "filtered: " + speech);
-
-                final DatabaseReference pushedPostRefkey = databaseReference.push();
-
+                //필터값 배열형태 static변수에 저장 -> STTList.class
+                s_arSpeech.add(speech);
+                Log.d(TAG, "s_arSpeech: " +  s_arSpeech.get(s_arSpeech.size()-1));
+    /*            final DatabaseReference pushedPostRefkey = databaseReference.push();
                 final String speechkey = pushedPostRefkey.getKey();
                 firebaseAuth = FirebaseAuth.getInstance();
                 FirebaseUser user = firebaseAuth.getCurrentUser();
@@ -104,9 +107,9 @@ public class CommandSpeechFilter implements SpeechListener {
 
                 databaseReference.child("huser").child(id).child("sensor").child("voice").child(speechtime).setValue(speech);
                 databaseReference.child("hdashboard").child(userid).child("sensor").child("voice").child(speechtime).setValue(speech);
-
-            }
+            */}
         }
-        speech_listener_.onSpeechRecognized(commands);
+       /* speech_listener_.onSpeechRecognized(commands);*/
+        speech_listener_.onSpeechRecognized(s_arSpeech);
     }
 }

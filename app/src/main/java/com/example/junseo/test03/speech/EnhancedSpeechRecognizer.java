@@ -17,6 +17,7 @@ import android.util.Log;
 
 import com.example.junseo.test03.STTActivity;
 import com.example.junseo.test03.STTList;
+import com.example.junseo.test03.StartActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -25,12 +26,14 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.io.Serializable;
 import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
 import static android.support.v4.app.ActivityCompat.startActivityForResult;
+import static android.support.v4.content.ContextCompat.startActivity;
 
 /**
  * Responsible for improving recognition service and hiding complex logic.
@@ -43,7 +46,8 @@ import static android.support.v4.app.ActivityCompat.startActivityForResult;
  * It mutes the sounds at the begin and end of speech recognition, which is automatically generated
  * by the library and is unable to mute.
  */
-public class EnhancedSpeechRecognizer implements RecognitionListener {
+@SuppressWarnings("serial")
+public class EnhancedSpeechRecognizer implements RecognitionListener, Serializable {
     private static final int kMsgRecognizerStart = 1;
     private static final int kMsgRecognizerStop = 2;
     private static final String TAG = EnhancedSpeechRecognizer.class.getSimpleName();
@@ -109,6 +113,7 @@ public class EnhancedSpeechRecognizer implements RecognitionListener {
 
         listener_.onStart();
         listener_.onSoundChanged(kSpeechMinValue);
+
     }
 
     // Stop speech recognizing
@@ -164,7 +169,6 @@ public class EnhancedSpeechRecognizer implements RecognitionListener {
     public void onBeginningOfSpeech() {
         Log.d(TAG, "onBeginningOfSpeech");
         speech_recognized_ = true;
-
     }
 
     @Override
@@ -182,6 +186,7 @@ public class EnhancedSpeechRecognizer implements RecognitionListener {
     @Override
     public void onEndOfSpeech() {
         Log.d(TAG, "onEndOfSpeech");
+        //Log.d(TAG, String.valueOf(CommandSpeechFilter.s_arSpeech.get(0)));
     }
 
     @Override
