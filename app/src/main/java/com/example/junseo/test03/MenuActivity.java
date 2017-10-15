@@ -14,6 +14,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.BitmapFactory;
@@ -52,7 +53,9 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
+import java.util.Objects;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -67,12 +70,11 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
     private Timer mRefreshTimer = null;
     private Context mContext;
     private Button buttonLogout;
-
+    private String Alarm_flag = "True";
     private Button button3;
     private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference(); // 기본 루트 레퍼런스
-
     private FirebaseAuth firebaseAuth;
-
+    private String flag1 = "True";
     private static final String TAG = MenuActivity.class.getSimpleName();
 
     Vibrator mVibe; //진동
@@ -93,17 +95,19 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
     boolean dbflag = FALSE;   //데이터 추가되면 TRUE 평소에 FALSE
 
     int[] img = {R.drawable.hback1}; // 여기서  , , , 식으로 추가를 하면 랜덤으로 뽑아옴
-
+    FirebaseUser user =  FirebaseAuth.getInstance().getCurrentUser();
+    final String email = user.getEmail();
+    int i = email.indexOf("@");
+    String id = email.substring(0, i);
+    final DatabaseReference User_Alarm = databaseReference.child("huser").child(id).child("sensor").child("Alarm");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        pushnoti(); // 노티피케이션
         setContentView(R.layout.activity_menu);
-
         //----- System, Context
-        mContext = this;	//.getApplicationContext(); context를 가져와야만 실행이 되는 것 같은데..
+        mContext = this;    //.getApplicationContext(); context를 가져와야만 실행이 되는 것 같은데..
         AppSettings.initializeAppSettings(mContext);
 
         //배경 랜덤 설정
@@ -215,7 +219,27 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
             startActivity(new Intent(this, MainActivity.class));
 
         }
-        FirebaseUser user = firebaseAuth.getCurrentUser();
+
+
+
+    }
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        // false가 아닐 때만 noti를 실행해야 한다...
+        User_Alarm.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String value = dataSnapshot.getValue(String.class); // val 값을 가져온다.
+                if(Objects.equals(value, flag1)){
+                    pushnoti(); // 노티피케이션
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
 
     }
 
@@ -226,6 +250,7 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
         mVibe.vibrate(vibratePattern, 0);
         flag = TRUE;
     }
+
     @Override
     public void onBackPressed() {
         super.onBackPressed();
@@ -240,11 +265,13 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
             flag = FALSE;
         }
     }
+
     @Override
-    public void onConfigurationChanged(Configuration newConfig){
+    public void onConfigurationChanged(Configuration newConfig) {
         // This prevents reload after configuration changes
         super.onConfigurationChanged(newConfig);
     }
+
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -252,7 +279,7 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
-    public void onLowMemory (){
+    public void onLowMemory() {
         super.onLowMemory();
         // onDestroy is not always called when applications are finished by Android system.
         finalizeActivity();
@@ -276,7 +303,7 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
         if (id == R.id.action_settings) {
             return true;
         }
-        if(id== R.id.action_scan){
+        if (id == R.id.action_scan) {
             return true;
         }
         /*
@@ -299,8 +326,6 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
         }
         super.onUserLeaveHint();
     }
-
-
 
 
     public void NotificationFire() {
@@ -336,7 +361,8 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
         NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         nm.notify(1234, builder.build());
     }
-    public void NotificationDoor(){
+
+    public void NotificationDoor() {
         Resources res = getResources();
         Intent notificationIntent = new Intent(this, MenuActivity.class);
         notificationIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP
@@ -345,7 +371,7 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
 
         builder.setContentTitle("HearO")
-                .setContentText("똑똑! 밖에 누가 왔나봐요!")
+                .setContentText("똑똑! 누군가가 문을 두드렸어요!")
                 .setTicker("노크")
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setLargeIcon(BitmapFactory.decodeResource(res, R.mipmap.ic_launcher))
@@ -361,7 +387,8 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
         NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         nm.notify(1234, builder.build());
     }
-    public void Notificationbell(){
+
+    public void Notificationbell() {
         Resources res = getResources();
         Intent notificationIntent = new Intent(this, MenuActivity.class);
         notificationIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP
@@ -388,7 +415,19 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
     }
 
     public void onknock() {
-        NotificationDoor();
+        User_Alarm.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String value = dataSnapshot.getValue(String.class); // val 값을 가져온다.
+                if(Objects.equals(value, flag1)){
+                    NotificationDoor();
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+
         mVibe.cancel();
         blinking_animation.clearAnimation();
         blinking_animation3.setVisibility(View.INVISIBLE);
@@ -401,8 +440,20 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
         doortext.setVisibility(View.VISIBLE);
 
     }
+
     public void onfire() {
-        NotificationFire();
+        User_Alarm.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String value = dataSnapshot.getValue(String.class); // val 값을 가져온다.
+                if(Objects.equals(value, flag1)){
+                    NotificationFire();
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
         blinking_animation4.setVisibility(View.INVISIBLE);
         blinking_animation3.setVisibility(View.INVISIBLE);
         blinking_animation2.setVisibility(View.INVISIBLE);
@@ -415,6 +466,7 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
         firetext.setVisibility(View.VISIBLE);
 
     }
+
     /*public void onvoice()
     {
 
@@ -429,7 +481,7 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
         blinking_animation3.setVisibility(View.VISIBLE);
         voicetext.setVisibility(View.VISIBLE);
     }*/
-    public void onbell(){
+    public void onbell() {
         Notificationbell();
         mVibe.cancel();
         blinking_animation.clearAnimation();
@@ -443,7 +495,6 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
-
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -455,13 +506,14 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
         } else if (id == R.id.nav_version) {
             startActivity(new Intent(this, VersionActivity.class)); //앱 버전
         } else if (id == R.id.nav_help) {
-            startActivity(new Intent(this,HelpActivity.class)); //도움말
+            startActivity(new Intent(this, HelpActivity.class)); //도움말
         } else if (id == R.id.nav_module) {
             startActivity(new Intent(this, StartActivity.class)); //모듈 연결/해제    //1003 네비게이션 수정
 
 
         } else if (id == R.id.nav_alert) {
-            startActivity(new Intent(this,AlarmActivity.class)); //알림 설정
+            finish();
+            startActivity(new Intent(this, AlarmActivity.class)); //알림 설정
         } else if (id == R.id.Logout) {
             firebaseAuth.signOut();
             finish();
@@ -473,31 +525,35 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-    @Override
+
+  /*  @Override
     public synchronized void onStart() {
         super.onStart();
-    }
+
+    }*/
 
     @Override
     public synchronized void onPause() {
         super.onPause();
     }
+
     @Override
     public void onStop() {
         // Stop the timer
-        if(mRefreshTimer != null) {
+        if (mRefreshTimer != null) {
             mRefreshTimer.cancel();
             mRefreshTimer = null;
         }
         super.onStop();
     }
+
     @Override
-    public void onClick(View view){
+    public void onClick(View view) {
 /*        if(view == button3)
         {
             callFragment(FRAGMENT_STT);
         }*/
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.blinking_animation:
                 blinking_animation.clearAnimation();
                 firetext.setVisibility(View.GONE);
@@ -524,10 +580,27 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
-    public void onvoice() {
+    private void initialize() {
+        Logs.d(TAG, "# Activity - initialize()");
 
+        // Load activity reports and display
+        if (mRefreshTimer != null) {
+            mRefreshTimer.cancel();
+        }
 
+        // Use below timer if you want scheduled job
+        //mRefreshTimer = new Timer();
+        //mRefreshTimer.schedule(new RefreshTimerTask(), 5*1000);
     }
+
+    private void finalizeActivity() {
+        Logs.d(TAG, "# Activity - finalizeActivity()");
+
+        // Clean used resources
+        RecycleUtils.recursiveRecycle(getWindow().getDecorView());
+        System.gc();
+    }
+
     public void pushnoti() {
         // 리스트 어댑터 생성 및 세팅
 
@@ -542,129 +615,164 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
         FirebaseUser user = firebaseAuth.getCurrentUser();
         final String email = user.getEmail();
         int i = email.indexOf("@");
-        String id = email.substring(0,i);
+        String id = email.substring(0, i);
 
-        DatabaseReference sensordb = databaseReference.child("huser").child(id).child("sensor");
-        DatabaseReference knockdb = sensordb.child("knock");
-        DatabaseReference firedb = sensordb.child("fire");
-        DatabaseReference voicedb = sensordb.child("voice");
+        final DatabaseReference sensordb = databaseReference.child("huser").child(id).child("sensor");
+        final DatabaseReference knockdb = sensordb.child("knock");
+        final DatabaseReference firedb = sensordb.child("fire");
+        final DatabaseReference voicedb = sensordb.child("voice");
+        final DatabaseReference voiceSend = sensordb.child("voice").child("text");
         // 데이터 받아오기 및 어댑터 데이터 추가 및 삭제 등..리스너 관리
+                    knockdb.addChildEventListener(new ChildEventListener() {
+                        @Override
+                        public void onChildAdded(DataSnapshot dataSnapshot, String s) {
 
-        knockdb.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                        }
 
-            }
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                Log.e("LOG", "dataSnapshot.getKey() : " + dataSnapshot.getKey());
-                onknock();
-            }
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-            }
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
-        });
+                        @Override
+                        public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                            Log.e("LOG", "dataSnapshot.getKey() : " + dataSnapshot.getKey());
+                            onknock();
+                        }
 
-        firedb.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                        @Override
+                        public void onChildRemoved(DataSnapshot dataSnapshot) {
+                        }
 
-            }
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                Log.e("LOG", "dataSnapshot.getKey() : " + dataSnapshot.getKey());
-                onfire();
-            }
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-            }
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
-        });
+                        @Override
+                        public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+                        }
 
-        voicedb.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                        }
+                    });
 
-            }
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                Log.e("LOG", "dataSnapshot.getKey() : " + dataSnapshot.getKey());
-                Log.e("LOG", "dataSnapshot.getValue() : " + dataSnapshot.getValue());
+                    firedb.addChildEventListener(new ChildEventListener() {
+                        @Override
+                        public void onChildAdded(DataSnapshot dataSnapshot, String s) {
 
-                builder.setContentTitle("HearO")
-                        .setContentText((String) dataSnapshot.getValue())
-                        .setTicker("음성")
-                        .setSmallIcon(R.mipmap.ic_launcher)
-                        .setLargeIcon(BitmapFactory.decodeResource(res, R.mipmap.ic_launcher))
-                        .setContentIntent(contentIntent)
-                        .setAutoCancel(true)
-                        .setWhen(System.currentTimeMillis())
-                        .setDefaults(Notification.DEFAULT_SOUND);
-                voicetext.setText((String) dataSnapshot.getValue());
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-                    builder.setCategory(Notification.CATEGORY_MESSAGE)
-                            .setPriority(Notification.PRIORITY_HIGH)
-                            .setVisibility(Notification.VISIBILITY_PUBLIC);
+                        }
+
+                        @Override
+                        public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                            Log.e("LOG", "dataSnapshot.getKey() : " + dataSnapshot.getKey());
+                            onfire();
+                        }
+
+                        @Override
+                        public void onChildRemoved(DataSnapshot dataSnapshot) {
+                        }
+
+                        @Override
+                        public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                        }
+                    });
+
+                    voicedb.addChildEventListener(new ChildEventListener() {
+                        @Override
+                        public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+
+                        }
+
+                        @Override
+                        public void onChildChanged(final DataSnapshot dataSnapshot, String s) {
+
+                            User_Alarm.addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot1) {
+                                    String value = dataSnapshot1.getValue(String.class); // val 값을 가져온다.
+                                    if(Objects.equals(value, flag1)){
+
+                                       voiceSend.addValueEventListener(new ValueEventListener() {
+                                           @Override
+                                           public void onDataChange(DataSnapshot dataSnapshot2) {
+                                               Log.e("LOG", "dataSnapshot.getKey() : " + dataSnapshot.getKey());
+                                               Log.e("LOG", "dataSnapshot.getValue() : " + dataSnapshot.getValue());
+                                               Log.e("LOG", "dataSnapshot.child('text').getValue() :" + dataSnapshot2.getValue());
+                                               builder.setContentTitle("HearO")
+                                                       .
+
+                                                               setContentText((String) dataSnapshot2.getValue())
+                                                       .
+
+                                                               setTicker("음성")
+                                                       .
+
+                                                               setSmallIcon(R.mipmap.ic_launcher)
+                                                       .
+
+                                                               setLargeIcon(BitmapFactory.decodeResource(res, R.mipmap.ic_launcher))
+                                                       .
+
+                                                               setContentIntent(contentIntent)
+                                                       .
+
+                                                               setAutoCancel(true)
+                                                       .
+
+                                                               setWhen(System.currentTimeMillis())
+                                                       .
+
+                                                               setDefaults(Notification.DEFAULT_SOUND);
+                                               voicetext.setText((String) dataSnapshot2.getValue());
+
+                                               if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP)
+
+                                               {
+                                                   builder.setCategory(Notification.CATEGORY_MESSAGE)
+                                                           .setPriority(Notification.PRIORITY_HIGH)
+                                                           .setVisibility(Notification.VISIBILITY_PUBLIC);
+                                               }
+
+                                               NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                                               nm.notify(1234, builder.build());
+                                               mVibe.cancel();
+                                               blinking_animation.clearAnimation();
+                                               firetext.setVisibility(View.GONE);
+                                               blinking_animation2.setVisibility(View.GONE);
+                                               doortext.setVisibility(View.GONE);
+                                               blinking_animation4.setVisibility(View.INVISIBLE);
+                                               belltext.setVisibility(View.GONE);
+
+                                               blinking_animation3.setVisibility(View.VISIBLE);
+                                               voicetext.setVisibility(View.VISIBLE);
+                                           }
+                                           @Override
+                                           public void onCancelled(DatabaseError databaseError) {
+                                           }
+                                       });
+
+                                    }
+                                }
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+                                }
+                            });
+
+
+                        }
+
+                        @Override
+                        public void onChildRemoved(DataSnapshot dataSnapshot) {
+                        }
+
+                        @Override
+                        public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                        }
+
+                    });
                 }
-
-                NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-                nm.notify(1234, builder.build());
-                mVibe.cancel();
-                blinking_animation.clearAnimation();
-                firetext.setVisibility(View.GONE);
-                blinking_animation2.setVisibility(View.GONE);
-                doortext.setVisibility(View.GONE);
-                blinking_animation4.setVisibility(View.INVISIBLE);
-                belltext.setVisibility(View.GONE);
-
-                blinking_animation3.setVisibility(View.VISIBLE);
-                voicetext.setVisibility(View.VISIBLE);
-            }
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-            }
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
             }
 
-        });
-
-    }
-
-    private void initialize() {
-        Logs.d(TAG, "# Activity - initialize()");
-
-        // Load activity reports and display
-        if(mRefreshTimer != null) {
-            mRefreshTimer.cancel();
-        }
-
-        // Use below timer if you want scheduled job
-        //mRefreshTimer = new Timer();
-        //mRefreshTimer.schedule(new RefreshTimerTask(), 5*1000);
-    }
-    private void finalizeActivity() {
-        Logs.d(TAG, "# Activity - finalizeActivity()");
-
-        // Clean used resources
-        RecycleUtils.recursiveRecycle(getWindow().getDecorView());
-        System.gc();
-    }
 
 
 
-}

@@ -38,7 +38,6 @@ public class MacroActivity extends AppCompatActivity {
     Button button1;
     private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference(); // 기본 루트 레퍼런스
     private DatabaseReference huser = databaseReference.child("huser");
-
     private DatabaseReference dashboardReference = FirebaseDatabase.getInstance().getReference().child("hdashboard"); // 대쉬보드 레퍼런스
     private FirebaseAuth firebaseAuth;
     EditText editTextName;
@@ -113,18 +112,19 @@ public class MacroActivity extends AppCompatActivity {
                 String text = textview.getText().toString();
                 Toast.makeText(getApplicationContext(), "전송되었습니다", Toast.LENGTH_SHORT).show();
 
-
                 //http://stackoverflow.com/a/29777304
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     ttsGreater21(text);
                 } else {
                     ttsUnder20(text);
                 }
+
                 firebaseAuth = FirebaseAuth.getInstance();
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 final String email = user.getEmail();
                 final String userid = user.getUid();
-
+                int j = email.indexOf("@");
+                String id1 = email.substring(0,j);
                 String id = databaseReference.push().getKey();
 
                 long now = System.currentTimeMillis();
@@ -139,6 +139,8 @@ public class MacroActivity extends AppCompatActivity {
                 String yoman = yo.format(date);
                     //Saving the macro
                 dashboardReference.child(userid).child("macro").child(id).child(yoman).setValue(macrotime);
+                huser.child(id1).child("macro_tts").child("text").setValue(text);
+                huser.child(id1).child("macro_tts").child("time").setValue(macrotime);
                 }
         });
 

@@ -75,11 +75,17 @@ public class ChatActivity extends AppCompatActivity {
 
         final DatabaseReference chatdatabaseReference = FirebaseDatabase.getInstance().getReference().child("huser").child(id).child("chat"); // 채팅 레퍼런스
         final DatabaseReference dashboard = FirebaseDatabase.getInstance().getReference().child("hdashboard").child(userid).child("chat"); // 대쉬보드 레퍼런스
-
+        final DatabaseReference tts_firebase = FirebaseDatabase.getInstance().getReference().child("huser").child(id);
         // 메시지 전송 버튼에 대한 클릭 리스너 지정
+
         chat_send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                firebaseAuth = FirebaseAuth.getInstance();
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+                final String email = user.getEmail();
+                int i = email.indexOf("@");
+                String id = email.substring(0,i);
                 int position = chat_view.getFirstVisiblePosition(); // chat list 위치
                 if (chat_edit.getText().toString().equals(""))
                     return;
@@ -107,7 +113,8 @@ public class ChatActivity extends AppCompatActivity {
                 String yoman = yo.format(date);
                 chatdatabaseReference.child(chatkey).setValue(chat); // 데이터 푸쉬
                 dashboard.child(chattime).child(yoman).setValue(chattime);
-
+                tts_firebase.child("chat_tts").child("text").setValue(text);
+                tts_firebase.child("chat_tts").child("time").setValue(chattime);
                 chat_edit.setText(""); //입력창 초기화
                 chat_view.smoothScrollToPosition(position);
 
@@ -125,8 +132,8 @@ public class ChatActivity extends AppCompatActivity {
                 Log.e("LOG","removemessage");
 
                 finish();
-                Intent intent = new Intent(ChatActivity.this, MenuActivity.class);
-                startActivity(intent);
+                //Intent intent = new Intent(ChatActivity.this, MenuActivity.class);
+                //startActivity(intent);
             }
         });
     }
