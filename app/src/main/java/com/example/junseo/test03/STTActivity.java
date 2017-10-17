@@ -111,14 +111,6 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
             public void onClick(View v) {
                 Log.d(TAG,"클릭 테스트");
                 speech_recognizer_.start();
-/*                if(arSpeech.size() > 0){
-                    Log.d(TAG, "체크1");
-                    Intent SpeechIntent = new Intent(STTActivity.this, STTList.class);
-                    SpeechIntent.putExtra("arSpeech", arSpeech);
-                    startActivity(SpeechIntent);
-                    arSpeech.clear();
-                    speech_recognizer_.stop();
-                }*/
             }
         });
 
@@ -133,14 +125,6 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
                     speech_recognizer_.start();
                     speakbtn.startAnimation(animation);
                    // Log.d(TAG, s_arSpeech.get(s_arSpeech.size()-1));
-     /*               if(arSpeech.size() > 0) {
-                        Log.d(TAG, "체크");
-                        Intent SpeechIntent = new Intent(STTActivity.this, STTList.class);
-                        SpeechIntent.putExtra("arSpeech", arSpeech);
-                        startActivity(SpeechIntent);
-                        arSpeech.clear();
-                        speech_recognizer_.stop();
-                    }*/
                 }else {
                     speech_recognizer_.destroy();
                     speech_recognizer_.stop();
@@ -226,6 +210,7 @@ public class STTActivity extends AppCompatActivity implements View.OnClickListen
         @Override
         public void onSpeechRecognized(ArrayList<String> recognitions) {
             if (recognitions.isEmpty()) {
+                Toast.makeText(getApplicationContext(), "다시 말해주세요.", Toast.LENGTH_LONG).show();
                 return;
             }
             // Use only the first command.

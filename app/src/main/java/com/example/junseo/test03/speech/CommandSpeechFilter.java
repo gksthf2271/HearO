@@ -88,28 +88,8 @@ public class CommandSpeechFilter implements SpeechListener {
                 Log.d(TAG, "filtered: " + speech);
                 //필터값 배열형태 static변수에 저장 -> STTList.class
                 s_arSpeech.add(speech);
-                Log.d(TAG, "s_arSpeech: " +  s_arSpeech.get(s_arSpeech.size()-1));
-    /*            final DatabaseReference pushedPostRefkey = databaseReference.push();
-                final String speechkey = pushedPostRefkey.getKey();
-                firebaseAuth = FirebaseAuth.getInstance();
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                final String email = user.getEmail();
-                int i = email.indexOf("@");
-                String id = email.substring(0,i);
-                final String userid = user.getUid();
-                long now = System.currentTimeMillis();
-                // 현재시간을 date 변수에 저장한다.
-                Date date = new Date(now);
-                // 시간을 나타냇 포맷을 정한다 ( yyyy/MM/dd 같은 형태로 변형 가능 )
-                SimpleDateFormat sdfNow = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss E요일");
-                // nowDate 변수에 값을 저장한다.
-                String speechtime = sdfNow.format(date);
-
-                databaseReference.child("huser").child(id).child("sensor").child("voice").child(speechtime).setValue(speech);
-                databaseReference.child("hdashboard").child(userid).child("sensor").child("voice").child(speechtime).setValue(speech);
-            */}
+                Log.d(TAG, "s_arSpeech: " +  s_arSpeech.get(s_arSpeech.size()-1));}
         }
-       /* speech_listener_.onSpeechRecognized(commands);*/
         speech_listener_.onSpeechRecognized(s_arSpeech);
     }
 }
